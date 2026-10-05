@@ -1,0 +1,260 @@
+{
+  "_note": "r8 存量冻结 · 只减不增 · 新增直传即红",
+  "_detector": "v2:实参含 .message,或调用了本文件里「函数体含 .message」的本地封装(v1 只看实参那一层)",
+  "total_call_sites": 876,
+  "total": 218,
+  "files": {
+    "src/components/brand/IndustryBriefReviewCard.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/brand/PolishButton.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/c_end/TrialPassApplyDialog.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/flywheel/DataHealthTab.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/flywheel/EvolutionBoard.tsx": {
+      "count": 9,
+      "note": "later"
+    },
+    "src/components/flywheel/FeedbackTab.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/flywheel/MediaEffectivenessBoard.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/flywheel/PanoramaTab.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/gapPlan/GapPlanExecution.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/managed/BrandPlanDialog.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/managed/CampaignDashboard.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/components/managed/PendingReviewQueue.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/components/managed/TopUpDialog.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/managed/WordPlanDialog.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/pricing/QuoteMarkupCard.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/components/research/WeightConfigDrawer.tsx": {
+      "count": 4,
+      "note": "later"
+    },
+    "src/components/subscription/SubscriptionOverrunDialog.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/wallet/ConvertToPointsDialog.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/components/wallet/WalletAddonTab.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/wallet/WithdrawalRequestDialog.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/components/xiaobang/XiaobangChatInput.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/components/AiCommandConsole.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/components/ApprovalQueue.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/components/FeedbackInbox.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/components/MonitoringPanel.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/components/TaskDetailDrawer.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/AiOpsCenter/index.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Admin/FinanceCenter.tsx": {
+      "count": 4,
+      "note": "later"
+    },
+    "src/pages/Admin/GeoPlacementFlywheel.tsx": {
+      "count": 18,
+      "note": "later"
+    },
+    "src/pages/Admin/HelpCenterAdmin/FAQFeedbackTab.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/pages/Admin/HelpCenterAdmin/FAQItemEditPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Admin/HelpCenterAdmin/FAQItemsTab.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/HelpCenterAdmin/index.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/ManagedCampaignsAdmin.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/ApprovalDetail.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/Campaigns.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/Effect.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/MaterialStudio.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/Overview.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Admin/MarketingAdvisor/components/Settings.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/pages/Admin/PricingCenterSSOT.tsx": {
+      "count": 4,
+      "note": "later"
+    },
+    "src/pages/Admin/RefundConsole.tsx": {
+      "count": 8,
+      "note": "later"
+    },
+    "src/pages/Admin/WhitelabelGrant.tsx": {
+      "count": 4,
+      "note": "later"
+    },
+    "src/pages/Admin/refunds/EvidenceUploader.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Agent/ProcurementSSOT.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Agent/TrialPassReviewPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Brand/BrandDetailPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Brand/MyClientsPage.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/DealStudio.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Diagnosis/ClientMaterialsEditor.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Feedback/FeedbackPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/GeoContentCenter.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/pages/MaterialCenter/MaterialCenterPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/OrderManagement/OrderManagementPage.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Pricing/SubscriptionPlansPage.tsx": {
+      "count": 7,
+      "note": "later"
+    },
+    "src/pages/Publishing/ManualPublicationForm.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Publishing/ShortVideoPanel.tsx": {
+      "count": 2,
+      "note": "later"
+    },
+    "src/pages/Quote/OnlineQuoteFlow.tsx": {
+      "count": 12,
+      "note": "later"
+    },
+    "src/pages/Reports/index.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Subscription/SubscriptionManagementPage.tsx": {
+      "count": 3,
+      "note": "later"
+    },
+    "src/pages/Subscription/SubscriptionSigningPage.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Wallet/BuyCreditsSSOT.tsx": {
+      "count": 1,
+      "note": "later"
+    },
+    "src/pages/Writing/WritingHall.tsx": {
+      "count": 26,
+      "note": "later"
+    }
+  }
+}

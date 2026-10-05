@@ -1,0 +1,82 @@
+-- Vendored a698-era upgrade fixture. This intentionally models only the
+-- historical tables/columns needed by migration upgrade tests; it must not
+-- depend on git history being present in a source archive or shallow clone.
+
+CREATE TABLE IF NOT EXISTS public.geo_observation_aggregate_refresh_manifest (
+    manifest_key TEXT PRIMARY KEY,
+    policy_basis_hash TEXT NOT NULL,
+    policy_version TEXT NOT NULL,
+    contract_version TEXT NOT NULL,
+    aggregation_version TEXT NOT NULL,
+    metric_version TEXT NOT NULL,
+    scope_type TEXT NOT NULL,
+    bucket_granularity TEXT NOT NULL,
+    bucket_start DATE NOT NULL,
+    bucket_end DATE NOT NULL,
+    input_watermark TIMESTAMPTZ,
+    eligibility_epoch BIGINT NOT NULL,
+    promotion_sequence_watermark BIGINT NOT NULL,
+    expected_scope_cell_count BIGINT NOT NULL,
+    expected_scope_cell_fingerprint TEXT NOT NULL,
+    aggregate_key_fingerprint TEXT NOT NULL,
+    eligible_observation_count BIGINT NOT NULL,
+    overall_cell_count BIGINT NOT NULL,
+    aggregate_row_count BIGINT NOT NULL,
+    completed_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_geo_obs_agg_manifest_basis
+        CHECK (policy_basis_hash ~ '^[0-9a-f]{64}$'),
+    CONSTRAINT chk_geo_obs_agg_manifest_scope
+        CHECK (scope_type IN ('private_brand','public_industry')),
+    CONSTRAINT chk_geo_obs_agg_manifest_granularity
+        CHECK (bucket_granularity IN ('day','week','month')),
+    CONSTRAINT chk_geo_obs_agg_manifest_bounds CHECK (bucket_end >= bucket_start),
+    CONSTRAINT chk_geo_obs_agg_manifest_counts CHECK (
+        eligibility_epoch >= 0 AND promotion_sequence_watermark >= 0
+        AND eligible_observation_count >= 0 AND expected_scope_cell_count >= 0
+        AND overall_cell_count >= 0 AND aggregate_row_count >= 0
+    ),
+    CONSTRAINT chk_geo_obs_agg_manifest_fingerprints CHECK (
+        expected_scope_cell_fingerprint ~ '^[0-9a-f]{64}$'
+        AND aggregate_key_fingerprint ~ '^[0-9a-f]{64}$'
+    )
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_geo_obs_agg_manifest_cell
+    ON public.geo_observation_aggregate_refresh_manifest
+       (policy_basis_hash, contract_version, aggregation_version, metric_version,
+        scope_type, bucket_granularity, bucket_start);
+
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS snapshot_id CHAR(64);
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS policy_basis_hash TEXT;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS scope_type TEXT;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS bucket_granularity TEXT;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS bucket_start DATE;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS bucket_epoch BIGINT;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS promotion_sequence_watermark BIGINT;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS paid_call_started_at TIMESTAMPTZ;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD COLUMN IF NOT EXISTS paid_call_unknown_at TIMESTAMPTZ;
+
+ALTER TABLE public.geo_observation_insight_jobs
+    DROP CONSTRAINT IF EXISTS geo_obs_insight_scope_hash_uk;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD CONSTRAINT geo_obs_insight_scope_snapshot_uk
+    UNIQUE(owner_user_id, brand_id, input_hash, snapshot_id);
+
+ALTER TABLE public.geo_observation_insight_jobs
+    DROP CONSTRAINT IF EXISTS geo_obs_insight_state_chk;
+ALTER TABLE public.geo_observation_insight_jobs
+    ADD CONSTRAINT geo_obs_insight_state_chk
+    CHECK (state IN (
+        'pending','running','paid_call_started','completed','failed','result_unknown'
+    ));

@@ -1,0 +1,66 @@
+{
+  "snapshot_version": "mcs_v1_2026-01-01_47faa12b",
+  "schema_version": "mcs_v1",
+  "payload_sha256": "47faa12ba75f7c9b3063b87cfd1f9ab11b433f8a8377ca48b55f4bbf8ae0560e",
+  "source": "example: empty bootstrap — build your own with scripts/build_media_cost_snapshot.py",
+  "generated_at": "2026-01-01T00:00:00+08:00",
+  "price_column": "price",
+  "price_semantics": "procurement cost of the publishing channel (build from your own media table)",
+  "platform_media_markup_ratio": 2.0,
+  "row_count_total": 0,
+  "active_count": 0,
+  "geo_count": 0,
+  "excluded_nonpositive": 0,
+  "overall": {
+    "n": 0
+  },
+  "by_tier": {},
+  "wemedia_geo": {
+    "note": "informational only — NOT part of GEO cost tiers",
+    "dist": {
+      "n": 0
+    }
+  },
+  "field_mapping_check": {
+    "verified": false,
+    "note": "example shell — run scripts/build_media_cost_snapshot.py against your own media table"
+  },
+  "tier_selector": {
+    "S": {
+      "authority": 1,
+      "bucket": "high",
+      "percentile": "p90"
+    },
+    "A": {
+      "authority": 1,
+      "bucket": "mid",
+      "percentile": "p90"
+    },
+    "B": {
+      "authority": null,
+      "bucket": "low",
+      "percentile": "p75"
+    },
+    "C": {
+      "authority": 0,
+      "bucket": "mid",
+      "percentile": "p50"
+    },
+    "D": {
+      "authority": 0,
+      "bucket": "low",
+      "percentile": "p75"
+    },
+    "E": {
+      "authority": 0,
+      "bucket": "low",
+      "percentile": "p50"
+    },
+    "social": {
+      "authority": 0,
+      "bucket": "low",
+      "percentile": "p50"
+    }
+  },
+  "_meta": "Example empty bootstrap (fallback only — the live builder writes the media_cost_snapshot table). No real prices."
+}

@@ -1,0 +1,52 @@
+{
+  "legacy": {
+    "db": {
+      "freeze": {
+        "amount_total": 650,
+        "status": "committed"
+      },
+      "record": {
+        "result_visibility": "published"
+      },
+      "run": {
+        "last_settlement_error": null,
+        "run_status": "committed"
+      },
+      "wallet": {
+        "bonus_points": 0,
+        "commission_points": 0,
+        "frozen_points": 0,
+        "paid_points": 10000
+      }
+    },
+    "sse": [
+      [
+        "complete",
+        "done",
+        true
+      ]
+    ]
+  },
+  "org": {
+    "db": {
+      "charge": {
+        "actual_points": 650,
+        "status": "committed"
+      },
+      "record": {
+        "result_visibility": "published"
+      },
+      "run": {
+        "last_settlement_error": null,
+        "run_status": "completed_exempt"
+      }
+    },
+    "sse": [
+      [
+        "complete",
+        "done",
+        true
+      ]
+    ]
+  }
+}

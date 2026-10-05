@@ -1,0 +1,34 @@
+# 必须在运行环境里配置的键 —— 缺了会让对应功能 fail-closed(503 / raise),
+# 而不是回落到源码里写死的值。
+#
+# 为什么要有这张清单(WO_246 2026-09-19):
+#   把兜底字面量拆掉之后,"没配"从**静默可用**变成**明确不可用**。
+#   这是对的 —— 但它把风险从"后门"挪到了"上线当天功能不可用"。
+#   所以拆一个就登记一个,让 preflight 在**本机**就能问一句:
+#   代码里每一个 `*_NOT_CONFIGURED` 对应的键,是不是都在这张表里。
+#
+# 宿主那一半(.env 真的设了、两个槽 printenv 真的非空)由 Deploy 在
+# state.sh 与切流量前闸里判 —— **只判有没有,不读值**。
+#
+# 格式:一行一个键;`#` 开头是注释;空行忽略。
+# 🔴 这里**只写键名,永远不写值**。
+
+# --- 品牌合并口令(server.py: api_brands_merge · 未配置 ⇒ 503
+#     ADMIN_MERGE_PASSWORD_NOT_CONFIGURED)
+ADMIN_MERGE_PASSWORD
+
+# --- 监测数据清除口令(server.py: clear_monitoring_data_endpoint · 未配置 ⇒ 503
+#     MONITORING_CLEAR_DATA_PASSWORD_NOT_CONFIGURED)
+#     本单没有改它 —— 它本来就是这个形态,登记进来是为了让清单覆盖全部
+#     `*_NOT_CONFIGURED`,而不是只覆盖本单碰过的那些。
+MONITORING_CLEAR_DATA_PASSWORD
+
+# --- 邀请短信模板(auth/sms_service.py: send_invite_sms · 未配置 ⇒ 送达拒绝
+#     SMS_TEMPLATE_NOT_CONFIGURED,不回落到任何写死模板)
+#     既存形态,本单未改;登记是为了让清单覆盖全部 fail-closed 键。
+SMS_TEMPLATE_INVITE
+
+# --- 组织邀请送达通道(services/organization_onboarding.py: _delivery_provider
+#     · 未配置(默认 disabled)且非本地捕获 ⇒ 503 ORG_INVITE_DELIVERY_NOT_CONFIGURED)
+#     既存形态,本单未改。
+ORGANIZATION_INVITE_DELIVERY_PROVIDER

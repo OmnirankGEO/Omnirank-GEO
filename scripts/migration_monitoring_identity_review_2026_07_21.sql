@@ -1,0 +1,426 @@
+-- Durable human-review outlet for unresolved monitoring identity cells.
+-- Additive and idempotent. All object references are public-qualified.
+SET LOCAL search_path = pg_catalog, public;
+
+ALTER TABLE public.monitoring_results
+    ADD COLUMN IF NOT EXISTS identity_review_state VARCHAR(24) NOT NULL DEFAULT 'not_required',
+    ADD COLUMN IF NOT EXISTS identity_brand_id INTEGER,
+    ADD COLUMN IF NOT EXISTS identity_candidates JSONB NOT NULL DEFAULT '[]'::jsonb,
+    ADD COLUMN IF NOT EXISTS identity_evidence_snippet TEXT,
+    ADD COLUMN IF NOT EXISTS identity_evidence_hash CHAR(64),
+    ADD COLUMN IF NOT EXISTS identity_decision_version BIGINT NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS identity_resolved_at TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS identity_resolved_by BIGINT;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'fk_monitoring_results_identity_brand'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT fk_monitoring_results_identity_brand
+            FOREIGN KEY (identity_brand_id) REFERENCES public.brands(id) ON DELETE RESTRICT;
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'chk_monitoring_results_identity_review_state'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT chk_monitoring_results_identity_review_state
+            CHECK (identity_review_state IN ('not_required', 'pending', 'confirmed', 'rejected'));
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'chk_monitoring_results_identity_candidates'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT chk_monitoring_results_identity_candidates
+            CHECK (pg_catalog.jsonb_typeof(identity_candidates) = 'array');
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'chk_monitoring_results_identity_pending'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT chk_monitoring_results_identity_pending
+            CHECK (
+                identity_review_state <> 'pending'
+                OR (
+                    response_status = 'brand_identity_unresolved'
+                    AND mention_type = 'pending_identity'
+                    AND identity_brand_id IS NOT NULL
+                    AND identity_evidence_hash IS NOT NULL
+                    AND identity_decision_version = 0
+                )
+            );
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'chk_monitoring_results_identity_version'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT chk_monitoring_results_identity_version
+            CHECK (identity_decision_version >= 0);
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_catalog.pg_constraint
+         WHERE conrelid = 'public.monitoring_results'::pg_catalog.regclass
+           AND conname = 'chk_monitoring_results_identity_markers'
+    ) THEN
+        ALTER TABLE public.monitoring_results
+            ADD CONSTRAINT chk_monitoring_results_identity_markers
+            CHECK (
+                (identity_review_state = 'pending')
+                = (
+                    response_status = 'brand_identity_unresolved'
+                    OR mention_type = 'pending_identity'
+                )
+            );
+    END IF;
+END $$;
+
+CREATE TABLE IF NOT EXISTS public.monitoring_identity_name_decisions (
+    brand_id INTEGER NOT NULL,
+    normalized_name TEXT NOT NULL,
+    display_name TEXT NOT NULL,
+    decision VARCHAR(16) NOT NULL,
+    decision_version BIGINT NOT NULL DEFAULT 1,
+    evidence_hash CHAR(64) NOT NULL,
+    decided_by BIGINT NOT NULL,
+    request_id UUID NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_monitoring_identity_name_decisions PRIMARY KEY (brand_id, normalized_name),
+    CONSTRAINT uq_monitoring_identity_name_decisions_request UNIQUE (request_id),
+    CONSTRAINT fk_monitoring_identity_name_decisions_brand
+        FOREIGN KEY (brand_id) REFERENCES public.brands(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_monitoring_identity_name_decision
+        CHECK (decision IN ('positive', 'negative')),
+    CONSTRAINT chk_monitoring_identity_name_version CHECK (decision_version > 0)
+);
+
+CREATE TABLE IF NOT EXISTS public.monitoring_identity_decision_events (
+    event_id BIGINT GENERATED BY DEFAULT AS IDENTITY,
+    result_id INTEGER NOT NULL,
+    brand_id INTEGER NOT NULL,
+    action VARCHAR(16) NOT NULL,
+    selected_name TEXT NOT NULL,
+    normalized_name TEXT NOT NULL,
+    evidence_hash CHAR(64) NOT NULL,
+    result_version_before BIGINT NOT NULL,
+    result_version_after BIGINT NOT NULL,
+    actor_user_id BIGINT NOT NULL,
+    request_id UUID NOT NULL,
+    metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
+    decided_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT pk_monitoring_identity_decision_events PRIMARY KEY (event_id),
+    CONSTRAINT uq_monitoring_identity_decision_events_request UNIQUE (request_id),
+    CONSTRAINT fk_monitoring_identity_decision_events_result
+        FOREIGN KEY (result_id) REFERENCES public.monitoring_results(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_monitoring_identity_decision_events_brand
+        FOREIGN KEY (brand_id) REFERENCES public.brands(id) ON DELETE RESTRICT,
+    CONSTRAINT chk_monitoring_identity_event_action
+        CHECK (action IN ('yes', 'no', 'custom')),
+    CONSTRAINT chk_monitoring_identity_event_before CHECK (result_version_before >= 0),
+    CONSTRAINT chk_monitoring_identity_event_after
+        CHECK (result_version_after > result_version_before),
+    CONSTRAINT chk_monitoring_identity_event_metadata
+        CHECK (pg_catalog.jsonb_typeof(metadata) = 'object')
+);
+
+-- @index-guard idx_monitoring_results_identity_pending ON monitoring_results plain
+DO $idxguard$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_class c JOIN pg_index i ON i.indexrelid = c.oid
+                WHERE c.relname = 'idx_monitoring_results_identity_pending' AND i.indrelid = to_regclass('public.monitoring_results')) THEN
+        NULL;  -- 已在 public.monitoring_results 上 → 幂等跳过
+    ELSIF EXISTS (SELECT 1 FROM pg_class c
+                   WHERE c.relname = 'idx_monitoring_results_identity_pending' AND c.relnamespace = 'public'::regnamespace) THEN
+        RAISE EXCEPTION '[index-guard] idx_monitoring_results_identity_pending 已存在但不在 public.monitoring_results 上(实际宿主:%)—— 拒绝静默跳过',
+            (SELECT COALESCE(t.relname, 'relkind=' || c.relkind::text) FROM pg_class c
+               LEFT JOIN pg_index i ON i.indexrelid = c.oid
+               LEFT JOIN pg_class t ON t.oid = i.indrelid
+              WHERE c.relname = 'idx_monitoring_results_identity_pending' AND c.relnamespace = 'public'::regnamespace)
+            USING ERRCODE = 'duplicate_object';
+    ELSE
+        CREATE INDEX idx_monitoring_results_identity_pending ON public.monitoring_results (identity_brand_id, tested_at DESC, id DESC) WHERE identity_review_state = 'pending' AND response_status = 'brand_identity_unresolved';
+    END IF;
+END $idxguard$;
+
+CREATE OR REPLACE FUNCTION public.reject_monitoring_identity_event_mutation()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RAISE EXCEPTION 'monitoring identity decision events are append-only';
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_monitoring_identity_events_append_only
+    ON public.monitoring_identity_decision_events;
+CREATE TRIGGER trg_monitoring_identity_events_append_only
+BEFORE UPDATE OR DELETE ON public.monitoring_identity_decision_events
+FOR EACH ROW EXECUTE FUNCTION public.reject_monitoring_identity_event_mutation();
+
+DO $$
+DECLARE
+    result_oid OID := 'public.monitoring_results'::pg_catalog.regclass;
+    projection_oid OID := 'public.monitoring_identity_name_decisions'::pg_catalog.regclass;
+    event_oid OID := 'public.monitoring_identity_decision_events'::pg_catalog.regclass;
+    event_function_oid OID;
+    mismatch_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_class c
+     WHERE c.oid IN (result_oid, projection_oid, event_oid)
+       AND c.relkind = 'r' AND c.relpersistence = 'p';
+    IF mismatch_count <> 3 THEN
+        RAISE EXCEPTION 'monitoring identity tables must be ordinary permanent public tables';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM (VALUES
+        ('identity_review_state'::name, 'character varying(24)'::text, TRUE, '''not_required''::character varying'::text),
+        ('identity_brand_id'::name, 'integer'::text, FALSE, NULL::text),
+        ('identity_candidates'::name, 'jsonb'::text, TRUE, '''[]''::jsonb'::text),
+        ('identity_evidence_snippet'::name, 'text'::text, FALSE, NULL::text),
+        ('identity_evidence_hash'::name, 'character(64)'::text, FALSE, NULL::text),
+        ('identity_decision_version'::name, 'bigint'::text, TRUE, '0'::text),
+        ('identity_resolved_at'::name, 'timestamp with time zone'::text, FALSE, NULL::text),
+        ('identity_resolved_by'::name, 'bigint'::text, FALSE, NULL::text)
+      ) expected(attname, data_type, not_null, column_default)
+      LEFT JOIN pg_catalog.pg_attribute a
+        ON a.attrelid = result_oid AND a.attname = expected.attname AND NOT a.attisdropped
+      LEFT JOIN pg_catalog.pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+     WHERE a.attname IS NULL
+        OR pg_catalog.format_type(a.atttypid, a.atttypmod) IS DISTINCT FROM expected.data_type
+        OR a.attnotnull IS DISTINCT FROM expected.not_null
+        OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) IS DISTINCT FROM expected.column_default;
+    IF mismatch_count <> 0 THEN
+        RAISE EXCEPTION 'monitoring identity result-column contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_attribute a
+     WHERE a.attrelid = projection_oid AND a.attnum > 0 AND NOT a.attisdropped;
+    IF mismatch_count <> 10 THEN
+        RAISE EXCEPTION 'monitoring identity decision projection has unexpected columns';
+    END IF;
+    SELECT COUNT(*) INTO mismatch_count
+      FROM (VALUES
+        ('brand_id'::name, 'integer'::text, TRUE, NULL::text, ''::text),
+        ('normalized_name'::name, 'text'::text, TRUE, NULL::text, ''::text),
+        ('display_name'::name, 'text'::text, TRUE, NULL::text, ''::text),
+        ('decision'::name, 'character varying(16)'::text, TRUE, NULL::text, ''::text),
+        ('decision_version'::name, 'bigint'::text, TRUE, '1'::text, ''::text),
+        ('evidence_hash'::name, 'character(64)'::text, TRUE, NULL::text, ''::text),
+        ('decided_by'::name, 'bigint'::text, TRUE, NULL::text, ''::text),
+        ('request_id'::name, 'uuid'::text, TRUE, NULL::text, ''::text),
+        ('created_at'::name, 'timestamp with time zone'::text, TRUE, 'now()'::text, ''::text),
+        ('updated_at'::name, 'timestamp with time zone'::text, TRUE, 'now()'::text, ''::text)
+      ) expected(attname, data_type, not_null, column_default, identity_kind)
+      LEFT JOIN pg_catalog.pg_attribute a
+        ON a.attrelid = projection_oid AND a.attname = expected.attname AND NOT a.attisdropped
+      LEFT JOIN pg_catalog.pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+     WHERE a.attname IS NULL
+        OR pg_catalog.format_type(a.atttypid, a.atttypmod) IS DISTINCT FROM expected.data_type
+        OR a.attnotnull IS DISTINCT FROM expected.not_null
+        OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) IS DISTINCT FROM expected.column_default
+        OR a.attidentity IS DISTINCT FROM expected.identity_kind;
+    IF mismatch_count <> 0 THEN
+        RAISE EXCEPTION 'monitoring identity decision projection column contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_attribute a
+     WHERE a.attrelid = event_oid AND a.attnum > 0 AND NOT a.attisdropped;
+    -- [2026-07-22 板块A D6] 诊断泛化在 events 表 additive 加 5 列（泛化后 18 列）。
+    -- prestart 每次全量重放本清单，泛化后的表不得让本迁移 fail；18 列精确形状由
+    -- migration_diagnosis_identity_review_2026_07_22.sql 尾部 DO 块与运行时
+    -- assert_monitoring_identity_review_ready 双重钉死（本处只保 13/18 边界）。
+    IF mismatch_count <> 13 AND mismatch_count <> 18 THEN
+        RAISE EXCEPTION 'monitoring identity decision event has unexpected columns';
+    END IF;
+    SELECT COUNT(*) INTO mismatch_count
+      FROM (VALUES
+        ('event_id'::name, 'bigint'::text, TRUE, NULL::text, 'd'::text),
+        ('brand_id'::name, 'integer'::text, TRUE, NULL::text, ''::text),
+        ('action'::name, 'character varying(16)'::text, TRUE, NULL::text, ''::text),
+        ('selected_name'::name, 'text'::text, TRUE, NULL::text, ''::text),
+        ('normalized_name'::name, 'text'::text, TRUE, NULL::text, ''::text),
+        ('evidence_hash'::name, 'character(64)'::text, TRUE, NULL::text, ''::text),
+        ('result_version_before'::name, 'bigint'::text, TRUE, NULL::text, ''::text),
+        ('result_version_after'::name, 'bigint'::text, TRUE, NULL::text, ''::text),
+        ('actor_user_id'::name, 'bigint'::text, TRUE, NULL::text, ''::text),
+        ('request_id'::name, 'uuid'::text, TRUE, NULL::text, ''::text),
+        ('metadata'::name, 'jsonb'::text, TRUE, '''{}''::jsonb'::text, ''::text),
+        ('decided_at'::name, 'timestamp with time zone'::text, TRUE, 'now()'::text, ''::text)
+      ) expected(attname, data_type, not_null, column_default, identity_kind)
+      LEFT JOIN pg_catalog.pg_attribute a
+        ON a.attrelid = event_oid AND a.attname = expected.attname AND NOT a.attisdropped
+      LEFT JOIN pg_catalog.pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+     WHERE a.attname IS NULL
+        OR pg_catalog.format_type(a.atttypid, a.atttypmod) IS DISTINCT FROM expected.data_type
+        OR a.attnotnull IS DISTINCT FROM expected.not_null
+        OR pg_catalog.pg_get_expr(d.adbin, d.adrelid) IS DISTINCT FROM expected.column_default
+        OR a.attidentity IS DISTINCT FROM expected.identity_kind;
+    IF mismatch_count <> 0 THEN
+        RAISE EXCEPTION 'monitoring identity decision event column contract drift';
+    END IF;
+
+    -- result_id 单列核验：类型/无默认/无 identity 恒定；NOT NULL 仅存在于 D6 泛化前
+    -- （diagnosis migration DROP NOT NULL 后由 chk_monitoring_identity_event_source
+    -- 保证 monitoring 行仍必带 result_id；NOT NULL 期望随 source_kind 存在与否切换）。
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_attribute a
+     WHERE a.attrelid = event_oid
+       AND a.attname = 'result_id'
+       AND NOT a.attisdropped
+       AND pg_catalog.format_type(a.atttypid, a.atttypmod) = 'integer'
+       AND a.attidentity = ''
+       AND NOT EXISTS (
+           SELECT 1 FROM pg_catalog.pg_attrdef d
+            WHERE d.adrelid = a.attrelid AND d.adnum = a.attnum
+       )
+       AND a.attnotnull = (NOT EXISTS (
+           SELECT 1 FROM pg_catalog.pg_attribute g
+            WHERE g.attrelid = event_oid AND g.attname = 'source_kind' AND NOT g.attisdropped
+       ));
+    IF mismatch_count <> 1 THEN
+        RAISE EXCEPTION 'monitoring identity decision event result_id column contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM (VALUES
+        ('fk_monitoring_results_identity_brand'::name, result_oid, 'f'::"char",
+         'FOREIGN KEY (identity_brand_id) REFERENCES brands(id) ON DELETE RESTRICT'::text),
+        ('chk_monitoring_results_identity_review_state'::name, result_oid, 'c'::"char",
+         'CHECK (identity_review_state::text = ANY (ARRAY[''not_required''::character varying, ''pending''::character varying, ''confirmed''::character varying, ''rejected''::character varying]::text[]))'::text),
+        ('chk_monitoring_results_identity_candidates'::name, result_oid, 'c'::"char",
+         'CHECK (jsonb_typeof(identity_candidates) = ''array''::text)'::text),
+        ('chk_monitoring_results_identity_pending'::name, result_oid, 'c'::"char",
+         'CHECK (identity_review_state::text <> ''pending''::text OR response_status::text = ''brand_identity_unresolved''::text AND mention_type = ''pending_identity''::text AND identity_brand_id IS NOT NULL AND identity_evidence_hash IS NOT NULL AND identity_decision_version = 0)'::text),
+        ('chk_monitoring_results_identity_markers'::name, result_oid, 'c'::"char",
+         'CHECK ((identity_review_state::text = ''pending''::text) = (response_status::text = ''brand_identity_unresolved''::text OR mention_type = ''pending_identity''::text))'::text),
+        ('chk_monitoring_results_identity_version'::name, result_oid, 'c'::"char",
+         'CHECK (identity_decision_version >= 0)'::text),
+        ('pk_monitoring_identity_name_decisions'::name, projection_oid, 'p'::"char",
+         'PRIMARY KEY (brand_id, normalized_name)'::text),
+        ('uq_monitoring_identity_name_decisions_request'::name, projection_oid, 'u'::"char",
+         'UNIQUE (request_id)'::text),
+        ('fk_monitoring_identity_name_decisions_brand'::name, projection_oid, 'f'::"char",
+         'FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE RESTRICT'::text),
+        ('chk_monitoring_identity_name_decision'::name, projection_oid, 'c'::"char",
+         'CHECK (decision::text = ANY (ARRAY[''positive''::character varying, ''negative''::character varying]::text[]))'::text),
+        ('chk_monitoring_identity_name_version'::name, projection_oid, 'c'::"char",
+         'CHECK (decision_version > 0)'::text),
+        ('pk_monitoring_identity_decision_events'::name, event_oid, 'p'::"char",
+         'PRIMARY KEY (event_id)'::text),
+        ('uq_monitoring_identity_decision_events_request'::name, event_oid, 'u'::"char",
+         'UNIQUE (request_id)'::text),
+        ('fk_monitoring_identity_decision_events_result'::name, event_oid, 'f'::"char",
+         'FOREIGN KEY (result_id) REFERENCES monitoring_results(id) ON DELETE RESTRICT'::text),
+        ('fk_monitoring_identity_decision_events_brand'::name, event_oid, 'f'::"char",
+         'FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE RESTRICT'::text),
+        ('chk_monitoring_identity_event_action'::name, event_oid, 'c'::"char",
+         'CHECK (action::text = ANY (ARRAY[''yes''::character varying, ''no''::character varying, ''custom''::character varying]::text[]))'::text),
+        ('chk_monitoring_identity_event_before'::name, event_oid, 'c'::"char",
+         'CHECK (result_version_before >= 0)'::text),
+        ('chk_monitoring_identity_event_after'::name, event_oid, 'c'::"char",
+         'CHECK (result_version_after > result_version_before)'::text),
+        ('chk_monitoring_identity_event_metadata'::name, event_oid, 'c'::"char",
+         'CHECK (jsonb_typeof(metadata) = ''object''::text)'::text)
+      ) expected(conname, conrelid, contype, definition)
+      LEFT JOIN pg_catalog.pg_constraint c
+        ON c.conrelid = expected.conrelid AND c.conname = expected.conname
+     WHERE c.oid IS NULL
+        OR c.contype IS DISTINCT FROM expected.contype
+        OR c.convalidated IS NOT TRUE
+        OR c.condeferrable IS TRUE
+        OR c.condeferred IS TRUE
+        OR (
+          pg_catalog.pg_get_constraintdef(c.oid, TRUE) IS DISTINCT FROM expected.definition
+          -- pg_dump/pg_restore on PG16 preserves the same expression tree but
+          -- may move the text[] coercion from the array to each varchar
+          -- element.  Accept only these three exact canonical equivalents.
+          AND NOT (
+            (expected.conname = 'chk_monitoring_results_identity_review_state'
+             AND pg_catalog.pg_get_constraintdef(c.oid, TRUE) =
+               'CHECK (identity_review_state::text = ANY (ARRAY[''not_required''::character varying::text, ''pending''::character varying::text, ''confirmed''::character varying::text, ''rejected''::character varying::text]))')
+            OR (expected.conname = 'chk_monitoring_identity_name_decision'
+             AND pg_catalog.pg_get_constraintdef(c.oid, TRUE) =
+               'CHECK (decision::text = ANY (ARRAY[''positive''::character varying::text, ''negative''::character varying::text]))')
+            OR (expected.conname = 'chk_monitoring_identity_event_action'
+             AND pg_catalog.pg_get_constraintdef(c.oid, TRUE) =
+               'CHECK (action::text = ANY (ARRAY[''yes''::character varying::text, ''no''::character varying::text, ''custom''::character varying::text]))')
+          )
+        );
+    IF mismatch_count <> 0 THEN
+        RAISE EXCEPTION 'monitoring identity constraint contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_constraint c
+     WHERE (c.conrelid = projection_oid AND c.conname = 'fk_monitoring_identity_name_decisions_brand'
+            AND c.confrelid = 'public.brands'::pg_catalog.regclass)
+        OR (c.conrelid = result_oid AND c.conname = 'fk_monitoring_results_identity_brand'
+            AND c.confrelid = 'public.brands'::pg_catalog.regclass)
+        OR (c.conrelid = event_oid AND c.conname = 'fk_monitoring_identity_decision_events_result'
+            AND c.confrelid = result_oid)
+        OR (c.conrelid = event_oid AND c.conname = 'fk_monitoring_identity_decision_events_brand'
+            AND c.confrelid = 'public.brands'::pg_catalog.regclass);
+    IF mismatch_count <> 4 THEN
+        RAISE EXCEPTION 'monitoring identity FK target contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_index i
+      JOIN pg_catalog.pg_class idx ON idx.oid = i.indexrelid
+      JOIN pg_catalog.pg_namespace n ON n.oid = idx.relnamespace
+      JOIN pg_catalog.pg_am am ON am.oid = idx.relam
+     WHERE n.nspname = 'public'
+       AND idx.relname = 'idx_monitoring_results_identity_pending'
+       AND i.indrelid = result_oid
+       AND i.indisunique IS FALSE AND i.indisvalid IS TRUE AND i.indisready IS TRUE
+       AND i.indnatts = 3 AND i.indnkeyatts = 3 AND am.amname = 'btree'
+       AND i.indoption::text = '0 3 3'
+       AND pg_catalog.pg_get_indexdef(i.indexrelid)
+            = 'CREATE INDEX idx_monitoring_results_identity_pending ON public.monitoring_results USING btree (identity_brand_id, tested_at DESC, id DESC) WHERE (((identity_review_state)::text = ''pending''::text) AND ((response_status)::text = ''brand_identity_unresolved''::text))'
+       AND pg_catalog.pg_get_expr(i.indpred, i.indrelid)
+            = '(((identity_review_state)::text = ''pending''::text) AND ((response_status)::text = ''brand_identity_unresolved''::text))';
+    IF mismatch_count <> 1 THEN
+        RAISE EXCEPTION 'monitoring identity pending index contract drift';
+    END IF;
+
+    SELECT p.oid INTO event_function_oid
+      FROM pg_catalog.pg_proc p
+      JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+      JOIN pg_catalog.pg_language l ON l.oid = p.prolang
+     WHERE n.nspname = 'public'
+       AND p.proname = 'reject_monitoring_identity_event_mutation'
+       AND pg_catalog.pg_get_function_identity_arguments(p.oid) = ''
+       AND pg_catalog.pg_get_function_result(p.oid) = 'trigger'
+       AND l.lanname = 'plpgsql'
+       AND btrim(pg_catalog.regexp_replace(p.prosrc, '\s+', ' ', 'g'))
+           = 'BEGIN RAISE EXCEPTION ''monitoring identity decision events are append-only''; END;';
+    IF event_function_oid IS NULL THEN
+        RAISE EXCEPTION 'monitoring identity event function contract drift';
+    END IF;
+
+    SELECT COUNT(*) INTO mismatch_count
+      FROM pg_catalog.pg_trigger t
+     WHERE t.tgrelid = event_oid
+       AND t.tgname = 'trg_monitoring_identity_events_append_only'
+       AND NOT t.tgisinternal AND t.tgenabled = 'O'
+       AND t.tgfoid = event_function_oid AND t.tgtype = 27
+       AND t.tgqual IS NULL AND t.tgnargs = 0;
+    IF mismatch_count <> 1 THEN
+        RAISE EXCEPTION 'monitoring identity event trigger contract drift';
+    END IF;
+END $$;

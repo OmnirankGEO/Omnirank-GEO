@@ -1,0 +1,105 @@
+OmniRank
+Copyright 2026 全域上榜（深圳）科技有限公司
+
+This product includes software developed by 全域上榜（深圳）科技有限公司 / OmniRank (https://omnirank.cn/opensource/).
+
+This product is licensed under the Apache License, Version 2.0, together with
+the Additional Condition set out at the top of the LICENSE file. The Additional
+Condition requires that the "OmniRank / 全域上榜" attribution, copyright notices
+and the link to the project homepage shown in the user interface, generated
+reports and customer portal pages are not removed, hidden or altered.
+
+----------------------------------------------------------------------------
+Third-party components
+----------------------------------------------------------------------------
+
+This product depends on third-party components that are distributed under
+their own licenses. The components below are listed because their licenses
+carry conditions beyond a plain permissive notice, or because their package
+metadata does not state a license.
+
+Frontend (npm)
+
+  jszip 3.10.1
+    License: (MIT OR GPL-3.0-or-later).
+    OmniRank uses jszip under the MIT branch of this dual license.
+
+  @fontsource-variable/geist 5.2.8
+    License: SIL Open Font License 1.1 (OFL-1.1).
+    The font is bundled for use in the user interface. Its copyright notice
+    and license are retained; the font is not sold on its own.
+
+  echarts-gl 2.0.9
+    License: BSD-3-Clause (stated in the package's LICENSE file; the package
+    metadata has no "license" field). Copyright (c) 2017, Baidu Inc.
+
+  claygl 1.3.0
+    License: BSD-2-Clause (stated in the package's LICENSE file; the package
+    metadata has no "license" field). Copyright (c) 2014, Yi Shen.
+
+  Development-only tools (used for building and testing; not included in the
+  distributed frontend build): axe-core, @axe-core/playwright, lightningcss
+  and its platform packages — Mozilla Public License 2.0 (MPL-2.0).
+
+Backend (Python)
+
+  psycopg2-binary 2.9.10
+    License: GNU Lesser General Public License, with exceptions.
+    Used unmodified as a dynamically imported library.
+
+  bidict 0.23.1, certifi 2026.2.25, tqdm 4.67.1
+    License: Mozilla Public License 2.0 (MPL-2.0).
+    Used unmodified. Their source code is available from the upstream
+    projects.
+
+  pypdfium2 5.13.0 (pypdfium2-team), PDFium 153.0.7999.0
+    pypdfium2: BSD-3-Clause and Apache-2.0; documentation: CC-BY-4.0.
+    PDFium: Copyright 2014 The PDFium Authors; BSD-3-Clause and Apache-2.0.
+    The exact release's wheel license files include the components below.
+    Full texts and copyright notices are retained in the installed wheel's
+    pypdfium2-5.13.0.dist-info/licenses directory. The component inventory
+    and archive hashes are recorded by the export tool for this version.
+    Release: https://pypi.org/project/pypdfium2/5.13.0/
+
+  FreeType (within pypdfium2/PDFium)
+    License: FreeType Project License (FTL).
+    Copyright 1996-2002, 2006 David Turner, Robert Wilhelm, Werner Lemberg.
+    This software is based in part on the work of the FreeType Team.
+    https://www.freetype.org/
+
+  libjpeg-turbo (within pypdfium2/PDFium)
+    License: IJG, BSD-3-Clause and Zlib, as stated in libjpeg_turbo.ijg/.md.
+    Copyright 2009-2024 D. R. Commander; Copyright 2015 Viktor Szathmáry.
+    This software is based in part on the work of the Independent JPEG Group.
+
+  Other pypdfium2/PDFium wheel declarations
+    abseil, cpu_features, highway: Apache-2.0; catapult, libopenjpeg,
+    inspector_protocol, strongtalk, V8: BSD licenses; fast_float, lcms,
+    pdfium-binaries, simdutf, fp16: MIT; libpng: PNG Reference Library
+    License version 2 and earlier libpng terms; libtiff: libtiff License;
+    zlib: Zlib; llvm-libc and libunwind: Apache-2.0 with LLVM exception
+    and legacy LLVM license texts; AGG 2.3 and fdlibm: their included
+    copyright-preserving permission notices; bigint: public domain.
+    ICU includes Unicode-3.0, ICU, BSD dictionary notices, IPADIC's
+    NAIST-2003 notice, public-domain time-zone data and its other notices.
+    Its aclocal.m4/pkg.m4 uses GPL-2.0-or-later WITH
+    Autoconf-exception-generic; config.guess uses GPL-3.0-or-later WITH
+    Autoconf-exception-generic-3.0. These are ICU4C configuration files.
+    The source-build wheel declarations also include musl's MIT and
+    third-party notices, and libgcc/libstdc++ (GPLv3 with GCC Runtime
+    Library Exception 3.1). These declarations differ between platforms;
+    the export tool retains unresolved subcomponents as unknown.
+
+Backend (Node; root package.json, installed into the container image)
+
+  sharp 0.34.5 and its prebuilt platform packages (@img/sharp-*,
+  @img/sharp-libvips-* 1.2.4)
+    License: sharp is Apache-2.0; the prebuilt libvips binaries in
+    @img/sharp-libvips-* are GNU Lesser General Public License 3.0 or later
+    (LGPL-3.0-or-later).
+    Used unmodified as dynamically loaded prebuilt binaries. The libvips
+    source code is available from the upstream project
+    (https://github.com/libvips/libvips).
+
+Other dependencies retain their own license and copyright texts in their
+installed packages.

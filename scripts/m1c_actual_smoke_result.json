@@ -1,0 +1,241 @@
+{
+  "generated_at": "2026-04-26T05:20:54",
+  "data_scope": "local",
+  "db_dsn_masked": "postgresql://geo_admin:***@localhost:5432/geo_agentscope",
+  "mode": "dry_run",
+  "rows": [
+    {
+      "alias": "全域上榜",
+      "name_like": "全域上榜",
+      "matched": true,
+      "brand_id": 1,
+      "brand_name": "全域上榜（深圳）科技有限公司",
+      "brand_industry": "GEO优化/搜索营销服务",
+      "owner_user_id": null,
+      "has_profile": true,
+      "completeness_score": 25,
+      "completeness_groups": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "completeness_missing": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "kb_status": {
+        "exists": false,
+        "files": 0,
+        "total_chars": 0,
+        "predicted_400": true,
+        "reason": "目录不存在"
+      },
+      "deep_analyze_readiness": {
+        "ready": true,
+        "has_industry": true,
+        "has_business": false,
+        "has_target_users": false,
+        "reason": "至少 1 个核心字段已填"
+      },
+      "industry_brief_state": "idle",
+      "next_step_hint": "❌ 先上传客户知识库到 data/knowledge/clients/1 · 否则 ai-fill 必 400",
+      "can_run_ai_fill_persist": false
+    },
+    {
+      "alias": "一路顺风",
+      "name_like": "一路顺风",
+      "matched": true,
+      "brand_id": 83,
+      "brand_name": "一路顺风",
+      "brand_industry": "豪车租赁配司机",
+      "owner_user_id": 16,
+      "has_profile": true,
+      "completeness_score": 25,
+      "completeness_groups": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "completeness_missing": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "kb_status": {
+        "exists": false,
+        "files": 0,
+        "total_chars": 0,
+        "predicted_400": true,
+        "reason": "目录不存在"
+      },
+      "deep_analyze_readiness": {
+        "ready": true,
+        "has_industry": true,
+        "has_business": false,
+        "has_target_users": false,
+        "reason": "至少 1 个核心字段已填"
+      },
+      "industry_brief_state": "idle",
+      "next_step_hint": "❌ 先上传客户知识库到 data/knowledge/clients/83 · 否则 ai-fill 必 400",
+      "can_run_ai_fill_persist": false
+    },
+    {
+      "alias": "QZQZ",
+      "name_like": "QZQZ",
+      "matched": true,
+      "brand_id": 10,
+      "brand_name": "QZQZ 美学定制",
+      "brand_industry": "全屋定制 / 家居建材",
+      "owner_user_id": null,
+      "has_profile": false,
+      "completeness_score": 25,
+      "completeness_groups": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "completeness_missing": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "kb_status": {
+        "exists": false,
+        "files": 0,
+        "total_chars": 0,
+        "predicted_400": true,
+        "reason": "目录不存在"
+      },
+      "deep_analyze_readiness": {
+        "ready": false,
+        "reason": "profile 不存在"
+      },
+      "industry_brief_state": "idle",
+      "next_step_hint": "❌ 先上传客户知识库到 data/knowledge/clients/10 · 否则 ai-fill 必 400",
+      "can_run_ai_fill_persist": false
+    },
+    {
+      "alias": "驰鲸",
+      "name_like": "驰鲸",
+      "matched": true,
+      "brand_id": 3,
+      "brand_name": "驰鲸科技",
+      "brand_industry": "工厂出海",
+      "owner_user_id": null,
+      "has_profile": true,
+      "completeness_score": 75,
+      "completeness_groups": {
+        "identity": 20,
+        "business": 25,
+        "marketing": 20,
+        "deep_analysis": 0,
+        "market_insight": 10
+      },
+      "completeness_missing": [
+        "company_name",
+        "products",
+        "industry_brief"
+      ],
+      "kb_status": {
+        "exists": true,
+        "files": 1,
+        "total_chars": 15639,
+        "predicted_400": false,
+        "reason": "OK · 1 文件 / 15639 字符"
+      },
+      "deep_analyze_readiness": {
+        "ready": true,
+        "has_industry": true,
+        "has_business": true,
+        "has_target_users": true,
+        "reason": "至少 1 个核心字段已填"
+      },
+      "industry_brief_state": "idle",
+      "next_step_hint": "2️⃣ 跑 /api/content/deep-analyze + confirm → D 组 +10(从 ai_filled 到 confirmed)",
+      "can_run_ai_fill_persist": true
+    },
+    {
+      "alias": "揭阳大昀",
+      "name_like": "揭阳大昀",
+      "matched": true,
+      "brand_id": 17,
+      "brand_name": "揭阳大昀地产・万汇广场",
+      "brand_industry": "房地产开发经营 / 住宅地产 / 商业地产",
+      "owner_user_id": null,
+      "has_profile": true,
+      "completeness_score": 75,
+      "completeness_groups": {
+        "identity": 20,
+        "business": 25,
+        "marketing": 20,
+        "deep_analysis": 0,
+        "market_insight": 10
+      },
+      "completeness_missing": [
+        "company_name",
+        "products",
+        "industry_brief"
+      ],
+      "kb_status": {
+        "exists": true,
+        "files": 1,
+        "total_chars": 5919,
+        "predicted_400": false,
+        "reason": "OK · 1 文件 / 5919 字符"
+      },
+      "deep_analyze_readiness": {
+        "ready": true,
+        "has_industry": true,
+        "has_business": true,
+        "has_target_users": true,
+        "reason": "至少 1 个核心字段已填"
+      },
+      "industry_brief_state": "idle",
+      "next_step_hint": "2️⃣ 跑 /api/content/deep-analyze + confirm → D 组 +10(从 ai_filled 到 confirmed)",
+      "can_run_ai_fill_persist": true
+    }
+  ]
+}

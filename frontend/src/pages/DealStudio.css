@@ -1,0 +1,244 @@
+/* ============================================================
+   晒成交 Deal Studio · 浅色主题（对齐 deal-desktop/mobile 参考稿）
+   令牌复用 .gcc-shell 作用域变量（GeoContentCenter.css）。
+   ============================================================ */
+
+.gcc-deal-shell { width: min(1280px, 100%); margin-inline: auto; }
+
+.gcc-deal-back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; color: var(--gcc-muted); font-size: 13px; }
+.gcc-deal-back:hover { color: var(--gcc-brand-ink); }
+
+.gcc-deal-loading { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 160px; color: var(--gcc-muted); font-size: 13px; }
+
+/* ---------- 步骤条 ---------- */
+.gcc-deal-stepper { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+.gcc-deal-step { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 11px 13px; border: 1px solid var(--gcc-line); border-radius: 10px; background: #fff; text-align: left; }
+.gcc-deal-step:disabled { cursor: not-allowed; opacity: .65; }
+.gcc-deal-step-num { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--gcc-soft); color: var(--gcc-muted); font-size: 13px; font-weight: 700; flex: 0 0 auto; }
+.gcc-deal-step-text { display: grid; min-width: 0; }
+.gcc-deal-step-text b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 650; }
+.gcc-deal-step-text span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gcc-muted); font-size: 11px; }
+.gcc-deal-step.is-done { border-color: rgba(108, 190, 30, .4); }
+.gcc-deal-step.is-done .gcc-deal-step-num { background: var(--gcc-brand); color: #fff; }
+.gcc-deal-step.is-current { border-color: var(--gcc-brand); box-shadow: 0 0 0 3px rgba(108, 190, 30, .14); }
+.gcc-deal-step.is-current .gcc-deal-step-num { background: var(--gcc-brand-ink); color: #fff; }
+.gcc-deal-step.is-attention { border-color: var(--gcc-amber-border); background: var(--gcc-amber-bg); }
+.gcc-deal-step.is-attention .gcc-deal-step-num { background: #d97706; color: #fff; }
+
+/* ---------- 第一步：三输入卡 ---------- */
+.gcc-deal-intake-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.gcc-deal-intake-card { display: grid; gap: 12px; align-content: start; min-width: 0; padding: 18px; border: 1px solid var(--gcc-line); border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .03); }
+.gcc-deal-ic-head { display: flex; align-items: center; gap: 10px; }
+.gcc-deal-ic-head b { font-size: 14px; font-weight: 650; }
+.gcc-deal-ic-head small { display: block; margin-top: 2px; color: var(--gcc-muted); font-size: 12px; font-weight: 400; }
+.gcc-deal-ic-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); flex: 0 0 auto; }
+
+.gcc-deal-thumb-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.gcc-deal-thumb { position: relative; width: 64px; height: 80px; overflow: hidden; border: 1px solid var(--gcc-line); border-radius: 8px; background: var(--gcc-soft-2); }
+.gcc-deal-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gcc-deal-thumb.is-loading { display: grid; place-items: center; color: var(--gcc-muted); }
+.gcc-deal-thumb .gcc-deal-img-state { width: 100%; height: 100%; font-size: 11px; padding: 4px; }
+.gcc-deal-thumb-add { display: grid; place-items: center; place-content: center; gap: 4px; width: 64px; height: 80px; border: 1.5px dashed #cfcfcf; border-radius: 8px; color: var(--gcc-muted); font-size: 11px; cursor: pointer; }
+.gcc-deal-thumb-add:hover { border-color: var(--gcc-brand); background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); }
+.gcc-deal-thumb-add.is-disabled { opacity: .55; cursor: not-allowed; }
+.gcc-deal-thumb-add input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.gcc-deal-tip { color: var(--gcc-muted); font-size: 12px; line-height: 1.55; }
+
+/* 语音卡 */
+.gcc-deal-voice { display: grid; justify-items: center; gap: 9px; }
+.gcc-deal-mic-btn { display: grid; place-items: center; width: 62px; height: 62px; border-radius: 50%; background: var(--gcc-brand); color: #fff; box-shadow: 0 6px 16px rgba(108, 190, 30, .35); }
+.gcc-deal-mic-btn:hover { background: var(--gcc-brand-hover); }
+.gcc-deal-mic-btn:disabled { opacity: .5; cursor: not-allowed; }
+.gcc-deal-voice-tip { color: var(--gcc-muted); font-size: 12px; text-align: center; }
+.gcc-deal-voice-bar { display: flex; align-items: center; gap: 9px; width: 100%; padding: 9px 11px; border: 1px solid var(--gcc-line); border-radius: 10px; background: var(--gcc-soft-2); }
+.gcc-deal-voice-bar.is-recording { border-color: var(--gcc-red-border); background: var(--gcc-red-bg); }
+.gcc-deal-voice-bar.is-uploading { color: var(--gcc-muted); }
+.gcc-deal-rec-dot { position: relative; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; flex: 0 0 auto; }
+.gcc-deal-rec-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: rgba(239, 68, 68, .35); animation: gcc-deal-ping 1.2s ease-out infinite; }
+@keyframes gcc-deal-ping { to { transform: scale(1.8); opacity: 0; } }
+.gcc-deal-voice-label { flex: 1; color: var(--gcc-text); font-size: 13px; font-weight: 550; }
+.gcc-deal-voice-bar.is-recording .gcc-deal-voice-label { color: var(--gcc-red-text); }
+.gcc-deal-voice-hint { color: var(--gcc-muted); font-size: 11px; }
+.gcc-deal-voice-bar button { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 11px; border-radius: 8px; font-size: 12px; font-weight: 600; }
+.gcc-deal-voice-bar.is-recording button { background: #ef4444; color: #fff; }
+.gcc-deal-voice-discard { color: var(--gcc-muted); }
+.gcc-deal-voice-discard:hover { color: var(--gcc-red-text); background: var(--gcc-red-bg); }
+.gcc-deal-voice-send { background: var(--gcc-ink); color: #fff; }
+.gcc-deal-transcript { display: grid; gap: 6px; width: 100%; }
+.gcc-deal-transcript > span { color: var(--gcc-muted); font-size: 12px; line-height: 1.5; }
+.gcc-deal-transcript textarea { width: 100%; min-height: 84px; padding: 9px 11px; border: 1px solid var(--gcc-line); border-radius: 8px; background: var(--gcc-soft-2); color: #4b4b4b; font-size: 12px; line-height: 1.6; resize: vertical; }
+
+/* 成交细节表单 */
+.gcc-deal-form-toggle { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 42px; padding: 8px 12px; border: 1px solid var(--gcc-line); border-radius: 10px; background: var(--gcc-soft-2); color: #3f3f3f; font-size: 13px; font-weight: 550; }
+.gcc-deal-form-toggle:hover { border-color: rgba(108, 190, 30, .5); color: var(--gcc-brand-ink); }
+.gcc-deal-form-toggle svg { transition: transform .18s ease; }
+.gcc-deal-form-toggle svg.is-open { transform: rotate(180deg); }
+.gcc-deal-intake-form { display: grid; gap: 10px; }
+.gcc-deal-field { display: grid; gap: 5px; min-width: 0; }
+.gcc-deal-field > span { color: #3f3f3f; font-size: 13px; font-weight: 550; }
+.gcc-deal-field input,
+.gcc-deal-field textarea { width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid var(--gcc-line-strong); border-radius: 8px; background: #fff; font-size: 14px; line-height: 1.6; }
+.gcc-deal-field textarea { min-height: 72px; resize: vertical; }
+.gcc-deal-anon-switch b { font-weight: 550; line-height: 1.5; }
+
+/* 渠道 chips（与主流程渠道勾选同风格） */
+.gcc-deal-channel-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.gcc-deal-channel-chips button { display: inline-flex; align-items: center; gap: 8px; min-height: 38px; padding: 7px 13px; border: 1px solid var(--gcc-line-strong); border-radius: 10px; background: #fff; color: #4b4b4b; font-size: 13px; font-weight: 550; }
+.gcc-deal-channel-chips button > span { display: grid; place-items: center; width: 17px; height: 17px; border: 1.5px solid #c9c9c9; border-radius: 5px; color: transparent; }
+.gcc-deal-channel-chips button.is-selected { border-color: rgba(108, 190, 30, .55); background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); }
+.gcc-deal-channel-chips button.is-selected > span { border-color: var(--gcc-brand); background: var(--gcc-brand); color: #fff; }
+
+.gcc-deal-intake-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 14px; padding: 16px 20px; border: 1px solid var(--gcc-line); border-radius: 12px; background: #fff; }
+.gcc-deal-reanalyze { display: inline-flex; align-items: center; gap: 7px; color: var(--gcc-amber-text); font-size: 12px; line-height: 1.6; }
+
+/* ---------- 面板通用 ---------- */
+.gcc-deal-panel { display: block; margin-top: 16px; padding: 20px 24px; border: 1px solid var(--gcc-line); border-radius: 16px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .03); }
+.gcc-deal-panel .gcc-strategy-note { margin-bottom: 16px; }
+.gcc-deal-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--gcc-line); }
+.gcc-deal-panel-foot.is-embedded { justify-content: center; border-top: 0; margin-top: 12px; }
+.gcc-deal-foot-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* ---------- 第二步：确认单 ---------- */
+.gcc-deal-sheet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+.gcc-deal-sheet-field { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.gcc-deal-sheet-field.span2 { grid-column: 1 / -1; }
+.gcc-deal-sf-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.gcc-deal-sf-head label { color: #3f3f3f; font-size: 13px; font-weight: 600; }
+.gcc-deal-sheet-field input,
+.gcc-deal-sheet-field textarea { width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid var(--gcc-line-strong); border-radius: 8px; background: #fff; font-size: 14px; line-height: 1.6; }
+.gcc-deal-sheet-field textarea { min-height: 72px; resize: vertical; }
+.gcc-deal-sheet-field.is-tentative input,
+.gcc-deal-sheet-field.is-tentative textarea { border-color: var(--gcc-amber-border); background: var(--gcc-amber-bg); }
+.gcc-deal-sf-note { color: var(--gcc-muted); font-size: 12px; line-height: 1.55; }
+.gcc-deal-sheet-field.is-tentative .gcc-deal-sf-note { color: var(--gcc-amber-text); }
+/* AI 提取标注提醒(Owner 2026-07-22 提醒不阻断):字段下方琥珀色提示。 */
+.gcc-deal-sf-note.is-warning { display: flex; align-items: flex-start; gap: 5px; color: var(--gcc-amber-text); font-weight: 600; }
+.gcc-deal-sf-note.is-warning svg { flex: 0 0 auto; margin-top: 2px; }
+
+/* ---------- 第三步：打码编辑器 ---------- */
+.gcc-deal-material-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 14px; }
+.gcc-deal-material-strip > button { position: relative; display: grid; gap: 4px; justify-items: center; width: 72px; flex: 0 0 auto; padding: 4px; border: 1.5px solid var(--gcc-line); border-radius: 9px; background: #fff; }
+.gcc-deal-material-strip > button.is-active { border-color: var(--gcc-brand); }
+.gcc-deal-material-strip img { width: 100%; height: 64px; object-fit: cover; border-radius: 6px; display: block; }
+.gcc-deal-material-strip .gcc-deal-img-state { width: 100%; height: 64px; font-size: 11px; }
+.gcc-deal-ms-label { display: inline-flex; align-items: center; gap: 4px; color: var(--gcc-muted); font-size: 11px; }
+.gcc-deal-ms-label svg { color: var(--gcc-brand); }
+
+.gcc-deal-redact-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); gap: 24px; align-items: start; }
+.gcc-deal-stage { padding: 14px; border: 1px solid var(--gcc-line); border-radius: 12px; background: var(--gcc-soft); }
+.gcc-deal-rs-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; color: var(--gcc-muted); font-size: 12px; }
+.gcc-deal-rs-head > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gcc-deal-stage-img { position: relative; max-width: 400px; margin-inline: auto; border-radius: 8px; background: #fff; touch-action: none; }
+.gcc-deal-stage-img > img { width: 100%; display: block; border-radius: 8px; user-select: none; }
+.gcc-deal-stage-img.is-selecting { cursor: crosshair; }
+.gcc-deal-stage-img .gcc-deal-img-state { min-height: 220px; }
+.gcc-deal-stage-hint { display: block; margin-top: 9px; color: var(--gcc-muted); font-size: 12px; text-align: center; }
+
+/* N4：视觉层精确渲染真实打码范围，去掉 min 12px 放大，overlay 与坐标一一对应 */
+.gcc-deal-region { position: absolute; z-index: 2; padding: 0; border: 1.5px solid rgba(108, 190, 30, .9); border-radius: 3px; background: rgba(108, 190, 30, .14); cursor: pointer; }
+/* F10+N4：点击热区由 ::after 承担，只向右/下两个方向各扩 8px（单向 hit slop）。
+   相邻小区域的热区不再四向叠加互抢——后渲染区域的视觉框永远盖过先渲染区域的
+   热区，命中确定；小至几像素的区域仍可点中 */
+.gcc-deal-region::after { content: ''; position: absolute; inset: 0 -8px -8px 0; }
+.gcc-deal-region:hover { background: rgba(108, 190, 30, .26); }
+.gcc-deal-region.is-restored { border-style: dashed; border-color: var(--gcc-amber-text); background: rgba(245, 211, 124, .18); }
+.gcc-deal-region-tag { position: absolute; top: -11px; left: -6px; display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 999px; background: var(--gcc-brand); color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 1px 3px rgba(0, 0, 0, .18); }
+.gcc-deal-region.is-restored .gcc-deal-region-tag { border: 1px solid var(--gcc-amber-border); background: var(--gcc-amber-bg); color: var(--gcc-amber-text); }
+.gcc-deal-select-rect { position: absolute; z-index: 3; border: 1.5px dashed var(--gcc-amber-text); border-radius: 4px; background: rgba(245, 211, 124, .22); pointer-events: none; }
+
+.gcc-deal-controls { display: grid; gap: 14px; align-content: start; min-width: 0; }
+.gcc-deal-block-btn { width: 100%; }
+.gcc-deal-block-btn.is-dashed { border-style: dashed; }
+.gcc-deal-block-btn.is-armed { border-color: var(--gcc-amber-border); background: var(--gcc-amber-bg); color: var(--gcc-amber-text); }
+
+.gcc-deal-region-list { display: grid; overflow: hidden; border: 1px solid var(--gcc-line); border-radius: 10px; }
+.gcc-deal-region-empty { padding: 14px; background: #fff; color: var(--gcc-muted); font-size: 12px; line-height: 1.6; }
+.gcc-deal-region-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff; font-size: 13px; }
+.gcc-deal-region-row + .gcc-deal-region-row { border-top: 1px solid var(--gcc-line); }
+.gcc-deal-region-row.is-restored { background: var(--gcc-soft-2); }
+.gcc-deal-r-idx { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); font-size: 11px; font-weight: 700; flex: 0 0 auto; }
+.gcc-deal-r-name { font-weight: 600; }
+.gcc-deal-r-kind { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--gcc-muted); font-size: 12px; }
+.gcc-deal-r-undo { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 8px; border-radius: 7px; color: var(--gcc-brand-ink); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.gcc-deal-r-undo:hover { background: var(--gcc-brand-weak); }
+.gcc-deal-r-undo:disabled { opacity: .5; cursor: not-allowed; }
+
+.gcc-deal-add-row { display: grid; gap: 8px; }
+.gcc-deal-kind-select { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 8px; }
+.gcc-deal-kind-select > span { color: var(--gcc-muted); font-size: 12px; }
+.gcc-deal-kind-select select { width: 100%; min-height: 38px; padding: 7px 10px; border: 1px solid var(--gcc-line-strong); border-radius: 8px; background: #fff; font-size: 13px; }
+
+.gcc-deal-strength { display: grid; gap: 7px; }
+.gcc-deal-s-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+.gcc-deal-s-head span:last-child { color: var(--gcc-muted); font-weight: 400; font-size: 12px; }
+.gcc-deal-strength input[type='range'] { width: 100%; height: 28px; accent-color: var(--gcc-brand); }
+.gcc-deal-s-ends { display: flex; justify-content: space-between; color: var(--gcc-muted); font-size: 11px; }
+
+.gcc-deal-confirm-check { display: flex; align-items: flex-start; gap: 9px; padding: 11px 13px; border: 1px solid rgba(108, 190, 30, .45); border-radius: 10px; background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); font-size: 13px; line-height: 1.6; }
+.gcc-deal-cbox { display: grid; place-items: center; width: 18px; height: 18px; margin-top: 3px; border-radius: 5px; background: var(--gcc-brand); color: #fff; flex: 0 0 auto; }
+.gcc-deal-confirm-btn { border-color: rgba(108, 190, 30, .55); background: var(--gcc-brand-weak); color: var(--gcc-brand-ink); font-weight: 650; }
+.gcc-deal-confirm-btn:disabled { opacity: .55; }
+
+.gcc-deal-warn { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; padding: 11px 13px; border: 1px solid var(--gcc-amber-border); border-radius: 10px; background: var(--gcc-amber-bg); color: var(--gcc-amber-text); font-size: 12px; line-height: 1.6; }
+.gcc-deal-warn.is-strong { border-color: var(--gcc-red-border); background: var(--gcc-red-bg); color: var(--gcc-red-text); }
+.gcc-deal-warn svg { flex: 0 0 auto; }
+.gcc-deal-warn-link { min-height: 30px; padding: 0 10px; border-radius: 7px; background: #fff; color: inherit; font-size: 12px; font-weight: 600; text-decoration: underline; }
+
+.gcc-deal-empty-redact { display: grid; justify-items: center; gap: 8px; padding: 36px 20px; text-align: center; color: var(--gcc-muted); }
+.gcc-deal-empty-redact svg { color: var(--gcc-brand); }
+.gcc-deal-empty-redact h3 { margin: 0; color: var(--gcc-text); font-size: 15px; font-weight: 650; }
+.gcc-deal-empty-redact p { max-width: 460px; margin: 0; font-size: 13px; line-height: 1.7; }
+
+/* ---------- 第四步：生成设置 ---------- */
+.gcc-deal-generate-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 24px; }
+.gcc-deal-generate-grid fieldset { display: grid; gap: 9px; align-content: start; min-width: 0; margin: 0; padding: 0; border: 0; }
+.gcc-deal-generate-grid legend { display: flex; align-items: center; gap: 7px; margin-bottom: 2px; color: #3f3f3f; font-size: 13px; font-weight: 650; }
+.gcc-deal-generate-grid legend svg { color: var(--gcc-brand); }
+.gcc-deal-contact-seg { max-width: 260px; }
+.gcc-deal-qr { display: grid; gap: 6px; max-width: 320px; }
+.gcc-deal-generate-grid select { width: 100%; min-height: 42px; padding: 9px 12px; border: 1px solid var(--gcc-line-strong); border-radius: 8px; background: #fff; font-size: 13px; }
+
+/* 全局深色主题会染色原生控件（.dark input:not(...) !important,优先级 0-4-1）：
+   晒成交是浅色面,用更高优先级强制白底黑字（主流程 textarea 靠加载序打平）。 */
+.dark .gcc-shell .gcc-deal-sheet-field input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.dark .gcc-shell .gcc-deal-field input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.dark .gcc-shell .gcc-deal-generate-grid input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.dark .gcc-shell .gcc-deal-panel .gcc-contact-input:not([type='checkbox']):not([type='radio']):not([type='range']),
+.dark .gcc-shell .gcc-deal-kind-select select,
+.dark .gcc-shell .gcc-deal-generate-grid select,
+.dark .gcc-shell .gcc-deal-sheet-field textarea,
+.dark .gcc-shell .gcc-deal-field textarea,
+.dark .gcc-shell .gcc-deal-transcript textarea { background: #fff !important; color: #232323 !important; }
+
+/* ---------- 素材图状态 ---------- */
+.gcc-deal-img-state { display: grid; place-items: center; place-content: center; gap: 6px; width: 100%; min-height: 72px; background: var(--gcc-soft-2); color: var(--gcc-muted); font-size: 12px; }
+.gcc-deal-img-state.is-error { background: var(--gcc-red-bg); color: var(--gcc-red-text); }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 1000px) {
+  .gcc-deal-intake-grid { grid-template-columns: 1fr; }
+  .gcc-deal-redact-grid { grid-template-columns: 1fr; }
+  .gcc-deal-stepper { grid-template-columns: 1fr 1fr; }
+  .gcc-deal-generate-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .gcc-deal-panel { padding: 16px 14px; }
+  .gcc-deal-stepper { grid-template-columns: 1fr; }
+  .gcc-deal-sheet-grid { grid-template-columns: 1fr; }
+  .gcc-deal-sheet-field.span2 { grid-column: auto; }
+  .gcc-deal-intake-foot { flex-direction: column; align-items: stretch; }
+  .gcc-deal-intake-foot .gcc-btn { width: 100%; justify-content: center; }
+  .gcc-deal-panel-foot { flex-direction: column; align-items: stretch; }
+  .gcc-deal-panel-foot .gcc-btn,
+  .gcc-deal-panel-foot .gcc-primary { width: 100%; justify-content: center; }
+  .gcc-deal-foot-actions { flex-direction: column; align-items: stretch; }
+  .gcc-deal-foot-actions .gcc-btn,
+  .gcc-deal-foot-actions .gcc-primary { width: 100%; }
+  .gcc-deal-stage-img { max-width: 100%; }
+  .gcc-deal-rs-head { flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gcc-deal-rec-dot::after { animation: none; }
+}

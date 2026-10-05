@@ -1,0 +1,7 @@
+scenario,industry,engine,requested_scope,source_scope,cell_n,cell_anchor_n,source_n,authoritative_n,portal_n,vertical_n,self_media_n,douyin_n,unclassified_n,coverage_n_excluding_douyin,ratio_raw,ratio_used,capacity_total,douyin_share_used,expected_anchor,expected_coverage,expected_douyin,reason
+global_fallback,ALL,ALL,global,global,36980,8567,36980,479,8088,10916,8931,1724,8566,18123,2.1154429789,2.1154429789,21,0,7,14,0,No eligible narrower cell
+home_doubao,家装家居,doubao,industry_engine,industry_engine,622,98,622,0,98,135,285,222,104,198,2.0204081633,2.0204081633,21,0.20,6,11,4,Eligible cell and Douyin share 222/622 exceeds 20 percent pilot cap
+home_deepseek,家装家居,deepseek,industry_engine,industry_engine,786,132,786,2,130,210,311,2,133,519,3.9318181818,3.9318181818,21,0,4,17,0,Eligible cell
+home_kimi,家装家居,kimi,industry_engine,industry_engine,420,118,420,0,118,117,98,0,87,215,1.8220338983,1.8220338983,21,0,7,14,0,Eligible cell
+home_qwen,家装家居,qwen,industry_engine,industry_engine,520,138,520,0,138,181,165,0,36,346,2.5072463768,2.5072463768,21,0,6,15,0,Eligible cell
+elevator_doubao_fallback_industry,电梯行业,doubao,industry_engine,industry,89,8,377,0,82,40,171,0,84,211,2.5731707317,2.5731707317,21,0,6,15,0,Cell anchor denominator 8 is below 20 so use elevator industry aggregate

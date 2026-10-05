@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://omnirank.local/contracts/alert-action-v1.json",
+  "title": "AlertAction v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "action": { "type": "string", "minLength": 1 },
+    "target": { "type": "string", "minLength": 1 },
+    "permission": { "type": "string", "minLength": 1 },
+    "recovery": { "type": "string", "minLength": 1 },
+    "evidence": { "type": "string", "minLength": 1 },
+    "confirmStatus": { "type": "string", "minLength": 1 }
+  },
+  "anyOf": [
+    { "required": ["action", "target", "permission", "recovery"] },
+    { "required": ["evidence"] },
+    { "required": ["confirmStatus"] }
+  ]
+}

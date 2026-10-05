@@ -1,0 +1,77 @@
+{
+  "contract_version": "geo-observation-frontend-race-v1",
+  "status": "frozen-candidate-contract",
+  "audiences": {
+    "primary": ["service_provider_operator", "customer_report_reader"],
+    "secondary": ["platform_admin"],
+    "language_level": "standard business Chinese; precise and plain; neither engineering jargon nor childish simplification"
+  },
+  "page_questions": ["what_happened", "why_it_matters", "what_can_i_do_next"],
+  "outcome_labels": {
+    "recommended": "被直接推荐",
+    "conditionally_recommended": "满足条件后可能推荐",
+    "candidate_only": "进入候选名单",
+    "mentioned_only": "被提到，但未形成推荐",
+    "criteria_only": "AI 只给出了筛选标准",
+    "refused_no_evidence": "因证据不足，AI 暂不推荐具体品牌",
+    "refused_risk": "因风险限制，AI 不提供具体推荐",
+    "not_mentioned": "未提到",
+    "entity_ambiguous": "品牌可能混淆，暂不判断",
+    "engine_error": "本次检测未完成"
+  },
+  "metric_labels": {
+    "presence_rate_bps": "被 AI 提到的比例",
+    "explicit_recommendation_rate_bps": "被直接推荐的比例",
+    "conditional_recommendation_rate_bps": "满足条件后可能推荐的比例",
+    "candidate_rate_bps": "进入候选名单的比例",
+    "criteria_only_rate_bps": "只给出筛选标准的比例",
+    "refusal_no_evidence_rate_bps": "因证据不足未给出具体推荐的比例",
+    "refusal_risk_rate_bps": "因风险限制未给出具体推荐的比例",
+    "share_of_voice_bps": "样本内品牌提及占比",
+    "citation_rate_bps": "回答中提供引用来源的比例",
+    "evidence_coverage_rate_bps": "有可核验证据的比例",
+    "valid_observations": "本次分析样本数",
+    "input_watermark": "数据更新到",
+    "stability_status=insufficient": "样本不足，暂不下结论",
+    "stability_status=shifted": "模型升级，前后结果不宜直接比较"
+  },
+  "forbidden_unexplained_user_terms": [
+    "bps", "watermark", "outcome", "source_kind", "surface_key", "policy_version",
+    "metric_version", "HMAC", "k-anonymity", "Pub/Sub", "worker", "provider_trace_id", "fanout"
+  ],
+  "forbidden_unverifiable_marketing_terms": [
+    "智能决策中枢", "认知资产跃迁", "全域势能", "增长飞轮赋能", "保证上榜"
+  ],
+  "required_states": [
+    "loading", "empty", "error", "forbidden_403", "conflict_409", "env_override_423",
+    "unavailable_503", "insufficient_samples", "model_shift", "semantic_insight_unavailable"
+  ],
+  "required_viewports": ["320x700", "390x844", "768x1024", "1366x768", "1440x900"],
+  "race": {
+    "candidates": ["frontend-a", "frontend-b"],
+    "blind_until_submission": true,
+    "same_inputs": [
+      "DEVELOPMENT_START_SHA", "observation_contract_v1.json", "this_contract",
+      "frontend_race_fixture_v1.json", "AI-3 product OpenAPI", "three reference images", "interaction matrix"
+    ],
+    "forbidden_changes": [
+      "backend", "migration", "machine_contract", "server.py", "api/scheduler.py",
+      "frontend/src/App.tsx", "global_sidebar_or_nav"
+    ],
+    "hard_gates": [
+      "build_and_playwright_green", "zero_privacy_leak", "zero_dead_control",
+      "zero_frontend_metric_recalculation", "zero_production_fixture_fallback",
+      "all_required_states", "real_AI3_DTO_compatible"
+    ],
+    "score_weights": {
+      "operator_comprehension": 30,
+      "task_efficiency": 25,
+      "truth_and_information_hierarchy": 15,
+      "responsive_accessibility": 15,
+      "visual_completion": 10,
+      "implementation_restraint": 5
+    },
+    "tie_break": "if totals differ by at most 3, prefer smaller diff, more reuse, and fewer runtime dependencies",
+    "winner_rule": "hard gates first; then blinded weighted score; no winner when both fail a hard gate"
+  }
+}

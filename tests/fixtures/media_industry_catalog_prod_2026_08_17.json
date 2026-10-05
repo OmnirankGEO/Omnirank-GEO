@@ -1,0 +1,1060 @@
+{
+ "_source": "2026-08-17 生产只读探针 _pubdisp_probe2_20260817.sh(SET TRANSACTION READ ONLY + 必失败 UPDATE 自证)",
+ "_note": "映射完备性锁的分母。目录换批次后重新取数,不许手改这份来让锁变绿。",
+ "mhz_wemedia": [
+  {
+   "industry": "汽车",
+   "count": 33544
+  },
+  {
+   "industry": "科技",
+   "count": 12857
+  },
+  {
+   "industry": "新闻",
+   "count": 10392
+  },
+  {
+   "industry": "财经",
+   "count": 9932
+  },
+  {
+   "industry": "综合",
+   "count": 9776
+  },
+  {
+   "industry": "生活",
+   "count": 7693
+  },
+  {
+   "industry": "生活/综合",
+   "count": 5521
+  },
+  {
+   "industry": "生活消费",
+   "count": 3591
+  },
+  {
+   "industry": "健康",
+   "count": 3362
+  },
+  {
+   "industry": "时尚",
+   "count": 2844
+  },
+  {
+   "industry": "游戏",
+   "count": 2309
+  },
+  {
+   "industry": "教育",
+   "count": 2080
+  },
+  {
+   "industry": "娱乐",
+   "count": 1886
+  },
+  {
+   "industry": "旅游",
+   "count": 1856
+  },
+  {
+   "industry": "娱乐影视",
+   "count": 1613
+  },
+  {
+   "industry": "家居",
+   "count": 1593
+  },
+  {
+   "industry": "美食/生活/旅游",
+   "count": 1543
+  },
+  {
+   "industry": "美食",
+   "count": 1361
+  },
+  {
+   "industry": "体育",
+   "count": 1266
+  },
+  {
+   "industry": "房产家居",
+   "count": 816
+  },
+  {
+   "industry": "社会",
+   "count": 806
+  },
+  {
+   "industry": "母婴",
+   "count": 790
+  },
+  {
+   "industry": "文化摄影",
+   "count": 641
+  },
+  {
+   "industry": "商业",
+   "count": 622
+  },
+  {
+   "industry": "影视娱乐",
+   "count": 507
+  },
+  {
+   "industry": "历史",
+   "count": 503
+  },
+  {
+   "industry": "三农",
+   "count": 501
+  },
+  {
+   "industry": "科技数码",
+   "count": 494
+  },
+  {
+   "industry": "母婴亲子",
+   "count": 475
+  },
+  {
+   "industry": "文化",
+   "count": 443
+  },
+  {
+   "industry": "动漫",
+   "count": 376
+  },
+  {
+   "industry": "情感",
+   "count": 333
+  },
+  {
+   "industry": "房产",
+   "count": 321
+  },
+  {
+   "industry": "生活/综合/商业",
+   "count": 211
+  },
+  {
+   "industry": "公益",
+   "count": 179
+  },
+  {
+   "industry": "财经投资",
+   "count": 169
+  },
+  {
+   "industry": "职场",
+   "count": 160
+  },
+  {
+   "industry": "汽车/生活/综合",
+   "count": 151
+  },
+  {
+   "industry": "健康医疗",
+   "count": 133
+  },
+  {
+   "industry": "母婴亲子/生活/综合",
+   "count": 132
+  },
+  {
+   "industry": "生活/美妆/时尚",
+   "count": 125
+  },
+  {
+   "industry": "新闻资讯",
+   "count": 89
+  },
+  {
+   "industry": "军事",
+   "count": 80
+  },
+  {
+   "industry": "美食/生活",
+   "count": 65
+  },
+  {
+   "industry": "综合/商业",
+   "count": 63
+  },
+  {
+   "industry": "电商物流",
+   "count": 53
+  },
+  {
+   "industry": "美食/生活/综合",
+   "count": 49
+  },
+  {
+   "industry": "法律",
+   "count": 44
+  },
+  {
+   "industry": "母婴亲子/生活/亲子",
+   "count": 41
+  },
+  {
+   "industry": "搞笑",
+   "count": 39
+  },
+  {
+   "industry": "教育培训",
+   "count": 37
+  },
+  {
+   "industry": "体育运动",
+   "count": 34
+  },
+  {
+   "industry": "影视娱乐/综合",
+   "count": 33
+  },
+  {
+   "industry": "设计",
+   "count": 30
+  },
+  {
+   "industry": "影视娱乐/影视综艺",
+   "count": 29
+  },
+  {
+   "industry": "汽车/生活",
+   "count": 19
+  },
+  {
+   "industry": "随拍",
+   "count": 19
+  },
+  {
+   "industry": "情感/生活/综合",
+   "count": 17
+  },
+  {
+   "industry": "家居家装",
+   "count": 16
+  },
+  {
+   "industry": "运动健身",
+   "count": 16
+  },
+  {
+   "industry": "生活/科技数码/综合",
+   "count": 15
+  },
+  {
+   "industry": "艺术文化",
+   "count": 13
+  },
+  {
+   "industry": "音乐/生活/舞蹈",
+   "count": 12
+  },
+  {
+   "industry": "母婴亲子/生活",
+   "count": 11
+  },
+  {
+   "industry": "美妆",
+   "count": 10
+  },
+  {
+   "industry": "生活/科技数码",
+   "count": 9
+  },
+  {
+   "industry": "生活/动物",
+   "count": 9
+  },
+  {
+   "industry": "剧情搞笑",
+   "count": 9
+  },
+  {
+   "industry": "音乐/生活/综合",
+   "count": 8
+  },
+  {
+   "industry": "生活/运动健身/综合",
+   "count": 7
+  },
+  {
+   "industry": "生活/动物/综合",
+   "count": 7
+  },
+  {
+   "industry": "财经投资/商业",
+   "count": 7
+  },
+  {
+   "industry": "音乐",
+   "count": 7
+  },
+  {
+   "industry": "科技数码/科学",
+   "count": 6
+  },
+  {
+   "industry": "影视综艺",
+   "count": 6
+  },
+  {
+   "industry": "二次元",
+   "count": 6
+  },
+  {
+   "industry": "文化艺术",
+   "count": 6
+  },
+  {
+   "industry": "摄影",
+   "count": 6
+  },
+  {
+   "industry": "汽车/科技数码/科学",
+   "count": 6
+  },
+  {
+   "industry": "其他",
+   "count": 6
+  },
+  {
+   "industry": "生活/测评/综合",
+   "count": 5
+  },
+  {
+   "industry": "美妆/测评/时尚",
+   "count": 5
+  },
+  {
+   "industry": "母婴亲子/生活/动物",
+   "count": 5
+  },
+  {
+   "industry": "颜值达人",
+   "count": 5
+  },
+  {
+   "industry": "随拍/生活",
+   "count": 5
+  },
+  {
+   "industry": "生活/时尚/穿搭",
+   "count": 4
+  },
+  {
+   "industry": "生活/穿搭/综合",
+   "count": 4
+  },
+  {
+   "industry": "科学",
+   "count": 4
+  },
+  {
+   "industry": "科技数码/综合",
+   "count": 4
+  },
+  {
+   "industry": "旅行",
+   "count": 4
+  },
+  {
+   "industry": "母婴亲子/健康医疗",
+   "count": 4
+  },
+  {
+   "industry": "汽车/综合",
+   "count": 4
+  },
+  {
+   "industry": "动物",
+   "count": 4
+  },
+  {
+   "industry": "运动健身/体育运动",
+   "count": 4
+  },
+  {
+   "industry": "音乐/生活/影视娱乐",
+   "count": 4
+  },
+  {
+   "industry": "知识/健康医疗",
+   "count": 3
+  },
+  {
+   "industry": "生活/游戏",
+   "count": 3
+  },
+  {
+   "industry": "生活/美妆/综合",
+   "count": 3
+  },
+  {
+   "industry": "生活/舞蹈/综合",
+   "count": 3
+  },
+  {
+   "industry": "美食/汽车/旅游",
+   "count": 3
+  },
+  {
+   "industry": "美食/生活/穿搭/旅游",
+   "count": 3
+  },
+  {
+   "industry": "母婴亲子/亲子/知识/健康医疗",
+   "count": 3
+  },
+  {
+   "industry": "汽车/科技数码",
+   "count": 3
+  },
+  {
+   "industry": "游戏动漫",
+   "count": 3
+  },
+  {
+   "industry": "剧情搞笑/生活/影视娱乐",
+   "count": 3
+  },
+  {
+   "industry": "萌宠",
+   "count": 3
+  },
+  {
+   "industry": "运动",
+   "count": 3
+  },
+  {
+   "industry": "电商物流/商业",
+   "count": 2
+  },
+  {
+   "industry": "生活/旅游/综合",
+   "count": 2
+  },
+  {
+   "industry": "生活/旅行/综合",
+   "count": 2
+  },
+  {
+   "industry": "生活/时尚",
+   "count": 2
+  },
+  {
+   "industry": "生活/美女/综合",
+   "count": 2
+  },
+  {
+   "industry": "生活/艺术文化/综合",
+   "count": 2
+  },
+  {
+   "industry": "生活/运动健身/体育运动",
+   "count": 2
+  },
+  {
+   "industry": "生活/运动健身/旅游",
+   "count": 2
+  },
+  {
+   "industry": "生活/影视娱乐/影视综艺",
+   "count": 2
+  },
+  {
+   "industry": "生活/商业",
+   "count": 2
+  },
+  {
+   "industry": "美妆/运动健身/时尚",
+   "count": 2
+  },
+  {
+   "industry": "美食/母婴亲子/生活",
+   "count": 2
+  },
+  {
+   "industry": "美食/旅游",
+   "count": 2
+  },
+  {
+   "industry": "美食/生活/动物/旅游",
+   "count": 2
+  },
+  {
+   "industry": "美食/生活/穿搭",
+   "count": 2
+  },
+  {
+   "industry": "情感/综合",
+   "count": 2
+  },
+  {
+   "industry": "母婴亲子/知识/健康医疗",
+   "count": 2
+  },
+  {
+   "industry": "母婴亲子/亲子/教育培训/知识/健康医疗",
+   "count": 2
+  },
+  {
+   "industry": "汽车/综合/商业",
+   "count": 2
+  },
+  {
+   "industry": "汽车/生活/旅游",
+   "count": 2
+  },
+  {
+   "industry": "游戏/二次元",
+   "count": 2
+  },
+  {
+   "industry": "测评",
+   "count": 2
+  },
+  {
+   "industry": "军事/综合",
+   "count": 2
+  },
+  {
+   "industry": "军事/历史/综合",
+   "count": 2
+  },
+  {
+   "industry": "颜值达人/美妆/时尚",
+   "count": 2
+  },
+  {
+   "industry": "颜值达人/舞蹈",
+   "count": 2
+  },
+  {
+   "industry": "舞蹈",
+   "count": 2
+  },
+  {
+   "industry": "财经投资/综合",
+   "count": 2
+  },
+  {
+   "industry": "财经投资/综合/商业",
+   "count": 2
+  },
+  {
+   "industry": "音乐/情感/生活",
+   "count": 2
+  },
+  {
+   "industry": "知识",
+   "count": 1
+  },
+  {
+   "industry": "生活/测评",
+   "count": 1
+  },
+  {
+   "industry": "生活/测评/综合/商业",
+   "count": 1
+  },
+  {
+   "industry": "生活/教育培训",
+   "count": 1
+  },
+  {
+   "industry": "生活/旅行",
+   "count": 1
+  },
+  {
+   "industry": "生活/旅行/旅游",
+   "count": 1
+  },
+  {
+   "industry": "生活/旅行/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "生活/时尚/综合",
+   "count": 1
+  },
+  {
+   "industry": "生活/时尚/美女",
+   "count": 1
+  },
+  {
+   "industry": "生活/知识",
+   "count": 1
+  },
+  {
+   "industry": "生活/知识/综合",
+   "count": 1
+  },
+  {
+   "industry": "生活/美妆/时尚/穿搭",
+   "count": 1
+  },
+  {
+   "industry": "生活/科技数码/体育运动",
+   "count": 1
+  },
+  {
+   "industry": "生活/穿搭",
+   "count": 1
+  },
+  {
+   "industry": "生活/艺术文化",
+   "count": 1
+  },
+  {
+   "industry": "生活/艺术文化/旅游",
+   "count": 1
+  },
+  {
+   "industry": "生活/艺术文化/测评",
+   "count": 1
+  },
+  {
+   "industry": "生活/随拍",
+   "count": 1
+  },
+  {
+   "industry": "生活/体育运动/综合",
+   "count": 1
+  },
+  {
+   "industry": "生活/影视综艺/综合",
+   "count": 1
+  },
+  {
+   "industry": "生活/影视娱乐",
+   "count": 1
+  },
+  {
+   "industry": "生活/影视娱乐/时尚",
+   "count": 1
+  },
+  {
+   "industry": "生活/影视娱乐/舞蹈",
+   "count": 1
+  },
+  {
+   "industry": "科学/综合",
+   "count": 1
+  },
+  {
+   "industry": "科技数码/电商物流",
+   "count": 1
+  },
+  {
+   "industry": "穿搭",
+   "count": 1
+  },
+  {
+   "industry": "美食/情感/生活",
+   "count": 1
+  },
+  {
+   "industry": "美食/母婴亲子/亲子",
+   "count": 1
+  },
+  {
+   "industry": "美食/母婴亲子/生活/亲子",
+   "count": 1
+  },
+  {
+   "industry": "美食/汽车/生活",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/旅游/综合",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/旅游/商业",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/测评/旅游",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/美女/穿搭/旅游",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/美妆/时尚",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/美妆/旅游",
+   "count": 1
+  },
+  {
+   "industry": "美食/生活/运动健身",
+   "count": 1
+  },
+  {
+   "industry": "综合/电商物流",
+   "count": 1
+  },
+  {
+   "industry": "家居家装/综合",
+   "count": 1
+  },
+  {
+   "industry": "影视综艺/旅游",
+   "count": 1
+  },
+  {
+   "industry": "影视娱乐/时尚",
+   "count": 1
+  },
+  {
+   "industry": "影视娱乐/明星/影视综艺",
+   "count": 1
+  },
+  {
+   "industry": "亲子",
+   "count": 1
+  },
+  {
+   "industry": "才艺技能",
+   "count": 1
+  },
+  {
+   "industry": "才艺技能/科技数码/才艺",
+   "count": 1
+  },
+  {
+   "industry": "情感/时尚",
+   "count": 1
+  },
+  {
+   "industry": "情感/生活",
+   "count": 1
+  },
+  {
+   "industry": "时尚/影视综艺/综合",
+   "count": 1
+  },
+  {
+   "industry": "旅行/旅游",
+   "count": 1
+  },
+  {
+   "industry": "旅行/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "教育培训/知识",
+   "count": 1
+  },
+  {
+   "industry": "教育培训/知识/健康医疗",
+   "count": 1
+  },
+  {
+   "industry": "教育培训/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "教育培训/科技数码/科学",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/教育培训/亲子",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/美妆/时尚",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/生活/动物/亲子",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/生活/旅游",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/生活/穿搭/综合",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/亲子",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/亲子/健康医疗",
+   "count": 1
+  },
+  {
+   "industry": "母婴亲子/亲子/教育培训/健康医疗",
+   "count": 1
+  },
+  {
+   "industry": "汽车/测评",
+   "count": 1
+  },
+  {
+   "industry": "汽车/测评/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "汽车/旅行/科学/商业",
+   "count": 1
+  },
+  {
+   "industry": "汽车/科技数码/综合",
+   "count": 1
+  },
+  {
+   "industry": "汽车/科技数码/综合/商业",
+   "count": 1
+  },
+  {
+   "industry": "汽车/生活/旅行/旅游",
+   "count": 1
+  },
+  {
+   "industry": "汽车/生活/旅行/旅游/综合/电商物流/商业",
+   "count": 1
+  },
+  {
+   "industry": "汽车/生活/综合/商业",
+   "count": 1
+  },
+  {
+   "industry": "汽车/电商物流/商业",
+   "count": 1
+  },
+  {
+   "industry": "汽车/财经投资/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "汽车/商业",
+   "count": 1
+  },
+  {
+   "industry": "游戏/科技数码/综合",
+   "count": 1
+  },
+  {
+   "industry": "游戏/运动健身",
+   "count": 1
+  },
+  {
+   "industry": "游戏/体育运动",
+   "count": 1
+  },
+  {
+   "industry": "测评/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "测评/科技数码/科学/综合",
+   "count": 1
+  },
+  {
+   "industry": "健康医疗/综合",
+   "count": 1
+  },
+  {
+   "industry": "剧情搞笑/综合",
+   "count": 1
+  },
+  {
+   "industry": "剧情搞笑/美妆",
+   "count": 1
+  },
+  {
+   "industry": "剧情搞笑/随拍/情感",
+   "count": 1
+  },
+  {
+   "industry": "剧情搞笑/影视娱乐/影视综艺",
+   "count": 1
+  },
+  {
+   "industry": "剧情搞笑/影视娱乐/明星",
+   "count": 1
+  },
+  {
+   "industry": "北京",
+   "count": 1
+  },
+  {
+   "industry": "颜值达人/情感/教育培训",
+   "count": 1
+  },
+  {
+   "industry": "颜值达人/情感/艺术文化",
+   "count": 1
+  },
+  {
+   "industry": "颜值达人/艺术文化",
+   "count": 1
+  },
+  {
+   "industry": "艺术文化/教育培训",
+   "count": 1
+  },
+  {
+   "industry": "艺术文化/综合",
+   "count": 1
+  },
+  {
+   "industry": "艺术文化/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "艺术文化/影视综艺",
+   "count": 1
+  },
+  {
+   "industry": "艺术文化/历史/知识",
+   "count": 1
+  },
+  {
+   "industry": "萌宠/测评",
+   "count": 1
+  },
+  {
+   "industry": "萌宠/测评/动物",
+   "count": 1
+  },
+  {
+   "industry": "萌宠/生活",
+   "count": 1
+  },
+  {
+   "industry": "运动健身/时尚/穿搭",
+   "count": 1
+  },
+  {
+   "industry": "财经投资/生活",
+   "count": 1
+  },
+  {
+   "industry": "财经投资/生活/科技数码",
+   "count": 1
+  },
+  {
+   "industry": "财经投资/生活/综合",
+   "count": 1
+  },
+  {
+   "industry": "财经投资/电商物流/商业",
+   "count": 1
+  },
+  {
+   "industry": "财经商业",
+   "count": 1
+  },
+  {
+   "industry": "随拍/旅游",
+   "count": 1
+  },
+  {
+   "industry": "随拍/生活/教育培训/健康医疗",
+   "count": 1
+  },
+  {
+   "industry": "随拍/生活/运动",
+   "count": 1
+  },
+  {
+   "industry": "音乐/影视娱乐/时尚/综合",
+   "count": 1
+  }
+ ],
+ "mhz_short_video": [
+  {
+   "industry": "汽车交通",
+   "count": 5845
+  },
+  {
+   "industry": "生活消费",
+   "count": 3638
+  },
+  {
+   "industry": "广告传媒",
+   "count": 2698
+  },
+  {
+   "industry": "IT科技",
+   "count": 2159
+  },
+  {
+   "industry": "财经商业",
+   "count": 1287
+  },
+  {
+   "industry": "娱乐休闲",
+   "count": 1024
+  },
+  {
+   "industry": "其他",
+   "count": 458
+  },
+  {
+   "industry": "时尚美妆",
+   "count": 416
+  },
+  {
+   "industry": "游戏竞技",
+   "count": 401
+  },
+  {
+   "industry": "健康医疗",
+   "count": 377
+  },
+  {
+   "industry": "房产家居",
+   "count": 336
+  },
+  {
+   "industry": "亲子母婴",
+   "count": 310
+  },
+  {
+   "industry": "酒店旅游",
+   "count": 298
+  },
+  {
+   "industry": "食品餐饮",
+   "count": 210
+  },
+  {
+   "industry": "体育运动",
+   "count": 199
+  },
+  {
+   "industry": "教育培训",
+   "count": 199
+  },
+  {
+   "industry": "公益生活",
+   "count": 170
+  },
+  {
+   "industry": "文化艺术",
+   "count": 149
+  },
+  {
+   "industry": "三农频道",
+   "count": 44
+  },
+  {
+   "industry": "工业贸易",
+   "count": 23
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+  "version": "gap-operation-labels-v1",
+  "locale": "zh-CN",
+  "rule": "任何内部状态必须先通过本字典翻译，界面不得直出内部枚举。",
+  "_provenance": "设计包 03-gap-operation-labels.draft.json 转正（P4 · 2026-08-08）。draft 的 statuses/progress/evidence/actions 逐条保留；本文件是前后端唯一 SSOT，前端镜像由 frontend/src/lib/gapPlanLabels.ts 从本文件生成校验，不得各写一份。",
+  "tones": {
+    "green": { "label": "可以继续", "icon": "check-circle" },
+    "amber": { "label": "需要操作", "icon": "clock" },
+    "blue": { "label": "建议调整", "icon": "route" },
+    "neutral": { "label": "已记录", "icon": "circle" },
+    "red": { "label": "需要修复", "icon": "alert-circle" }
+  },
+  "statuses": {
+    "attack_absence": { "label": "客户还没进入推荐名单", "explanation": "AI 已经在推荐同行，但客户尚未出现在候选里。", "tone": "amber", "scope": "gap" },
+    "entity_gap": { "label": "AI 还不认识客户", "explanation": "当前回答缺少足够的公司、产品或服务信息。", "tone": "amber", "scope": "gap" },
+    "source_gap": { "label": "常用参考网站里还没有客户内容", "explanation": "AI 经常引用的网站上缺少与客户相关的可用内容。", "tone": "amber", "scope": "gap" },
+    "freshness_gap": { "label": "现有内容需要更新", "explanation": "相关内容时间较早，建议补一篇更新后的版本。", "tone": "blue", "scope": "gap" },
+    "format_gap": { "label": "缺少合适的内容形式", "explanation": "当前问题已有内容，但缺少该类回答常采用的表达形式。", "tone": "blue", "scope": "gap" },
+
+    "self_service_publishable": { "label": "可以直接发布", "explanation": "这个网站可以由运营自行发布，不需要等待代发渠道。", "tone": "green", "scope": "access" },
+    "mediated_publish_required": { "label": "需要代发渠道确认", "explanation": "这个网站需要先确认是否能安排发布。", "tone": "amber", "scope": "access" },
+    "hold_until_domain_access_confirmed": { "label": "等渠道确认", "explanation": "确认发布渠道后再写，避免文章写好却没有合适落点。", "tone": "amber", "scope": "access" },
+    "domain_unreachable": { "label": "这个网站进不去", "explanation": "已核实无法安排发布，系统会给替代落点。", "tone": "amber", "scope": "access" },
+    "access_unverified": { "label": "渠道尚未核实", "explanation": "这个网站还没有人核实过能否进入，先确认再动手。", "tone": "amber", "scope": "access" },
+
+    "ready_to_execute": { "label": "可开工", "explanation": "问题、写法、发布落点和额度都已确认。", "tone": "green", "scope": "allocation" },
+    "research_candidate_not_ordered": { "label": "待加入交付计划", "explanation": "这是值得考虑的研究建议，尚未计入当前报价。", "tone": "blue", "scope": "allocation" },
+    "research_candidate_not_ordered_capacity_zero": { "label": "当前没有文章额度", "explanation": "这是研究建议，不会自动生成、扣费或发布。", "tone": "neutral", "scope": "allocation" },
+    "rejected_duplicate_coverage": { "label": "已合并，省下一篇额度", "explanation": "另一项任务已经覆盖同一个缺口，不需要重复生产。", "tone": "neutral", "scope": "allocation" },
+    "switch_to_adjacent_query": { "label": "建议换一个更容易切入的问题", "explanation": "当前问题主要被我们进不去的网站占据，继续堆文章性价比很低。", "tone": "blue", "scope": "allocation" },
+    "retained_capacity_no_gap": { "label": "额度已保留", "explanation": "眼下没有值得写的新缺口，30 天回查后再评估。", "tone": "neutral", "scope": "allocation" },
+
+    "planned": { "label": "已安排", "explanation": "任务已进入交付计划，等待开始制作。", "tone": "blue", "scope": "progress" },
+    "drafting": { "label": "制作中", "explanation": "文章正在写作中心制作。", "tone": "blue", "scope": "progress" },
+    "ready_to_publish": { "label": "待发布", "explanation": "内容已经准备好，可以按建议落点发布。", "tone": "amber", "scope": "progress" },
+    "published": { "label": "已发布", "explanation": "已记录真实发布链接，系统将在 7、14、30 天自动检查。", "tone": "green", "scope": "progress" },
+    "indexed": { "label": "已被搜索收录", "explanation": "页面可以被搜索工具找到，正在等待 AI 引用回查。", "tone": "green", "scope": "progress" },
+    "cited": { "label": "已被 AI 引用", "explanation": "至少一个 AI 回答已经引用这条真实发布链接。", "tone": "green", "scope": "progress" },
+    "customer_recommended": { "label": "客户已进入推荐", "explanation": "在目标问题的回查中，客户已进入 AI 的候选或推荐内容。", "tone": "green", "scope": "progress" },
+    "no_progress_day_7": { "label": "已回查 7 天", "explanation": "暂未发现收录或引用，建议继续观察或补充页面可发现性。", "tone": "amber", "scope": "progress" },
+    "no_progress_day_14": { "label": "已回查 14 天", "explanation": "暂未进入 AI 参考来源，可以评估替代发布落点。", "tone": "amber", "scope": "progress" },
+    "no_progress_day_30": { "label": "30 天仍未推进", "explanation": "建议换一个已被引用的网站，或改打邻近问题。", "tone": "amber", "scope": "progress" },
+    "checkback_not_started": { "label": "等待首次回查", "explanation": "收录与引用检查将在发布后 7 天起自动进行。", "tone": "neutral", "scope": "progress" },
+
+    "no_worthwhile_gap": { "label": "眼下没有值得写的缺口", "explanation": "额度保留，30 天回查后再评估。", "tone": "neutral", "scope": "shortfall" },
+    "domain_not_accessible": { "label": "落点进不去", "explanation": "引用位主要被我们进不去的网站占据。", "tone": "amber", "scope": "shortfall" },
+    "duplicate_coverage": { "label": "已被另一篇覆盖", "explanation": "同一个缺口不重复生产，省下一篇额度。", "tone": "neutral", "scope": "shortfall" },
+    "capacity_shortfall_unexplained": { "label": "额度没用满，原因待确认", "explanation": "系统暂时说不出为什么没用满，请让运营补一句说明。", "tone": "amber", "scope": "shortfall" },
+
+    "capacity_available": { "label": "有可用额度", "explanation": "当前词包还有可用于执行计划的文章额度。", "tone": "green", "scope": "capacity" },
+    "capacity_zero": { "label": "当前没有文章额度", "explanation": "下面只展示研究建议，不会自动生成、扣费或发布。", "tone": "neutral", "scope": "capacity", "_note": "未付款也折算到本态（容量合同 build_capacity_view：未付款一律按容量 0 对外）。P4 不再单独设「报价尚未收款」第四态——display_status 只有 P1 的三个值。" },
+    "capacity_reserved": { "label": "额度已保留", "explanation": "暂时没有值得写的缺口，额度不会被强行消耗。", "tone": "neutral", "scope": "capacity" },
+
+    "snapshot_unavailable": { "label": "暂时无法获取最新计划", "explanation": "先保留上一次有效结果，稍后可重新获取。", "tone": "amber", "scope": "error" },
+    "permission_changed": { "label": "当前权限已变化", "explanation": "请刷新身份后再继续，已完成内容不会丢失。", "tone": "amber", "scope": "error" },
+    "publication_link_invalid": { "label": "这个链接暂时无法验证", "explanation": "请检查页面是否公开、地址是否完整。", "tone": "red", "scope": "error" },
+    "checkback_temporarily_unavailable": { "label": "回查暂时没有完成", "explanation": "任务仍在队列中，稍后会继续，不影响已发布记录。", "tone": "amber", "scope": "error" },
+    "observation_incomplete": { "label": "还在整理这个问题的真实回答", "explanation": "整理完成后会生成交付计划。", "tone": "neutral", "scope": "error" },
+    "plan_item_generation_stale": { "label": "这个任务已经更新过", "explanation": "计划重新算过了，请回到交付计划打开最新的那一篇。", "tone": "amber", "scope": "error" },
+    "plan_item_not_found": { "label": "找不到这篇任务", "explanation": "它可能已经被合并或替换，请回到交付计划查看。", "tone": "amber", "scope": "error" },
+
+    "execution_not_open_yet": { "label": "执行计划待开放", "explanation": "客户确认报价并完成付款后，这里会自动展开可执行的交付计划。", "tone": "neutral", "scope": "gate", "_note": "阶段1（WO_GAPPLAN_RELOCATION_A 2026-08-10）：报价页在容量不可执行时只留这一句，不渲染整段面板。开关由服务端 execution_gate.open 下发，前端不自己判容量。" },
+    "access_arranged_by_team": { "label": "发布安排", "explanation": "发布渠道由团队按实际情况安排。", "tone": "neutral", "scope": "access", "_note": "阶段2 客户售前版专用：替换掉全部「能否进入」话术。media_outlets.entry_assessment 生产实测 27004 行全 NULL，客户在掏钱决策阶段不该看到「没人核实过」。" },
+    "customer_plan_preview_next_step": { "label": "接下来我们会做什么", "explanation": "确认合作后，我们会按这份计划逐篇产出内容，并登记每一篇的公开发布链接。", "tone": "neutral", "scope": "gate", "_note": "阶段2 客户售前版的 next_step 固定话术。不复用运营版 next_step —— 那句是写给服务商看的下一步动作。" }
+  },
+  "progress": {
+    "published": "已发布",
+    "indexed": "已收录",
+    "cited": "被 AI 引用",
+    "customer_recommended": "客户进入推荐"
+  },
+  "evidence": {
+    "service_area": "服务范围",
+    "core_selling_points": "核心卖点",
+    "unique_value": "独特价值",
+    "methodology": "服务方法",
+    "cases": "真实案例",
+    "credentials": "资质证明"
+  },
+  "actions": {
+    "open_writing_task": { "label": "去写这篇", "icon": "pen-line", "confirmation": false },
+    "submit_publication_link": { "label": "已发布，填链接", "icon": "link", "confirmation": true },
+    "open_media_library": { "label": "去媒体库查渠道", "icon": "library", "confirmation": false },
+    "mark_domain_unavailable": { "label": "标记进不去，系统换方案", "icon": "route", "confirmation": true },
+    "show_adjacent_queries": { "label": "看邻近问题建议", "icon": "shuffle", "confirmation": false },
+    "show_merged_into": { "label": "查看合并到哪篇", "icon": "git-merge", "confirmation": false },
+    "request_quote_capacity": { "label": "报价评估待接入", "icon": "calculator", "confirmation": false, "enabled": false, "implementation_phase": "P1", "hint": "文章容量调整将在报价容量功能接入后开放。" },
+    "open_assistant_advice": { "label": "请小榜给建议", "icon": "message-circle", "confirmation": false },
+    "retry_snapshot": { "label": "重新获取", "icon": "refresh-cw", "confirmation": false },
+    "explain_plan": { "label": "为什么这样安排", "icon": "info", "confirmation": false },
+    "go_to_signed_route": { "label": "带我去", "icon": "arrow-right", "confirmation": false },
+    "open_delivery_plan": { "label": "去这个客户的交付计划", "icon": "arrow-right", "confirmation": false },
+    "highlight_signed_target": { "label": "高亮入口", "icon": "scan", "confirmation": false },
+    "keep_suggestion": { "label": "保留建议", "icon": "bookmark", "confirmation": false },
+    "view_checkback_schedule": { "label": "查看回查时间", "icon": "calendar-clock", "confirmation": false },
+    "open_publication_link": { "label": "打开链接检查", "icon": "external-link", "confirmation": false },
+    "refresh_permission": { "label": "刷新权限", "icon": "shield-check", "confirmation": false },
+    "back_to_plan": { "label": "返回词包", "icon": "corner-up-left", "confirmation": false }
+  },
+  "platform_display": {
+    "_rule": "🔴 不向运营展示模型/供应商名（合同 §4 第三层、§2 非目标）。四个观测平台一律匿名化为序号名，映射本身只在服务端。",
+    "labels": ["AI 平台一", "AI 平台二", "AI 平台三", "AI 平台四"]
+  }
+}

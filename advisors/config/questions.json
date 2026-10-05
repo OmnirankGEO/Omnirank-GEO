@@ -1,0 +1,255 @@
+{
+    "rewrite": {
+        "name": "视频仿写",
+        "description": "基于爆款视频生成适合IP的仿写文案",
+        "questions": [
+            {
+                "id": "REWRITE_01",
+                "name": "开篇分析",
+                "question": "这个视频的开篇是：\n\n{original_opening}\n\n请分析这个开篇属于什么类型？它的吸引力要素是什么？如何针对目标IP进行优化？",
+                "input_vars": [
+                    "original_opening"
+                ]
+            },
+            {
+                "id": "REWRITE_02",
+                "name": "结构分析",
+                "question": "这个视频的结构是：\n\n{original_structure}\n\n请分析这个视频的结构逻辑，如何保持高完播率？",
+                "input_vars": [
+                    "original_structure"
+                ]
+            },
+            {
+                "id": "REWRITE_03",
+                "name": "仿写建议",
+                "question": "【原视频内容】\n{original_content}\n\n【目标IP人设】{target_persona}\n\n【自定义主题】{custom_topic}\n\n**仿写要求**：\n1. 严格按照【公司背景】中的行业和业务来仿写，不要偏离\n2. 仿写内容必须体现公司的实际产品/服务特点\n3. 如果有【自定义主题】，请围绕这个主题来写\n4. 保持原视频的结构和表达逻辑，但内容要完全替换为公司相关话题\n\n**输出格式要求**：\n- 直接输出完整的仿写文案正文\n- 不要输出JSON格式\n- 不要输出任何解释、分析、标题等额外内容\n- 只输出可以直接用作短视频口播的纯文本脚本",
+                "input_vars": [
+                    "original_content",
+                    "target_persona",
+                    "custom_topic"
+                ]
+            }
+        ]
+    },
+    "analyze": {
+        "name": "视频拆解",
+        "description": "深度拆解视频的成功要素",
+        "questions": [
+            {
+                "id": "ANALYZE_01",
+                "name": "成功原因",
+                "question": "这个视频的数据表现：播放{play_count}，点赞{like_count}，评论{comment_count}\n\n视频内容摘要：{content_summary}\n\n请分析这个视频成功的核心原因是什么？",
+                "input_vars": [
+                    "play_count",
+                    "like_count",
+                    "comment_count",
+                    "content_summary"
+                ]
+            },
+            {
+                "id": "ANALYZE_02",
+                "name": "结构拆解",
+                "question": "视频转录文本：\n{transcript}\n\n请拆解这个视频的内容结构，分为哪些关键部分？每部分的作用是什么？",
+                "input_vars": [
+                    "transcript"
+                ]
+            },
+            {
+                "id": "ANALYZE_03",
+                "name": "用户分析",
+                "question": "这个视频的内容是：\n{content_summary}\n\n请分析这个视频适合什么层级的用户（L1泛流量/L2沉睡用户/L3意向客户/L4准客户/L5已付费）？为什么？",
+                "input_vars": [
+                    "content_summary"
+                ]
+            },
+            {
+                "id": "ANALYZE_04",
+                "name": "借鉴建议",
+                "question": "这个视频的亮点：{highlights}\n\n如果我要做类似内容，你有什么建议？哪些元素值得借鉴？",
+                "input_vars": [
+                    "highlights"
+                ]
+            }
+        ]
+    },
+    "topic": {
+        "name": "选题生成",
+        "description": "基于方法论生成定制化选题",
+        "questions": [
+            {
+                "id": "TOPIC_01",
+                "name": "分层选题",
+                "question": "目标用户层级：{user_level}\n内容目的：{content_purpose}（流量型/人设型/变现型）\n\n请根据你的方法论，推荐适合这个层级用户的选题方向。",
+                "input_vars": [
+                    "user_level",
+                    "content_purpose"
+                ]
+            },
+            {
+                "id": "TOPIC_02",
+                "name": "行业洞察",
+                "question": "行业：{industry}\n目标客户：{target_audience}\n\n这个行业有哪些容易出爆款的选题类型？请给出具体方向。",
+                "input_vars": [
+                    "industry",
+                    "target_audience"
+                ]
+            },
+            {
+                "id": "TOPIC_03",
+                "name": "生成选题",
+                "question": "公司业务：{business}\n产品卖点：{product_highlights}\n目标用户：{user_level}\n内容类型：{content_type}（教知识/说观点/讲故事/晒过程）\n\n请根据你的方法论，生成10个具体的选题。每个选题包含：标题、核心卖点、目标用户。",
+                "input_vars": [
+                    "business",
+                    "product_highlights",
+                    "user_level",
+                    "content_type"
+                ]
+            }
+        ]
+    },
+    "script": {
+        "name": "文案生成",
+        "description": "生成完整的短视频口播文案",
+        "questions": [
+            {
+                "id": "SCRIPT_01",
+                "name": "开篇设计",
+                "question": "选题：{topic}\n目标用户：{user_level}\n\n这个选题应该用什么类型的开篇？请设计一个能在3秒内抓住用户的开篇。",
+                "input_vars": [
+                    "topic",
+                    "user_level"
+                ]
+            },
+            {
+                "id": "SCRIPT_02",
+                "name": "结构设计",
+                "question": "选题：{topic}\n内容类型：{content_type}\n\n这个内容的整体结构应该怎么安排？请给出结构大纲。",
+                "input_vars": [
+                    "topic",
+                    "content_type"
+                ]
+            },
+            {
+                "id": "SCRIPT_03",
+                "name": "人设融入",
+                "question": "IP人设：{persona}\n选题：{topic}\n\n如何在文案中自然地体现IP的人设特点？给出具体建议。",
+                "input_vars": [
+                    "persona",
+                    "topic"
+                ]
+            },
+            {
+                "id": "SCRIPT_04",
+                "name": "完整文案",
+                "question": "选题：{topic}\n开篇类型：{opening_type}\n结构大纲：{structure}\nIP人设：{persona}\n\n请生成完整的口播文案，时长约{duration}秒。要求：\n1. 开篇3秒内抓住用户\n2. 符合IP说话风格\n3. 结尾有明确的行动号召",
+                "input_vars": [
+                    "topic",
+                    "opening_type",
+                    "structure",
+                    "persona",
+                    "duration"
+                ]
+            }
+        ]
+    },
+    "review": {
+        "name": "数据复盘",
+        "description": "基于数据分析内容效果并给出优化建议",
+        "questions": [
+            {
+                "id": "REVIEW_01",
+                "name": "问题诊断",
+                "question": "这条视频的数据：\n- 播放量：{play_count}\n- 完播率：{completion_rate}\n- 点赞率：{like_rate}\n- 评论数：{comment_count}\n\n视频内容：{content_summary}\n\n请分析可能存在什么问题？",
+                "input_vars": [
+                    "play_count",
+                    "completion_rate",
+                    "like_rate",
+                    "comment_count",
+                    "content_summary"
+                ]
+            },
+            {
+                "id": "REVIEW_02",
+                "name": "优化建议",
+                "question": "问题诊断：{diagnosis}\n\n根据这些问题，下一条视频应该怎么优化？请给出具体可执行的建议。",
+                "input_vars": [
+                    "diagnosis"
+                ]
+            },
+            {
+                "id": "REVIEW_03",
+                "name": "配比分析",
+                "question": "近期内容配比：\n- 流量型：{traffic_ratio}%\n- 人设型：{persona_ratio}%\n- 变现型：{convert_ratio}%\n\n账号粉丝数：{follower_count}\n主要变现方式：{monetization}\n\n这个配比合理吗？应该如何调整？",
+                "input_vars": [
+                    "traffic_ratio",
+                    "persona_ratio",
+                    "convert_ratio",
+                    "follower_count",
+                    "monetization"
+                ]
+            }
+        ]
+    },
+    "talk": {
+        "name": "话术生成",
+        "description": "生成私信和评论区话术",
+        "questions": [
+            {
+                "id": "TALK_01",
+                "name": "分层话术",
+                "question": "用户层级：{user_level}\n用户问题：{user_question}\n产品服务：{product}\n\n请根据这个层级用户的特点，生成合适的回复话术。",
+                "input_vars": [
+                    "user_level",
+                    "user_question",
+                    "product"
+                ]
+            },
+            {
+                "id": "TALK_02",
+                "name": "成交话术",
+                "question": "用户当前状态：{user_status}\n产品价格：{price}\n用户顾虑：{concerns}\n\n如何在私信中推进成交？请给出话术模板。",
+                "input_vars": [
+                    "user_status",
+                    "price",
+                    "concerns"
+                ]
+            }
+        ]
+    },
+    "persona": {
+        "name": "人设设计",
+        "description": "设计IP人设定位和表达风格",
+        "questions": [
+            {
+                "id": "PERSONA_01",
+                "name": "人设定位",
+                "question": "IP背景：{ip_background}\n行业：{industry}\n目标客户：{target_audience}\n竞品账号：{competitors}\n\n请根据你的方法论，建议这个IP应该怎么定位？给出一句话人设。",
+                "input_vars": [
+                    "ip_background",
+                    "industry",
+                    "target_audience",
+                    "competitors"
+                ]
+            },
+            {
+                "id": "PERSONA_02",
+                "name": "风格建议",
+                "question": "人设定位：{positioning}\nIP性格特点：{personality}\n目标用户喜好：{audience_preference}\n\n这个人设应该用什么说话风格？包括：语气、口头禅、表达习惯。",
+                "input_vars": [
+                    "positioning",
+                    "personality",
+                    "audience_preference"
+                ]
+            },
+            {
+                "id": "PERSONA_03",
+                "name": "差异化分析",
+                "question": "竞品账号分析：{competitor_analysis}\n自身优势：{advantages}\n\n这个人设的差异化在哪里？如何在内容中突出这个差异化？",
+                "input_vars": [
+                    "competitor_analysis",
+                    "advantages"
+                ]
+            }
+        ]
+    }
+}

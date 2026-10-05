@@ -1,0 +1,29 @@
+{
+  "note": "秘塔 scholar 检索内层响应夹具(工单 §3.2:条目键是 scholars 不是 webpages,Review 实测踩过解析错键得全零)。第 1 行取自归档实测 scholar_probe2.json 真实行(管民/2012-06-05/万方);第 2 行 doi.org 无作者(链接可查证);第 3 行不可查证(无作者无年份且非万方/DOI)。",
+  "scholars": [
+    {
+      "title": "人造板甲醛释放量检测方法的影响因素",
+      "authors": ["管民"],
+      "date": "2012-06-05",
+      "link": "https://s.wanfangdata.com.cn/paper?q=%E4%BA%BA%E9%80%A0%E6%9D%BF",
+      "score": "high",
+      "snippet": "对比穿孔萃取法、干燥器法与气候箱法在人造板甲醛释放量检测中的差异。"
+    },
+    {
+      "title": "Low-Odor High-Density Fiberboard Enabled by Supramolecular Adhesive",
+      "authors": [],
+      "date": "",
+      "link": "https://doi.org/10.1021/acsami.example.2026",
+      "score": "high",
+      "snippet": "Supramolecular adhesive reduces VOC emission in high-density fiberboard."
+    },
+    {
+      "title": "某论坛转载的板材经验帖",
+      "authors": [],
+      "date": "",
+      "link": "https://example-forum.com/post/123",
+      "score": "low",
+      "snippet": "无作者无年份的转载帖,不可查证,不得进入 Evidence Pack。"
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "what": "锁5 · ClientSwitcherSidebar 改后 vs 改前 逐项对照（Playwright 真渲染 · 同环境同账号同数据集）",
+  "recorded": "2026-07-30",
+  "env": "本地 vite dev 5173 + 生产后端 · qa_admin_2026 · 数据集与基线一致(共 243 客户 / 归档 37 / 测试 5)",
+  "structural_note": "客户行从 <button> 变为 Combobox.Item(role=option)。所以计数口径:改前 202 行(含管理员行)= 改后 201 个 role=option + 1 个管理员行 button。",
+
+  "items": [
+    { "项": "打开即聚焦", "改前": "activeElement === 搜索框 (true)", "改后": "true", "判定": "一致" },
+    { "项": "列表条数(默认)", "改前": "202 行(含管理员行)", "改后": "201 option + 管理员行", "判定": "一致" },
+    { "项": "首两行内容与顺序", "改前": "美构海外仓 / 悠哉的创作空间_100", "改后": "同", "判定": "一致" },
+    { "项": "管理员「全部客户」行", "改前": "全部客户(管理员模式) · 243 个客户 · 全数据视图", "改后": "同 · 且点击仍能切回全部客户模式", "判定": "一致" },
+    { "项": "状态 pills", "改前": "日常 206 / 跟进 206 / 未定 0 / 成交 0 / 归档 37", "改后": "同", "判定": "一致" },
+    { "项": "测试客户开关标签", "改前": "隐藏测试 5 ↔ 显示全部", "改后": "同", "判定": "一致" },
+    { "项": "搜索过滤", "改前": "悠哉 → 1 条", "改后": "悠哉 → 1 条", "判定": "一致" },
+    { "项": "大小写不敏感", "改前": "meigou → MEIGOU-OVERSEAS...", "改后": "同", "判定": "一致" },
+    { "项": "尾栏匹配数", "改前": "共 243 个客户 · 匹配 1", "改后": "同", "判定": "一致" },
+    { "项": "清空按钮", "改前": "aria-label=清空 · 出现在有词时", "改后": "同", "判定": "一致" },
+    { "项": "搜索 × 状态筛选 共存", "改前": "meigou + 归档 → 没有匹配的客户;清空词 → 37 条,pill 保持", "改后": "同(37 条)", "判定": "一致" },
+    { "项": "搜索 × 测试开关 共存", "改前": "显示全部 → 206 客户 · localStorage=1", "改后": "同", "判定": "一致" },
+    { "项": "关闭路径① trigger 切换", "改前": "关闭 · 重开 query='' 全量", "改后": "同", "判定": "一致" },
+    { "项": "关闭路径② 选中项", "改前": "关闭 + switchClient 生效 + 选中行 bg-brand/10;重开 query=''", "改后": "同(且 aria-selected=true)", "判定": "一致" },
+    { "项": "关闭路径③ Esc", "改前": "关闭 · 重开 query='' 全量", "改后": "同", "判定": "一致(见下方返工记录)" },
+    { "项": "关闭路径④ 外部点击", "改前": "关闭 · 重开 query='' 全量", "改后": "同", "判定": "一致" },
+    { "项": "+ 新建客户 行", "改前": "+ 新建客户", "改后": "同", "判定": "一致" },
+    { "项": "aria", "改前": "input 上零 aria 属性", "改后": "role=combobox + aria-expanded/controls/autocomplete + listbox/option + aria-activedescendant", "判定": "改进(非退化)" },
+    { "项": "键盘 ↑↓/Enter", "改前": "无(客户行是普通 button)", "改后": "可用(Combobox.Item)", "判定": "新增能力" }
+  ],
+
+  "🔴 改造过程中真渲染抓到的 3 个回归（都已修，记录下来是因为纯 DOM 断言会全部放过）": [
+    {
+      "回归": "Dialog 内搜索框拿不到焦点",
+      "现象": "UserManagement「调整直属上游」弹窗:搜索框存在,但 activeElement 是 trigger 按钮",
+      "根因": "Combobox.Portal 默认投到 document.body → 焦点离开 Radix Dialog 子树 → dialog focus trap 立刻拽回",
+      "修法": "Portal container 指向最近的 [role=dialog];非 Dialog 场景传 undefined 回落 body",
+      "坑中坑": "container 传 null 会被 FloatingPortal 当成「无容器」→ 弹层整个不渲染(非 Dialog 场景直接打不开),必须传 undefined"
+    },
+    {
+      "回归": "点状态筛选 pill / 测试开关 → 面板整个关闭",
+      "现象": "改前点 pill 只切筛选,改后面板消失",
+      "根因": "面板是 ClientSwitcher 自己的绝对定位 div,不是 base-ui Popup;combobox 的 dismiss 把面板内点击当 outsidePress",
+      "修法": "Combobox.Root 传 inline(官方语义=列表内联渲染不走 popup)"
+    },
+    {
+      "回归": "Esc 关不掉面板",
+      "现象": "改前 Esc 关闭,改后按 Esc 无反应",
+      "根因": "改前 Esc 挂在原生 input 的 onKeyDown;换成 Combobox.Input 后,inline 模式下 base-ui 不接管 open",
+      "修法": "Esc→关闭 收进共用层(SearchableSearchBox + context.requestClose),所有消费方统一,不各自写"
+    }
+  ],
+
+  "清空收敛核对": {
+    "改前": "ClientSwitcherSidebar 内 6 处 setSearch('')(:77 外部点击 / :132 选中 / :183 collapsed 打开 / :191 trigger / :270 Esc / :276 清空按钮)",
+    "改后": "该文件 0 处;唯一实现点 = searchable-select.tsx SearchableRoot 内 open true→false 的 effect;清空按钮由共用搜索框自带",
+    "结构性保证": "消费方不持有搜索词也无法清空 → 新增第 N 条关闭路径不可能漏"
+  }
+}

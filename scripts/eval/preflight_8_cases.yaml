@@ -1,0 +1,204 @@
+version: 1
+description: "Social Studio Agent Loop model tool-call preflight. These cases validate protocol behavior only; fake tool results are returned by run_preflight.py."
+
+tools:
+  - name: time_now
+    description: "Return current time for a timezone."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        timezone:
+          type: string
+          description: "IANA timezone, e.g. Asia/Shanghai."
+      required: ["timezone"]
+  - name: internal_memory_query
+    description: "Query approved profile memory for a client."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        profile_id:
+          type: string
+        concept:
+          type: string
+          enum: ["business_identity", "target_customer", "offer_and_proof", "voice_style", "guardrails"]
+        query:
+          type: string
+      required: ["profile_id", "concept", "query"]
+  - name: internal_profile_get
+    description: "Fetch profile fields for a client."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        profile_id:
+          type: string
+        fields:
+          type: array
+          items:
+            type: string
+      required: ["profile_id", "fields"]
+  - name: tikhub_search_topics
+    description: "Search short-video topic patterns by industry, platform, market, and language."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        industry:
+          type: string
+        platform:
+          type: string
+        market:
+          type: string
+        language:
+          type: string
+      required: ["industry", "platform"]
+  - name: industry_knowledge_query
+    description: "Query internal industry knowledge."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        industry:
+          type: string
+        question:
+          type: string
+        country:
+          type: string
+      required: ["industry", "question"]
+  - name: web_visit
+    description: "Fetch a safe public web page after SSRF checks."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+        purpose:
+          type: string
+      required: ["url", "purpose"]
+  - name: update_profile_memory
+    description: "Propose a profile memory update. AI-inferred content must be pending confirmation."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        profile_id:
+          type: string
+        concept:
+          type: string
+          enum: ["business_identity", "target_customer", "offer_and_proof", "voice_style", "guardrails"]
+        text:
+          type: string
+        source:
+          type: string
+          enum: ["user_explicit", "ai_inferred"]
+      required: ["profile_id", "concept", "text", "source"]
+
+cases:
+  - id: case_01_single_tool_time
+    title: "single tool call"
+    max_rounds: 1
+    stream: false
+    messages:
+      - role: system
+        content: "你是 Social Studio agent loop preflight。需要实时数据时必须调用工具。"
+      - role: user
+        content: "现在上海时间几点？"
+    expect:
+      required_tool_names: ["time_now"]
+      min_tool_calls: 1
+
+  - id: case_02_parallel_profile_memory
+    title: "parallel profile + memory calls"
+    max_rounds: 1
+    stream: false
+    messages:
+      - role: system
+        content: "你是 Social Studio agent。用户让你写稿前，先查客户资料和记忆。"
+      - role: user
+        content: "给 profile_62 写一条德国超市洗衣凝珠 TikTok，先看客户资料和记忆。"
+    expect:
+      required_tool_names: ["internal_profile_get", "internal_memory_query"]
+      min_tool_calls: 2
+
+  - id: case_03_serial_research_then_industry
+    title: "serial research loop"
+    max_rounds: 2
+    stream: false
+    messages:
+      - role: system
+        content: "需要先用 TikHub 找话题，再结合行业知识。拿到工具结果后可以继续调用下一步工具。"
+      - role: user
+        content: "帮教育咨询客户做升学政策选题，先研究热门话题，再补行业判断。"
+    expect:
+      required_tool_names_any_round: ["tikhub_search_topics", "industry_knowledge_query"]
+      min_tool_calls: 2
+
+  - id: case_04_error_recovery_bad_args
+    title: "recover from tool error"
+    max_rounds: 2
+    stream: false
+    inject_first_tool_error: true
+    messages:
+      - role: system
+        content: "如果工具返回参数错误，请修正参数后重试，不要直接编造结果。"
+      - role: user
+        content: "查 profile_62 的目标客户记忆，用来判断下一条视频怎么拍。"
+    expect:
+      required_tool_names_any_round: ["internal_memory_query"]
+      min_tool_calls: 2
+
+  - id: case_05_multi_round_final_answer
+    title: "tool call then final answer"
+    max_rounds: 3
+    stream: false
+    messages:
+      - role: system
+        content: "先调用工具，再基于工具结果给一句简短结论。"
+      - role: user
+        content: "先查 profile_62 的人设和禁忌，再告诉我这条脚本应该稳重还是夸张。"
+    expect:
+      required_tool_names_any_round: ["internal_profile_get", "internal_memory_query"]
+      final_required_substrings_any: ["稳重", "夸张", "禁忌", "人设"]
+
+  - id: case_06_stream_tool_calls
+    title: "streaming tool calls"
+    max_rounds: 1
+    stream: true
+    messages:
+      - role: system
+        content: "你正在流式响应；如果需要资料，必须通过工具调用。"
+      - role: user
+        content: "流式测试：查 profile_62 的资料。"
+    expect:
+      required_tool_names: ["internal_profile_get"]
+      min_tool_calls: 1
+
+  - id: case_07_chinese_args
+    title: "Chinese arguments"
+    max_rounds: 1
+    stream: false
+    messages:
+      - role: system
+        content: "工具参数可以使用中文，但字段名必须符合 schema。"
+      - role: user
+        content: "帮我找教育培训行业在小红书上的选题。"
+    expect:
+      required_tool_names: ["tikhub_search_topics"]
+      min_tool_calls: 1
+      required_argument_substrings: ["教育", "小红书"]
+
+  - id: case_08_clarify_before_assume
+    title: "clarify instead of unsafe assumption"
+    max_rounds: 1
+    stream: false
+    messages:
+      - role: system
+        content: "如果用户意图不清，不要调用工具硬猜；请提出一个选择题式追问。"
+      - role: user
+        content: "帮我弄一下那个客户的东西。"
+    expect:
+      allow_no_tool: true
+      final_required_substrings_any: ["哪个", "客户", "A", "B", "选择", "确认"]

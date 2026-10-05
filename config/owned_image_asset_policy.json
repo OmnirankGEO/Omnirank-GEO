@@ -1,0 +1,55 @@
+{
+  "version": "owned-image-asset-policy-v1",
+  "_why": [
+    "返修单 REWORK_T4_SAFEMARKDOWN_IMAGE_2026-07-29 §4:前端 SafeMarkdown 与后端",
+    "safe_markdown_renderer 都要判定「这是不是我们自己图库里的图」。两边各写一份",
+    "白名单迟早漂移(注释里那句「与后端 bleach 剥离 <img> 对齐」就是漂移的产物:",
+    "后端确实剥,前端照着剥,结果自有图也一起剥了)。",
+    "所以判定口径落在这一份 JSON 里,Python 与 TypeScript 各自读它,不各写一份。"
+  ],
+  "path_prefix": "/uploads/article-images/",
+  "allowed_schemes": ["http", "https"],
+  "_rule": [
+    "放行条件(全部满足):",
+    "1. 协议只能是 http/https(相对路径视为同源,天然满足);",
+    "2. URL 内不得内嵌 user/password;不得含控制字符或反斜杠;",
+    "3. 绝对 URL 的 origin 必须等于当前站点 origin(前端 location.origin /",
+    "   后端 PUBLIC_BASE_URL) —— 用同源判定,不用域名黑名单(黑名单必漏);",
+    "4. pathname 必须以 path_prefix 开头,且其后紧跟 <brand_id 数字>/<文件名>;",
+    "5. 不放行任意 http(s) 图片 —— 跟踪像素风险不因本单消失。"
+  ],
+  "brand_segment_pattern": "^[0-9]+$",
+  "_why_userinfo_split": [
+    "🔴 内嵌 userinfo 的向量必须拆成「只有用户名」+「只有口令」两条，不许写回",
+    "「用户名冒号口令一起写」的合并形态 —— 本文件会被打进生产镜像，而镜像构建的",
+    "scripts/scan_repository_secrets.py --mode image 用 https?://[^/\\s:@]+:[^@\\s/]+@",
+    "判 CREDENTIAL_URL，合并形态必然命中，整个 docker build 直接失败（2026-07-29 实测)。",
+    "拆开后覆盖不降反升：合并形态只要 username/password 任一条件成立就被拒，",
+    "掩盖得住「只实现了一半判定」的实现；拆成两条则两个分支各自有锁。",
+    "user:pass 的完整形态仍在 tests/test_owned_image_policy_2026_07_29.py 里覆盖",
+    "（tests/ 在扫描器的 GENERIC_SKIP_PREFIXES 内，且不进镜像）。"
+  ],
+  "test_vectors": [
+    { "url": "/uploads/article-images/662/595fd7b0abc_safe.jpg", "owned": true, "note": "相对路径 · 自有图库(QZQZ asset 217 形态)" },
+    { "url": "/uploads/article-images/7/a_safe.png", "owned": true, "note": "相对路径 · 另一品牌" },
+    { "url": "https://site.example/uploads/article-images/662/595fd7b0abc_safe.jpg", "owned": true, "note": "同源绝对 URL" },
+    { "url": "http://site.example/uploads/article-images/662/x.jpg", "owned": true, "note": "同源 http" },
+    { "url": "https://evil.example/px.gif", "owned": false, "note": "外部域名跟踪像素" },
+    { "url": "https://evil.example/uploads/article-images/662/x.jpg", "owned": false, "note": "外部域名 + 伪造同款路径" },
+    { "url": "//evil.example/uploads/article-images/662/x.jpg", "owned": false, "note": "协议相对 URL" },
+    { "url": "data:image/gif;base64,R0lGODlhAQABAAAAACw=", "owned": false, "note": "data:" },
+    { "url": "blob:https://site.example/abc-123", "owned": false, "note": "blob:" },
+    { "url": "javascript:alert(1)", "owned": false, "note": "javascript:" },
+    { "url": "https://user@site.example/uploads/article-images/662/x.jpg", "owned": false, "note": "内嵌 userinfo · 只有用户名(拆分见 _why_userinfo_split)" },
+    { "url": "https://:pw@site.example/uploads/article-images/662/x.jpg", "owned": false, "note": "内嵌 userinfo · 只有口令(拆分见 _why_userinfo_split)" },
+    { "url": "/uploads/avatars/1/a.png", "owned": false, "note": "同源但不是文章图库目录" },
+    { "url": "/uploads/corpus/1/a.png", "owned": false, "note": "同源但是不公开目录" },
+    { "url": "/uploads/article-images/x.jpg", "owned": false, "note": "缺 brand_id 段" },
+    { "url": "/uploads/article-images/abc/x.jpg", "owned": false, "note": "brand_id 段不是数字" },
+    { "url": "/uploads/article-images/662/", "owned": false, "note": "只有目录没有文件名" },
+    { "url": "/uploads/article-images/../../etc/passwd", "owned": false, "note": "路径穿越" },
+    { "url": "/uploads/article-images/662/..%2f..%2fetc%2fpasswd", "owned": false, "note": "编码穿越" },
+    { "url": "", "owned": false, "note": "空串" },
+    { "url": "/uploads/article-images/662/a b.jpg", "owned": false, "note": "含空格(控制/空白字符)" }
+  ]
+}

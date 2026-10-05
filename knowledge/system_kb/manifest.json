@@ -1,0 +1,222 @@
+{
+  "version": "1.1.0",
+  "generated_at": "2026-06-02T00:00:00Z",
+  "note": "Task8 final 人审候选页清单;_*.md 样例不入库;reindex 前需人审",
+  "page_count": 26,
+  "route_aliases": {
+    "/dashboard/today": "/dashboard",
+    "/account": "/account/profile",
+    "/m3/help": "/help"
+  },
+  "pages": [
+    {
+      "route": "/account/profile",
+      "slug": "account-profile",
+      "file": "pages/account-profile.md",
+      "page_name": "个人设置",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/agreement",
+      "slug": "agent-agreement",
+      "file": "pages/agent-agreement.md",
+      "page_name": "V3.5 工厂模式协议",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/inventory",
+      "slug": "agent-inventory",
+      "file": "pages/agent-inventory.md",
+      "page_name": "我的库存",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/leads",
+      "slug": "agent-leads",
+      "file": "pages/agent-leads.md",
+      "page_name": "客户线索",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/pricing",
+      "slug": "agent-pricing",
+      "file": "pages/agent-pricing.md",
+      "page_name": "销售定价",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/profit",
+      "slug": "agent-profit",
+      "file": "pages/agent-profit.md",
+      "page_name": "经营总览",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/promotion",
+      "slug": "agent-promotion",
+      "file": "pages/agent-promotion.md",
+      "page_name": "获客推广",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/settlement",
+      "slug": "agent-settlement",
+      "file": "pages/agent-settlement.md",
+      "page_name": "收益结算",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/agent/whitelabel",
+      "slug": "agent-whitelabel",
+      "file": "pages/agent-whitelabel.md",
+      "page_name": "对外品牌(白标)",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/customer/recharge",
+      "slug": "customer-recharge",
+      "file": "pages/customer-recharge.md",
+      "page_name": "购买工具算力",
+      "visible_to": "normal_user",
+      "is_admin_only": false
+    },
+    {
+      "route": "/customer/wallet",
+      "slug": "customer-wallet",
+      "file": "pages/customer-wallet.md",
+      "page_name": "我的工具算力",
+      "visible_to": "normal_user",
+      "is_admin_only": false
+    },
+    {
+      "route": "/dashboard",
+      "slug": "dashboard",
+      "file": "pages/dashboard.md",
+      "page_name": "首页工作台",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/diagnosis/new",
+      "slug": "diagnosis-new",
+      "file": "pages/diagnosis-new.md",
+      "page_name": "新建诊断（品牌体检）",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/feature-pricing",
+      "slug": "feature-pricing",
+      "file": "pages/feature-pricing.md",
+      "page_name": "功能定价",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/help",
+      "slug": "help",
+      "file": "pages/help.md",
+      "page_name": "帮助中心",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/monitoring",
+      "slug": "monitoring",
+      "file": "pages/monitoring.md",
+      "page_name": "排名监测",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/my-brand",
+      "slug": "my-brand",
+      "file": "pages/my-brand.md",
+      "page_name": "我的品牌",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/my-clients",
+      "slug": "my-clients",
+      "file": "pages/my-clients.md",
+      "page_name": "我的客户",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/pricing",
+      "slug": "pricing",
+      "file": "pages/pricing.md",
+      "page_name": "在线报价",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/publish",
+      "slug": "publish",
+      "file": "pages/publish.md",
+      "page_name": "发布中心",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/referral",
+      "slug": "referral",
+      "file": "pages/referral.md",
+      "page_name": "推广有礼",
+      "visible_to": "normal_user",
+      "is_admin_only": false
+    },
+    {
+      "route": "/wallet/bank-cards",
+      "slug": "wallet-bank-cards",
+      "file": "pages/wallet-bank-cards.md",
+      "page_name": "银行卡管理",
+      "visible_to": "agent",
+      "is_admin_only": false
+    },
+    {
+      "route": "/wallet/recharge",
+      "slug": "wallet-recharge",
+      "file": "pages/wallet-recharge.md",
+      "page_name": "钱包充值",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/wallet/service-fee-history",
+      "slug": "wallet-service-fee-history",
+      "file": "pages/wallet-service-fee-history.md",
+      "page_name": "服务费流水",
+      "visible_to": "agent",
+      "is_admin_only": false,
+      "note": "服务商服务费/L2 相关页面;仅进服务商 KB,普通用户与普通服务商均不可见"
+    },
+    {
+      "route": "/wallet",
+      "slug": "wallet",
+      "file": "pages/wallet.md",
+      "page_name": "我的钱包",
+      "visible_to": "both",
+      "is_admin_only": false
+    },
+    {
+      "route": "/writing",
+      "slug": "writing",
+      "file": "pages/writing.md",
+      "page_name": "AI 创作中心",
+      "visible_to": "both",
+      "is_admin_only": false
+    }
+  ]
+}

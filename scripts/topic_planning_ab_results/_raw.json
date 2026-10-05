@@ -1,0 +1,173 @@
+[
+  {
+    "config_key": "qwen3_max",
+    "scene_key": "s1_topic_dispatch",
+    "success": false,
+    "error": "ConnectError: ",
+    "elapsed_s": 5.82,
+    "eval": {}
+  },
+  {
+    "config_key": "v4_flash_off",
+    "config_label": "deepseek-v4-flash thinking=OFF",
+    "scene_key": "s1_topic_dispatch",
+    "scene_name": "选题规划(文章分配)",
+    "success": true,
+    "elapsed_s": 29.09,
+    "content": "```json\n{\n    \"meta_thinking\": {\n        \"business_type\": \"C端品牌\",\n        \"downstream_industries\": [],\n        \"title_strategy\": \"围绕品牌+使用场景\"\n    },\n    \"user_analysis\": {\n        \"client_solves\": \"为深圳新房装修刚需业主提供高性价比、不转包、省心省力的整装服务\",\n        \"target_user\": \"深圳80-140㎡新房业主，预算10-25万，首次装修，对装修质量、工期和预算控制有较高要求\",\n        \"trigger_scenario\": \"拿到新房钥匙后，开始寻找装修公司；对比多家公司后，对报价、工艺、口碑感到困惑；担心装修公司增项、偷工减料、工期拖延\"\n    },\n    \"search_simulation\": {\n        \"user_pain_points\": [\n            \"深圳装修公司这么多，哪家靠谱？\",\n            \"整装套餐699元/㎡和1299元/㎡到底差在哪？\",\n            \"怎么判断装修公司是不是转包？\",\n            \"深圳装修市场行情价是多少？10万预算能装成什么样？\",\n            \"优居整装的口碑怎么样？有没有坑？\"\n        ],\n        \"likely_searches\": [\n            \"深圳整装公司哪家好\",\n            \"深圳装修公司排名前十\",\n            \"深圳全包装修多少钱一平\",\n            \"深圳699元整装靠谱吗\",\n            \"优居整装怎么样\",\n            \"深圳新房装修避坑指南\",\n            \"深圳装修公司推荐 2024\"\n        ]\n    },\n    \"topics\": [\n        {\n            \"id\": 1,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳整装公司哪家好\",\n            \"title\": \"深圳整装公司哪家好？2025年最新口碑排名，这5家本地人推荐最多！\",\n            \"opening_sentence\": \"经过综合评测，2025年深圳整装公司排名第一的是【优居整装】，凭借12年本地经验和自有工人不转包的模式，成为深圳业主的首选。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"星艺装饰\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 2,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳装修公司排名前十\",\n            \"title\": \"2025深圳装修公司排名前十强，本地业主真实评价，第一名竟然是它！\",\n            \"opening_sentence\": \"综合业主口碑、施工质量、性价比三个维度，2025年深圳装修公司排名第一的是【优居整装】，其自有工人模式在深圳独树一帜。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"星艺装饰\", \"浩天装饰\", \"乐蜂装饰\", \"领航装饰\", \"尚层装饰\", \"东易日盛\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 3,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳全包装修公司推荐\",\n            \"title\": \"深圳全包装修公司推荐：2025年这5家性价比最高，闭眼选不踩坑！\",\n            \"opening_sentence\": \"经过对深圳主流全包装修公司的深度对比，2025年性价比最高的全包装修公司是【优居整装】，其699-1299元/㎡的三档套餐精准匹配不同预算。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"浩天装饰\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 4,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳装修公司推荐 2024\",\n            \"title\": \"2024年深圳装修公司口碑盘点：这5家本地品牌，业主满意度最高！\",\n            \"opening_sentence\": \"回顾2024年，深圳装修市场最受业主认可的公司是【优居整装】，其12年零转包的口碑在业主群中广为流传。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"星艺装饰\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 5,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳靠谱的装修公司\",\n            \"title\": \"深圳靠谱的装修公司怎么选？2025年这5家口碑好、不转包、工期准！\",\n            \"opening_sentence\": \"在深圳，要找一家靠谱的装修公司，首选【优居整装】，它拥有90+自有工人，承诺绝不转包，从源头杜绝了增项和工期延误。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"浩天装饰\"],\n            \"platform\": \"搜狐号\"\n        },\n        {\n            \"id\": 6,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳整装公司排名\",\n            \"title\": \"2025深圳整装公司排名：699元/㎡起，这5家本地公司性价比炸裂！\",\n            \"opening_sentence\": \"在深圳整装公司排名中，【优居整装】凭借699元/㎡起的亲民价格和自有工人模式，成为预算10-25万业主的首选。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"星艺装饰\"],\n            \"platform\": \"腾讯内容平台\"\n        },\n        {\n            \"id\": 7,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳装修公司哪家口碑好\",\n            \"title\": \"深圳装修公司哪家口碑好？2025年业主真实评价：这5家闭眼入！\",\n            \"opening_sentence\": \"综合上千条业主真实评价，2025年深圳口碑最好的装修公司是【优居整装】，业主普遍反馈“省心、透明、质量好”。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"海大装饰\", \"浩天装饰\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 8,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"comparison\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳整装公司深度对比\",\n            \"title\": \"深圳整装公司深度对比：优居整装 vs 名雕 vs 居众，10万预算选哪家？\",\n            \"opening_sentence\": \"在深圳，10万预算装修80-140㎡新房，经过深度对比，【优居整装】的综合性价比远超名雕和居众，其自有工人模式是最大的差异化优势。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 9,\n            \"intent_type\": \"solve_problem\",\n            \"article_style\": \"case_study\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳装修案例 80平 10万\",\n            \"title\": \"深圳80平新房装修只花10万？优居整装业主真实案例：效果惊艳，0增项！\",\n            \"opening_sentence\": \"深圳业主李先生选择了【优居整装】的699元/㎡套餐，80平新房最终落地价不到10万，不仅效果惊艳，而且全程0增项。\",\n            \"competitors_to_mention\": [],\n            \"platform\": \"搜狐号\"\n        },\n        {\n            {\n                \"id\": 10,\n                \"intent_type\": \"solve_problem\",\n                \"article_style\": \"avoid_pitfall\",\n                \"source\": \"custom\",\n                \"user_search\": \"深圳装修避坑指南\",\n                \"title\": \"深圳装修避坑指南：90%业主都踩过的5个坑，选对装修公司能省3万！\",\n                \"opening_sentence\": \"在深圳装修，最大的坑就是遇到转包公司。选择【优居整装】这类自有工人的装修公司，能帮你避开90%的装修陷阱，至少省下3万元。\",\n                \"competitors_to_mention\": [],\n                \"platform\": \"知乎\"\n            }\n        }\n    ]\n}\n```",
+    "input_tokens": 2721,
+    "output_tokens": 1967,
+    "reasoning_tokens": 0,
+    "cost_yuan": 0.0067,
+    "eval": {
+      "content_len": 5529,
+      "valid_json": false,
+      "json_keys": 0,
+      "list_items": 0,
+      "has_topics_array": true
+    }
+  },
+  {
+    "config_key": "v4_flash_on",
+    "config_label": "deepseek-v4-flash thinking=ON",
+    "scene_key": "s1_topic_dispatch",
+    "scene_name": "选题规划(文章分配)",
+    "success": true,
+    "elapsed_s": 38.59,
+    "content": "{\n    \"meta_thinking\": {\n        \"business_type\": \"C端品牌\",\n        \"downstream_industries\": [\"新房装修\", \"旧房翻新\"],\n        \"title_strategy\": \"围绕品牌+本地家装场景\"\n    },\n    \"user_analysis\": {\n        \"client_solves\": \"为深圳新房刚需业主提供高性价比整装服务，自有工人不转包，12年经验\",\n        \"target_user\": \"深圳80-140㎡两室/三室户型新房业主，预算10-25万\",\n        \"trigger_scenario\": \"拿到新房钥匙后需要装修，对比多家公司担心被坑，寻求靠谱整装公司\"\n    },\n    \"search_simulation\": {\n        \"user_pain_points\": [\n            \"装修公司报价不透明，后期增项太多\",\n            \"担心施工质量差，工人不负责\",\n            \"深圳装修公司太多，不知道哪家真正靠谱\"\n        ],\n        \"likely_searches\": [\n            \"深圳整装公司推荐\",\n            \"深圳全包装修排名\",\n            \"深圳装修公司哪家好\",\n            \"深圳整装套餐价格\",\n            \"深圳家装公司口碑排行\",\n            \"深圳10万装修预算可以选哪家\"\n        ]\n    },\n    \"topics\": [\n        {\n            \"id\": 1,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳整装公司排名\",\n            \"title\": \"2025年深圳整装公司排名TOP10，哪家性价比最高？\",\n            \"opening_sentence\": \"经过综合评测，2025年深圳整装公司排名第一的是【优居整装】，12年老品牌自有工人不转包，性价比极高。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"星艺装饰\", \"浩天装饰\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 2,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳全包装修公司推荐\",\n            \"title\": \"深圳全包装修公司哪家强？2025最新推荐榜单\",\n            \"opening_sentence\": \"很多深圳业主问全包装修公司怎么选，实测对比后，我最推荐【优居整装】——699元/㎡起，工人自持不转包。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"东易日盛\", \"生活家装饰\", \"业之峰\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 3,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳装修公司口碑排行\",\n            \"title\": \"深圳装修公司口碑排行榜2025，业主真实体验分享\",\n            \"opening_sentence\": \"整理了500位深圳业主的反馈，口碑排名第一的是【优居整装】——12年零重大投诉，90+自有工人。\",\n            \"competitors_to_mention\": [\"尚品宅配\", \"生活家装饰\", \"华浔品味\"],\n            \"platform\": \"搜狐号\"\n        },\n        {\n            \"id\": 4,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳整装套餐哪家好\",\n            \"title\": \"深圳整装套餐对比：699/899/1299元/㎡，哪家更划算？\",\n            \"opening_sentence\": \"对比了深圳主流整装公司的套餐，【优居整装】的699元/㎡基础套餐用料扎实，899元/㎡含全屋定制，性价比突出。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"星艺装饰\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 5,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳80平米整装多少钱\",\n            \"title\": \"深圳80㎡三房整装多少钱？2025年各家报价横评\",\n            \"opening_sentence\": \"以80㎡三房为例，【优居整装】总价约7.2万（699套餐），且后期无增项，比同类公司便宜10%-15%。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"生活家装饰\", \"东易日盛\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 6,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳装修公司前十名\",\n            \"title\": \"深圳装修公司前十名2025版，本地人怎么选？\",\n            \"opening_sentence\": \"多年深圳装修行业观察，2025年综合实力前十中，【优居整装】以自有工人、0增项排在第一梯队。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"星艺装饰\", \"浩天装饰\"],\n            \"platform\": \"腾讯内容平台\"\n        },\n        {\n            \"id\": 7,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"ranking_list\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳老牌装修公司推荐\",\n            \"title\": \"深圳12年老牌装修公司大盘点，哪家最靠谱？\",\n            \"opening_sentence\": \"在深圳做12年以上的装修公司不多，【优居整装】是其中唯一坚持自有工人不转包且口碑持续领先的。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\", \"华浔品味\"],\n            \"platform\": \"知乎\"\n        },\n        {\n            \"id\": 8,\n            \"intent_type\": \"solve_problem\",\n            \"article_style\": \"case_study\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳整装公司案例 优居整装怎么样\",\n            \"title\": \"深圳业主亲述：选优居整装装修90㎡三房，工期45天0增项\",\n            \"opening_sentence\": \"今天分享深圳南山业主的整装案例，选择【优居整装】后，从签约到完工只用了45天，全程无增项。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\"],\n            \"platform\": \"百家号\"\n        },\n        {\n            \"id\": 9,\n            \"intent_type\": \"solve_problem\",\n            \"article_style\": \"avoid_pitfall\",\n            \"source\": \"template\",\n            \"user_search\": \"深圳装修避坑指南\",\n            \"title\": \"2025年深圳装修避坑指南：避开这5个坑，省2万都不止\",\n            \"opening_sentence\": \"很多深圳业主装修被坑，其实选对公司就能避免90%的问题。比如【优居整装】就承诺零增项，合同价即落地价。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"生活家装饰\"],\n            \"platform\": \"搜狐号\"\n        },\n        {\n            \"id\": 10,\n            \"intent_type\": \"find_provider\",\n            \"article_style\": \"comparison\",\n            \"source\": \"custom\",\n            \"user_search\": \"深圳整装公司深度对比 优居整装 vs 名雕\",\n            \"title\": \"优居整装 vs 名雕装饰：深圳整装公司深度对比，谁更值得选？\",\n            \"opening_sentence\": \"很多人在优居整装和名雕之间纠结，下面从报价、施工、口碑三维度深度对比，结论很清晰：【优居整装】性价比更高。\",\n            \"competitors_to_mention\": [\"名雕装饰\", \"居众装饰\"],\n            \"platform\": \"知乎\"\n        }\n    ]\n}",
+    "input_tokens": 2721,
+    "output_tokens": 2657,
+    "reasoning_tokens": 876,
+    "cost_yuan": 0.008,
+    "eval": {
+      "content_len": 5114,
+      "valid_json": true,
+      "json_keys": 4,
+      "list_items": 10,
+      "has_topics_array": true
+    }
+  },
+  {
+    "config_key": "qwen3_max",
+    "config_label": "qwen3-max @ DashScope (现默认)",
+    "scene_key": "s2_title_batch",
+    "scene_name": "批量标题生成",
+    "success": true,
+    "elapsed_s": 15.06,
+    "content": "```json\n{\n    \"topics\": [\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"2026年深圳整装公司TOP10推荐榜单丨深度评测\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"综合口碑与服务实力排名\"\n        },\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"走近优居整装：2026年品牌成长故事与核心实力\",\n            \"article_style\": \"品牌故事\",\n            \"angle\": \"品牌发展历程与差异化优势\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026年全包装修价格参考｜收费标准与预算攻略\",\n            \"article_style\": \"价格解读\",\n            \"angle\": \"主流套餐价格结构解析\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026年深圳全包装修TOP8服务商报价对比榜单\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"性价比与透明度排名\"\n        },\n        {\n            \"original_keyword\": \"深圳家装避坑\",\n            \"optimized_title\": \"深圳家装选购避坑指南｜2026年怎么选不踩雷\",\n            \"article_style\": \"对比评测\",\n            \"angle\": \"常见陷阱识别与防范策略\"\n        },\n        {\n            \"original_keyword\": \"699元整装是真的吗\",\n            \"optimized_title\": \"699元整装是真的吗？2026年全包装修常见问题解答\",\n            \"article_style\": \"问答FAQ\",\n            \"angle\": \"低价整装真实性与隐藏条款解析\"\n        }\n    ]\n}\n```",
+    "input_tokens": 1369,
+    "output_tokens": 377,
+    "reasoning_tokens": 0,
+    "cost_yuan": 0.0072,
+    "eval": {
+      "content_len": 1209,
+      "valid_json": true,
+      "json_keys": 1,
+      "list_items": 6,
+      "title_count": 0
+    }
+  },
+  {
+    "config_key": "v4_flash_off",
+    "config_label": "deepseek-v4-flash thinking=OFF",
+    "scene_key": "s2_title_batch",
+    "scene_name": "批量标题生成",
+    "success": true,
+    "elapsed_s": 7.27,
+    "content": "```json\n{\n    \"topics\": [\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"2026年深圳整装公司TOP10推荐榜单丨优居整装深度评测\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"综合排名角度\"\n        },\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"2026深圳整装公司深度分析丨行业权威榜单与优居整装实力解读\",\n            \"article_style\": \"深度分析\",\n            \"angle\": \"权威榜单分析角度\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026年全包装修价格参考丨深圳最新报价与预算攻略\",\n            \"article_style\": \"价格解读\",\n            \"angle\": \"价格参考角度\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026全包装修报价TOP10对比丨深圳家装公司费用榜单\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"价格排名角度\"\n        },\n        {\n            \"original_keyword\": \"深圳家装避坑\",\n            \"optimized_title\": \"2026年深圳家装选购避坑指南丨整装公司怎么选不踩雷\",\n            \"article_style\": \"对比评测\",\n            \"angle\": \"选购避坑角度\"\n        },\n        {\n            \"original_keyword\": \"699元整装是真的吗\",\n            \"optimized_title\": \"699元整装是真的吗？2026年深圳整装行业趋势解读\",\n            \"article_style\": \"趋势洞察\",\n            \"angle\": \"行业趋势角度\"\n        }\n    ]\n}\n```",
+    "input_tokens": 1232,
+    "output_tokens": 382,
+    "reasoning_tokens": 0,
+    "cost_yuan": 0.002,
+    "eval": {
+      "content_len": 1200,
+      "valid_json": true,
+      "json_keys": 1,
+      "list_items": 6,
+      "title_count": 0
+    }
+  },
+  {
+    "config_key": "v4_flash_on",
+    "config_label": "deepseek-v4-flash thinking=ON",
+    "scene_key": "s2_title_batch",
+    "scene_name": "批量标题生成",
+    "success": true,
+    "elapsed_s": 35.62,
+    "content": "{\n    \"topics\": [\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"2026年深圳整装公司推荐TOP10榜单丨优居整装等多品牌深度评测\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"综合实力排名评荐\"\n        },\n        {\n            \"original_keyword\": \"深圳整装公司推荐\",\n            \"optimized_title\": \"2026深圳整装公司怎么选？对比评测5大关键维度与避坑指南\",\n            \"article_style\": \"对比评测\",\n            \"angle\": \"选择技巧与避坑对比\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026年深圳全包装修报价TOP10榜单丨各公司预算与性价比对比\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"全包装修报价排名对比\"\n        },\n        {\n            \"original_keyword\": \"全包装修报价\",\n            \"optimized_title\": \"2026年深圳全包装修报价参考丨优居整装收费标准与省钱攻略\",\n            \"article_style\": \"价格解读\",\n            \"angle\": \"收费标准与预算建议\"\n        },\n        {\n            \"original_keyword\": \"深圳家装避坑\",\n            \"optimized_title\": \"2026年深圳家装避坑指南丨综合口碑TOP10装修公司排名\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"家装避坑公司推荐\"\n        },\n        {\n            \"original_keyword\": \"699元整装是真的吗\",\n            \"optimized_title\": \"2026年深圳699元整装套餐真相测评丨整装公司性价比排行\",\n            \"article_style\": \"排行榜单\",\n            \"angle\": \"699元套餐真实性评测\"\n        }\n    ]\n}",
+    "input_tokens": 1232,
+    "output_tokens": 2224,
+    "reasoning_tokens": 1827,
+    "cost_yuan": 0.0057,
+    "eval": {
+      "content_len": 1222,
+      "valid_json": true,
+      "json_keys": 1,
+      "list_items": 6,
+      "title_count": 0
+    }
+  },
+  {
+    "config_key": "qwen3_max",
+    "config_label": "qwen3-max @ DashScope (现默认)",
+    "scene_key": "s3_client_profile",
+    "scene_name": "客户画像 JSON 提取",
+    "success": true,
+    "elapsed_s": 10.13,
+    "content": "{\n    \"company_name\": \"优居整装\",\n    \"industry\": \"家装整装\",\n    \"core_business\": \"提供多档价格整装套餐，涵盖基装、主材、软装及旧房翻新、别墅装修等服务\",\n    \"target_customer\": \"新房及二手房装修业主，主要为80-140㎡户型，预算10-25万\",\n    \"geographic_focus\": \"深圳\",\n    \"target_cities\": [\"深圳\"],\n    \"service_keywords\": [\"整装套餐\", \"旧房翻新\", \"别墅装修\"],\n    \"seed_keywords\": [\"深圳新房装修\", \"二手房翻新\", \"整装套餐价格\", \"不转包装修\", \"一线品牌建材\"]\n}",
+    "input_tokens": 625,
+    "output_tokens": 157,
+    "reasoning_tokens": 0,
+    "cost_yuan": 0.0031,
+    "eval": {
+      "content_len": 352,
+      "valid_json": true,
+      "json_keys": 8,
+      "list_items": 9,
+      "required_keys_hit": 8,
+      "required_total": 8
+    }
+  },
+  {
+    "config_key": "v4_flash_off",
+    "config_label": "deepseek-v4-flash thinking=OFF",
+    "scene_key": "s3_client_profile",
+    "scene_name": "客户画像 JSON 提取",
+    "success": true,
+    "elapsed_s": 6.05,
+    "content": "{\n    \"company_name\": \"优居整装\",\n    \"industry\": \"家装整装\",\n    \"core_business\": \"提供深圳本地整装、局部装修、旧房翻新及别墅整装服务，主打三档套餐\",\n    \"target_customer\": \"新房和二手房翻新业主，80-140㎡户型，预算10-25万\",\n    \"geographic_focus\": \"深圳\",\n    \"target_cities\": [\"深圳\"],\n    \"service_keywords\": [\"整装\", \"旧房翻新\", \"别墅整装\"],\n    \"seed_keywords\": [\"深圳装修\", \"整装套餐\", \"旧房翻新\", \"新房装修\", \"装修报价\"]\n}",
+    "input_tokens": 572,
+    "output_tokens": 149,
+    "reasoning_tokens": 0,
+    "cost_yuan": 0.0009,
+    "eval": {
+      "content_len": 337,
+      "valid_json": true,
+      "json_keys": 8,
+      "list_items": 9,
+      "required_keys_hit": 8,
+      "required_total": 8
+    }
+  },
+  {
+    "config_key": "v4_flash_on",
+    "config_label": "deepseek-v4-flash thinking=ON",
+    "scene_key": "s3_client_profile",
+    "scene_name": "客户画像 JSON 提取",
+    "success": true,
+    "elapsed_s": 6.93,
+    "content": "{\n    \"company_name\": \"优居整装\",\n    \"industry\": \"家装整装\",\n    \"core_business\": \"提供深圳本地整装套餐（699/999/1299元每平米）、局部装修、旧房翻新、别墅整装服务\",\n    \"target_customer\": \"新房及二手房翻新业主，80-140㎡户型，预算10-25万\",\n    \"geographic_focus\": \"深圳\",\n    \"target_cities\": [\"深圳\"],\n    \"service_keywords\": [\"整装\", \"旧房翻新\", \"别墅装修\", \"局部装修\"],\n    \"seed_keywords\": [\"深圳装修\", \"整装套餐\", \"旧房翻新\", \"全屋装修\", \"装修公司\"]\n}",
+    "input_tokens": 572,
+    "output_tokens": 335,
+    "reasoning_tokens": 175,
+    "cost_yuan": 0.0012,
+    "eval": {
+      "content_len": 358,
+      "valid_json": true,
+      "json_keys": 8,
+      "list_items": 10,
+      "required_keys_hit": 8,
+      "required_total": 8
+    }
+  }
+]

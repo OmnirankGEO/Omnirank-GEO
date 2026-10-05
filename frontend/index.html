@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN" translate="no">
+  <head>
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      (function(){
+        try {
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(regs){
+              regs.forEach(function(r){ r.unregister(); });
+            }).catch(function(){});
+          }
+          if (typeof caches !== 'undefined') {
+            caches.keys().then(function(keys){
+              keys.forEach(function(k){ caches.delete(k); });
+            }).catch(function(){});
+          }
+        } catch(e) {}
+      })();
+    </script>
+
+    <script>
+      (function(){
+        try {
+          var token = localStorage.getItem('omnirank_token');
+          if (!token) return;
+          var meController = new AbortController();
+          var mePromise = fetch('/api/auth/me', {
+            method: 'GET',
+            cache: 'no-store',
+            credentials: 'same-origin',
+            signal: meController.signal,
+            headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
+          }).then(function(response){
+            return response.json().catch(function(){ return {}; }).then(function(data){
+              if (!response.ok) {
+                var error = new Error('bootstrap /me failed');
+                error.response = { status: response.status, data: data };
+                throw error;
+              }
+              return { data: data, status: response.status, headers: response.headers };
+            });
+          });
+          mePromise.catch(function(){});
+          window.__OMNIRANK_BOOTSTRAP_ME__ = {
+            token: token,
+            controller: meController,
+            promise: mePromise
+          };
+
+          var agreementController = new AbortController();
+          var agreementPromise = mePromise.then(function(me){
+            var user = me && me.data && me.data.user;
+            if (!user || user.is_admin === true || Number(user.agent_level || 0) < 1) return null;
+            return fetch('/api/agent/agreement/v35-status', {
+              method: 'GET',
+              cache: 'no-store',
+              credentials: 'same-origin',
+              signal: agreementController.signal,
+              headers: { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' }
+            }).then(function(response){
+              return response.json().catch(function(){ return {}; }).then(function(data){
+                if (!response.ok) {
+                  var error = new Error('bootstrap agreement status failed');
+                  error.code = typeof data.code === 'string' ? data.code : undefined;
+                  error.detail = data.detail;
+                  error.response = { status: response.status, data: data };
+                  throw error;
+                }
+                return data;
+              });
+            });
+          });
+          agreementPromise.catch(function(){});
+          window.__OMNIRANK_BOOTSTRAP_AGREEMENT__ = {
+            token: token,
+            controller: agreementController,
+            promise: agreementPromise
+          };
+
+          window.addEventListener('storage', function(event){
+            if (event.key !== 'omnirank_token' || event.newValue === token) return;
+            meController.abort();
+            agreementController.abort();
+            delete window.__OMNIRANK_BOOTSTRAP_ME__;
+            delete window.__OMNIRANK_BOOTSTRAP_AGREEMENT__;
+          });
+        } catch (_) {}
+      })();
+    </script>
+
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/logo-192.png?v=20260526" />
+    <link rel="apple-touch-icon" href="/logo-192.png?v=20260526" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>全域上榜GEO交付系统｜让品牌被 AI 推荐</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function(){
+        var bootRetried = sessionStorage.getItem('__omnirank_boot_retry');
+        window.addEventListener('error', function(e){
+          var target = e && e.target;
+          if (!target || target.tagName !== 'SCRIPT') return;
+          var src = target.src || '';
+          if (!src || src.indexOf('/assets/') < 0) return;
+          console.error('[boot] chunk load failed:', src);
+          if (!bootRetried) {
+            sessionStorage.setItem('__omnirank_boot_retry', '1');
+            try {
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister(); }); });
+              }
+              if (typeof caches !== 'undefined') {
+                caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k); }); });
+              }
+            } catch(_) {}
+            setTimeout(function(){
+              try {
+                var controller = new AbortController();
+                var timeout = setTimeout(function(){ controller.abort(); }, 3000);
+                fetch('/api/public/cache-recovery', {
+                  method: 'GET',
+                  cache: 'no-store',
+                  credentials: 'same-origin',
+                  signal: controller.signal,
+                  headers: { 'Cache-Control': 'no-cache' }
+                }).finally(function(){ clearTimeout(timeout); window.location.reload(); });
+              } catch (_) {
+                window.location.reload();
+              }
+            }, 500);
+            return;
+          }
+          var root = document.getElementById('root');
+          if (root && !root.dataset.bootError) {
+            root.dataset.bootError = '1';
+            root.innerHTML = '<div style="padding:32px 24px;text-align:center;font-family:system-ui,sans-serif;color:#666;line-height:1.7">' +
+              '<h2 style="color:#333;margin:16px 0 8px;font-size:18px">系统资源加载失败</h2>' +
+              '<p style="font-size:14px;margin:8px 0">应用主程序无法加载 · 通常是部署正在进行 / 缓存陈旧</p>' +
+              '<p style="font-size:12px;color:#999;word-break:break-all;margin:8px 0">缺失文件:' + src.split('/').pop() + '</p>' +
+              '<div style="margin-top:20px"><button onclick="sessionStorage.removeItem(\'__omnirank_boot_retry\');location.reload(true)" ' +
+              'style="padding:10px 24px;background:#4ade80;color:#000;border:0;border-radius:8px;cursor:pointer;font-weight:600">强制刷新重试</button></div>' +
+              '<p style="font-size:11px;color:#aaa;margin-top:24px">如果反复出现请联系运营 · 或稍等 1-2 分钟后再试</p>' +
+              '</div>';
+          }
+        }, true);
+        window.addEventListener('load', function(){
+          setTimeout(function(){
+            var root = document.getElementById('root');
+            if (root && root.children.length > 0 && !root.dataset.bootError) {
+              sessionStorage.removeItem('__omnirank_boot_retry');
+            }
+          }, 3000);
+        });
+      })();
+    </script>
+  </body>
+</html>

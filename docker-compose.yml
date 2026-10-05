@@ -1,0 +1,330 @@
+# ============================================
+# OmniRank AI - Docker Compose 配置（蓝绿部署）
+# ============================================
+# 使用方法：
+#   单实例模式（本地开发）:
+#     docker compose up -d --build
+#   蓝绿部署（生产）:
+#     bash scripts/deploy-blue-green.sh
+# ============================================
+
+services:
+  # ---- PostgreSQL 数据库 ----
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: omnirank-db
+    restart: unless-stopped
+
+    # 2026-04-18: 蓝绿 + 高并发扩容
+    # max_connections=500（PgBouncer 80 pool + scheduler + meijiehezi + admin 留充足冗余）
+    # shared_buffers=512MB（撑 30 活跃并发事务，~30MB/conn）
+    command:
+      - postgres
+      - -c
+      - max_connections=500
+      - -c
+      - shared_buffers=512MB
+
+    environment:
+      POSTGRES_DB: geo_agentscope
+      POSTGRES_USER: geo_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}
+      TZ: Asia/Shanghai
+      PGTZ: Asia/Shanghai
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    # ports:
+    #   - "5432:5432"   # ⚠️ 已关闭：生产环境禁止暴露数据库端口
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geo_admin -d geo_agentscope"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ---- Redis 缓存 ----
+  redis:
+    image: redis:7-alpine
+    container_name: omnirank-redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --save ""
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ---- PgBouncer 连接池 ----
+  pgbouncer:
+    image: pgbouncer/pgbouncer:latest
+    container_name: omnirank-pgbouncer
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://geo_admin:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}@db:5432/geo_agentscope
+      POOL_MODE: transaction
+      # 2026-04-18: 扩容 —— 蓝绿共存期 400 连接 → 500 留充足冗余
+      MAX_CLIENT_CONN: 500
+      # 后端 PG 连接池：事务级复用，30 → 80 让并发查询少排队
+      DEFAULT_POOL_SIZE: 80
+      MIN_POOL_SIZE: 10
+      # 突发时的 reserve 池（短时流量尖峰）
+      RESERVE_POOL_SIZE: 20
+      RESERVE_POOL_TIMEOUT: 3
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ---- 蓝色实例（默认活跃）----
+  omnirank-blue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_ICP_BEIAN: ${VITE_ICP_BEIAN:-}
+    image: ${OMNIRANK_COMPOSE_PROJECT_NAME:-geo_agentscope}-omnirank-blue
+    container_name: omnirank-blue
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8001:80"
+    env_file:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/.env
+    environment:
+      DATABASE_URL: postgresql://geo_admin:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}@db:5432/geo_agentscope
+      REDIS_URL: redis://redis:6379/0
+      # [WORKERS=4 · SPEC §5/D4] web 允许 WORKERS>1,但需 PROGRESS_BUS_READY=1(跨 worker Redis 总线就绪)。
+      # 保守默认仍 1;开多 worker 时 .env 同时设 WORKERS=4 + PROGRESS_BUS_READY=1(deploy 脚本 3.4 gate 校验)。
+      WORKERS: ${WORKERS:-1}
+      PROGRESS_BUS_READY: ${PROGRESS_BUS_READY:-}
+      ROLE: web  # [WORKERS=4 · D1] web 角色 · 不触发任何 cron(cron 由 omnirank-cron-* 承担)
+      PYTHONDONTWRITEBYTECODE: "1"  # release config bind mount 不得写回 __pycache__
+      TZ: Asia/Shanghai
+      WECHAT_DECRYPT_API_URL: http://wx-decrypt:3000
+      MARKETING_PRIVATE_UPLOAD_ROOT: /app/data/marketing-private
+    networks:
+      - default
+      - wx-decrypt-net
+    volumes:
+      # reviewed release 独立 worktree 只提供代码；持久数据与密钥继续来自生产 runtime root。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/data:/app/data
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/output:/app/output
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/cache:/app/cache
+      # [WO_NO_SILENT_RELOAD 2026-08-16 ③] 上一版 /assets 归档 · 蓝绿两槽共享同一宿主目录。
+      #   共享是必须的:切槽之后,停在老页面的用户仍会向**新槽**要旧 chunk。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/assets_archive:/app/assets_archive
+      # runtime cache 可写；审核 release 的 Python 模块逐文件只读覆盖，防生产旧 checkout 遮住新 W4 代码。
+      - ./cache/__init__.py:/app/cache/__init__.py:ro
+      - ./cache/redis_client.py:/app/cache/redis_client.py:ro
+      - ./cache/diagnosis_slots.py:/app/cache/diagnosis_slots.py:ro
+      - ./cache/leader_lock.py:/app/cache/leader_lock.py:ro
+      - ./cache/progress_bus.py:/app/cache/progress_bus.py:ro
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/logs/blue:/app/logs
+      - ./config:/app/config
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+
+  # ---- 绿色实例（待机，部署时拉起）----
+  omnirank-green:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_ICP_BEIAN: ${VITE_ICP_BEIAN:-}
+    image: ${OMNIRANK_COMPOSE_PROJECT_NAME:-geo_agentscope}-omnirank-green
+    container_name: omnirank-green
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8002:80"
+    env_file:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/.env
+    environment:
+      DATABASE_URL: postgresql://geo_admin:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}@db:5432/geo_agentscope
+      REDIS_URL: redis://redis:6379/0
+      WORKERS: ${WORKERS:-1}
+      PROGRESS_BUS_READY: ${PROGRESS_BUS_READY:-}
+      ROLE: web  # [WORKERS=4 · D1] web 角色 · 不触发任何 cron
+      PYTHONDONTWRITEBYTECODE: "1"
+      TZ: Asia/Shanghai
+      WECHAT_DECRYPT_API_URL: http://wx-decrypt:3000
+      MARKETING_PRIVATE_UPLOAD_ROOT: /app/data/marketing-private
+    networks:
+      - default
+      - wx-decrypt-net
+    volumes:
+      # config 保持 release SHA 版本，避免生产脏 checkout 覆盖审核代码。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/data:/app/data
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/output:/app/output
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/cache:/app/cache
+      # [WO_NO_SILENT_RELOAD 2026-08-16 ③] 上一版 /assets 归档 · 蓝绿两槽共享同一宿主目录。
+      #   共享是必须的:切槽之后,停在老页面的用户仍会向**新槽**要旧 chunk。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/assets_archive:/app/assets_archive
+      - ./cache/__init__.py:/app/cache/__init__.py:ro
+      - ./cache/redis_client.py:/app/cache/redis_client.py:ro
+      - ./cache/diagnosis_slots.py:/app/cache/diagnosis_slots.py:ro
+      - ./cache/leader_lock.py:/app/cache/leader_lock.py:ro
+      - ./cache/progress_bus.py:/app/cache/progress_bus.py:ro
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/logs/green:/app/logs
+      - ./config:/app/config
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 45s
+    profiles:
+      - green   # 默认不启动，deploy 脚本手动拉起
+
+  # ==========================================================================
+  # [WORKERS=4 · SPEC §1/D2 · 2026-07-13 builder 提供 · Deploy-CTO 审核]
+  # cron 专用进程(ROLE=cron · WORKERS=1)—— 全部定时任务由此承担;web 容器不再跑 cron。
+  # 蓝绿两色各一 cron 容器,LeaderLock 单 Lua 原子选主保证同一时刻只有一个 cron 触发。
+  # 无对外端口(不服务用户流量);同镜像 · 同 env/volume · 仅 ROLE 不同。
+  # 部署序(D3 回滚互斥):先停新 cron(两色)再起旧 web;整包回滚同序。
+  # ==========================================================================
+  omnirank-cron-blue:
+    # 与同色 web 共用审核镜像，禁止 cron 暗中使用另一份 build/stale image。
+    image: ${OMNIRANK_COMPOSE_PROJECT_NAME:-geo_agentscope}-omnirank-blue
+    container_name: omnirank-cron-blue
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/.env
+    environment:
+      DATABASE_URL: postgresql://geo_admin:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}@db:5432/geo_agentscope
+      REDIS_URL: redis://redis:6379/0
+      WORKERS: 1          # cron 恒单 worker(start.sh 也强制)
+      ROLE: cron
+      PYTHONDONTWRITEBYTECODE: "1"
+      TZ: Asia/Shanghai
+      WECHAT_DECRYPT_API_URL: http://wx-decrypt:3000
+      MARKETING_PRIVATE_UPLOAD_ROOT: /app/data/marketing-private
+    networks:
+      - default
+      - wx-decrypt-net
+    volumes:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/data:/app/data
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/output:/app/output
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/cache:/app/cache
+      # [WO_NO_SILENT_RELOAD 2026-08-16 ③] 上一版 /assets 归档 · 蓝绿两槽共享同一宿主目录。
+      #   共享是必须的:切槽之后,停在老页面的用户仍会向**新槽**要旧 chunk。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/assets_archive:/app/assets_archive
+      - ./cache/__init__.py:/app/cache/__init__.py:ro
+      - ./cache/redis_client.py:/app/cache/redis_client.py:ro
+      - ./cache/diagnosis_slots.py:/app/cache/diagnosis_slots.py:ro
+      - ./cache/leader_lock.py:/app/cache/leader_lock.py:ro
+      - ./cache/progress_bus.py:/app/cache/progress_bus.py:ro
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/logs/cron-blue:/app/logs
+      - ./config:/app/config
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/uploads:/app/uploads
+    profiles:
+      - cron-blue   # deploy 脚本按颜色 --profile cron-$INACTIVE 拉起;本地 dev 默认不启(win32 主进程兼任 cron)
+
+  omnirank-cron-green:
+    image: ${OMNIRANK_COMPOSE_PROJECT_NAME:-geo_agentscope}-omnirank-green
+    container_name: omnirank-cron-green
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/.env
+    environment:
+      DATABASE_URL: postgresql://geo_admin:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD 未设置}@db:5432/geo_agentscope
+      REDIS_URL: redis://redis:6379/0
+      WORKERS: 1
+      ROLE: cron
+      PYTHONDONTWRITEBYTECODE: "1"
+      TZ: Asia/Shanghai
+      WECHAT_DECRYPT_API_URL: http://wx-decrypt:3000
+      MARKETING_PRIVATE_UPLOAD_ROOT: /app/data/marketing-private
+    networks:
+      - default
+      - wx-decrypt-net
+    volumes:
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/data:/app/data
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/output:/app/output
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/cache:/app/cache
+      # [WO_NO_SILENT_RELOAD 2026-08-16 ③] 上一版 /assets 归档 · 蓝绿两槽共享同一宿主目录。
+      #   共享是必须的:切槽之后,停在老页面的用户仍会向**新槽**要旧 chunk。
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/assets_archive:/app/assets_archive
+      - ./cache/__init__.py:/app/cache/__init__.py:ro
+      - ./cache/redis_client.py:/app/cache/redis_client.py:ro
+      - ./cache/diagnosis_slots.py:/app/cache/diagnosis_slots.py:ro
+      - ./cache/leader_lock.py:/app/cache/leader_lock.py:ro
+      - ./cache/progress_bus.py:/app/cache/progress_bus.py:ro
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/logs/cron-green:/app/logs
+      - ./config:/app/config
+      - ${OMNIRANK_RUNTIME_ROOT:-.}/uploads:/app/uploads
+    profiles:
+      - cron-green
+
+  # ---- 视频号 mp4 keystream 解密 sidecar (2026-05-10 加 · A2 严格隔离 · CTO-13.0 ASR 链路依赖) ----
+  # 镜像作者: evil0ctal (TikHub 同社区)· 仅 localhost:3001 暴露调试用
+  # 容器只接 /api/keystream POST · 无 db/redis 访问(不在 default network)
+  # 一键 rollback: docker compose stop wx-decrypt → backend 自动降级"请粘文字"
+  wx-decrypt:
+    image: evil0ctal/wechat-decrypt-api:latest
+    container_name: omnirank-wx-decrypt
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:3000"
+    shm_size: 2gb
+    mem_limit: 1g
+    cpus: 1.0
+    networks:
+      - wx-decrypt-net
+    # 镜像没装 curl/wget · 用 node 自带 http 调 /health (Evil0ctal 提供的真 health endpoint)
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://localhost:3000/health',(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  wx-decrypt-net:
+    name: omnirank-wx-decrypt-net
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+    name: geo_agentscope_pgdata   # ⚠️ 生产数据 volume，改名会导致数据丢失
+  redis_data:
+    driver: local
+    name: geo_agentscope_redis_data

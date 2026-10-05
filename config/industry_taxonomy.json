@@ -1,0 +1,1407 @@
+{
+  "_doc": "行业大类字典 SSOT(WO_267 · 2026-09-23)。读取只走 services/industry_taxonomy.py。别名一律为整词、至少 2 个字;一个别名只许属于一个大类(加载时校验)。strong_aliases 命中即升为主类(光伏类客户被 industry 列的「建筑」带偏正是因为没有这一层)。legacy_names 是五处旧名 + brands.industry_category 存量旧值,只用于读侧翻译,不回填。",
+  "version": "2026-09-23",
+  "weak_segments": [
+    "批发业",
+    "零售业",
+    "批发和零售业",
+    "制造业",
+    "服务业"
+  ],
+  "categories": [
+    {
+      "key": "new_energy",
+      "name": "新能源",
+      "aliases": [
+        "新能源",
+        "太阳能",
+        "电池",
+        "氢能",
+        "光储",
+        "储能电池",
+        "新能源电气设备"
+      ],
+      "strong_aliases": [
+        "光伏",
+        "光伏组件",
+        "储能",
+        "充电桩",
+        "风电",
+        "逆变器",
+        "锂电",
+        "锂电池",
+        "动力电池"
+      ],
+      "subcategories": [
+        {
+          "name": "光伏",
+          "aliases": [
+            "光伏",
+            "光伏组件",
+            "太阳能"
+          ]
+        },
+        {
+          "name": "储能",
+          "aliases": [
+            "储能",
+            "储能电池"
+          ]
+        },
+        {
+          "name": "风电",
+          "aliases": [
+            "风电"
+          ]
+        },
+        {
+          "name": "充电桩",
+          "aliases": [
+            "充电桩"
+          ]
+        },
+        {
+          "name": "电池",
+          "aliases": [
+            "锂电",
+            "锂电池",
+            "动力电池",
+            "电池"
+          ]
+        }
+      ],
+      "research_industry_name": "新能源",
+      "media_keywords": [
+        "新能源",
+        "光伏",
+        "储能",
+        "充电桩",
+        "风电"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [],
+      "research_industry_slug": "ind_8a68be7b3f4f"
+    },
+    {
+      "key": "industrial",
+      "name": "工业制造",
+      "aliases": [
+        "工业",
+        "电气机械",
+        "电气",
+        "机械",
+        "电线",
+        "电缆",
+        "线缆",
+        "线束",
+        "金属制品",
+        "化工",
+        "化工材料",
+        "塑料",
+        "包装",
+        "模具",
+        "机床",
+        "轴承",
+        "阀门",
+        "钢铁",
+        "有色金属",
+        "器材制造",
+        "激光加工",
+        "激光设备",
+        "制造业"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "电气与线缆",
+          "aliases": [
+            "电气机械",
+            "电气",
+            "电线",
+            "电缆",
+            "线缆",
+            "线束"
+          ]
+        },
+        {
+          "name": "机械",
+          "aliases": [
+            "机械",
+            "机床",
+            "轴承",
+            "阀门",
+            "模具"
+          ]
+        },
+        {
+          "name": "化工材料",
+          "aliases": [
+            "化工",
+            "化工材料",
+            "塑料"
+          ]
+        },
+        {
+          "name": "金属制品",
+          "aliases": [
+            "金属制品",
+            "钢铁",
+            "有色金属"
+          ]
+        },
+        {
+          "name": "包装",
+          "aliases": [
+            "包装"
+          ]
+        }
+      ],
+      "research_industry_name": "工业制造",
+      "media_keywords": [
+        "工业",
+        "制造",
+        "机械",
+        "电气"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [],
+      "research_industry_slug": "ind_daf8ab762b39"
+    },
+    {
+      "key": "construction",
+      "name": "建筑建材与装修",
+      "aliases": [
+        "建筑",
+        "建筑业",
+        "建筑装饰",
+        "建材",
+        "建筑材料",
+        "建筑建材",
+        "五金建材",
+        "装修",
+        "装饰",
+        "装潢",
+        "家装",
+        "家居",
+        "室内设计",
+        "室内装修",
+        "室内装饰",
+        "橱柜",
+        "卫浴",
+        "地板",
+        "家具",
+        "全屋定制",
+        "整装",
+        "工装",
+        "建装",
+        "园林景观"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "建筑",
+          "aliases": [
+            "建筑",
+            "建筑业",
+            "建筑装饰"
+          ]
+        },
+        {
+          "name": "建材",
+          "aliases": [
+            "建材",
+            "建筑材料",
+            "建筑建材",
+            "五金建材"
+          ]
+        },
+        {
+          "name": "装修",
+          "aliases": [
+            "装修",
+            "装饰",
+            "装潢",
+            "家装",
+            "室内设计",
+            "室内装修",
+            "室内装饰",
+            "全屋定制",
+            "整装",
+            "工装"
+          ]
+        },
+        {
+          "name": "家居",
+          "aliases": [
+            "家居",
+            "橱柜",
+            "卫浴",
+            "地板",
+            "家具"
+          ]
+        }
+      ],
+      "research_industry_name": "装修建材",
+      "media_keywords": [
+        "装修",
+        "建材",
+        "家装",
+        "室内设计"
+      ],
+      "head_fallback_key": "装修建材",
+      "legacy_names": [
+        "装修",
+        "装修建材"
+      ],
+      "research_industry_slug": "ind_6f1ccb372a62"
+    },
+    {
+      "key": "real_estate",
+      "name": "房地产",
+      "aliases": [
+        "房地产",
+        "地产",
+        "房产",
+        "楼盘",
+        "楼市",
+        "住宅",
+        "买房",
+        "置业",
+        "房产中介",
+        "租房",
+        "二手房",
+        "物业"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "开发与销售",
+          "aliases": [
+            "房地产",
+            "地产",
+            "楼盘",
+            "置业"
+          ]
+        },
+        {
+          "name": "中介租赁",
+          "aliases": [
+            "房产中介",
+            "租房",
+            "二手房"
+          ]
+        },
+        {
+          "name": "物业",
+          "aliases": [
+            "物业"
+          ]
+        }
+      ],
+      "research_industry_name": "房地产",
+      "media_keywords": [
+        "地产",
+        "楼盘",
+        "楼市",
+        "住宅",
+        "房产",
+        "买房",
+        "置业"
+      ],
+      "head_fallback_key": "房地产",
+      "legacy_names": [
+        "房地产",
+        "房产家居"
+      ],
+      "research_industry_slug": "ind_d7d3b3a5c6cb"
+    },
+    {
+      "key": "auto",
+      "name": "汽车出行",
+      "aliases": [
+        "汽车",
+        "新能源车",
+        "新能源汽车",
+        "电动车",
+        "电动汽车",
+        "出行",
+        "汽车租赁",
+        "租车",
+        "豪车租赁",
+        "车队",
+        "接送",
+        "专车",
+        "网约车",
+        "驾驶",
+        "驾驶培训",
+        "驾培",
+        "驾校",
+        "机动车",
+        "商务车",
+        "二手车",
+        "包车"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "整车与新能源车",
+          "aliases": [
+            "汽车",
+            "新能源车",
+            "新能源汽车",
+            "电动车",
+            "电动汽车"
+          ]
+        },
+        {
+          "name": "出行服务",
+          "aliases": [
+            "出行",
+            "网约车",
+            "专车",
+            "接送",
+            "车队"
+          ]
+        },
+        {
+          "name": "租车",
+          "aliases": [
+            "汽车租赁",
+            "租车",
+            "豪车租赁"
+          ]
+        },
+        {
+          "name": "驾培",
+          "aliases": [
+            "驾驶",
+            "驾驶培训",
+            "驾培",
+            "驾校"
+          ]
+        }
+      ],
+      "research_industry_name": "汽车",
+      "media_keywords": [
+        "汽车",
+        "新能源车",
+        "驾驶",
+        "车市"
+      ],
+      "head_fallback_key": "汽车",
+      "legacy_names": [
+        "汽车",
+        "汽车出行"
+      ],
+      "research_industry_slug": "ind_b64c41208359"
+    },
+    {
+      "key": "education",
+      "name": "教育培训",
+      "aliases": [
+        "教育",
+        "培训",
+        "留学",
+        "考试",
+        "考研",
+        "考公",
+        "学校",
+        "培优",
+        "少儿",
+        "辅导",
+        "在线教育",
+        "职业培训",
+        "语言培训",
+        "K12",
+        "教学"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "学历与升学",
+          "aliases": [
+            "考研",
+            "考公",
+            "考试",
+            "学校",
+            "K12",
+            "留学"
+          ]
+        },
+        {
+          "name": "职业与语言培训",
+          "aliases": [
+            "职业培训",
+            "语言培训",
+            "培训"
+          ]
+        },
+        {
+          "name": "少儿辅导",
+          "aliases": [
+            "少儿",
+            "辅导",
+            "培优"
+          ]
+        }
+      ],
+      "research_industry_name": "教育培训",
+      "media_keywords": [
+        "教育",
+        "培训",
+        "留学",
+        "考试"
+      ],
+      "head_fallback_key": "教育培训",
+      "legacy_names": [
+        "教育",
+        "教育培训"
+      ],
+      "research_industry_slug": "ind_f7f589d8628e"
+    },
+    {
+      "key": "healthcare",
+      "name": "医疗健康",
+      "aliases": [
+        "医疗",
+        "健康",
+        "医药",
+        "医院",
+        "诊所",
+        "体检",
+        "康复",
+        "齿科",
+        "口腔",
+        "药店",
+        "药业",
+        "制药",
+        "药品",
+        "医美",
+        "养生",
+        "健康管理",
+        "健身",
+        "瑜伽",
+        "普拉提",
+        "体育健康",
+        "西药",
+        "医疗器械",
+        "心理咨询"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "医疗机构",
+          "aliases": [
+            "医院",
+            "诊所",
+            "齿科",
+            "口腔",
+            "体检",
+            "康复"
+          ]
+        },
+        {
+          "name": "医药",
+          "aliases": [
+            "医药",
+            "药店",
+            "药业",
+            "制药",
+            "药品"
+          ]
+        },
+        {
+          "name": "健康与医美",
+          "aliases": [
+            "健康",
+            "养生",
+            "健康管理",
+            "医美"
+          ]
+        }
+      ],
+      "research_industry_name": "医疗健康",
+      "media_keywords": [
+        "医疗",
+        "健康",
+        "医药",
+        "养生"
+      ],
+      "head_fallback_key": "医疗健康",
+      "legacy_names": [
+        "医疗",
+        "医疗健康"
+      ],
+      "research_industry_slug": "ind_d1c2b24c5bab"
+    },
+    {
+      "key": "finance",
+      "name": "金融理财",
+      "aliases": [
+        "金融",
+        "财经",
+        "理财",
+        "保险",
+        "投资",
+        "基金",
+        "股票",
+        "银行",
+        "证券",
+        "信贷",
+        "支付",
+        "金融服务",
+        "投资理财"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "银行与支付",
+          "aliases": [
+            "银行",
+            "支付",
+            "信贷"
+          ]
+        },
+        {
+          "name": "投资理财",
+          "aliases": [
+            "投资",
+            "理财",
+            "基金",
+            "股票",
+            "证券",
+            "投资理财"
+          ]
+        },
+        {
+          "name": "保险",
+          "aliases": [
+            "保险"
+          ]
+        }
+      ],
+      "research_industry_name": "金融理财",
+      "media_keywords": [
+        "金融",
+        "财经",
+        "理财",
+        "保险",
+        "投资"
+      ],
+      "head_fallback_key": "金融理财",
+      "legacy_names": [
+        "金融",
+        "金融理财",
+        "金融服务"
+      ],
+      "research_industry_slug": "ind_dba8ad707c0f"
+    },
+    {
+      "key": "tech",
+      "name": "科技软件/AI",
+      "aliases": [
+        "科技",
+        "互联网",
+        "数码",
+        "人工智能",
+        "软件",
+        "软件开发",
+        "电脑",
+        "芯片",
+        "半导体",
+        "大数据",
+        "云计算",
+        "智能硬件",
+        "消费电子",
+        "智能手机",
+        "手机",
+        "可穿戴",
+        "数码产品",
+        "信息技术",
+        "IT服务",
+        "AI",
+        "IT",
+        "SaaS",
+        "CRM"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "软件与 AI",
+          "aliases": [
+            "软件",
+            "软件开发",
+            "人工智能",
+            "大数据",
+            "云计算",
+            "AI",
+            "SaaS",
+            "CRM"
+          ]
+        },
+        {
+          "name": "硬件与消费电子",
+          "aliases": [
+            "电脑",
+            "芯片",
+            "半导体",
+            "智能硬件",
+            "消费电子",
+            "智能手机",
+            "手机",
+            "可穿戴",
+            "数码产品"
+          ]
+        },
+        {
+          "name": "互联网",
+          "aliases": [
+            "互联网",
+            "信息技术",
+            "IT服务",
+            "IT"
+          ]
+        }
+      ],
+      "research_industry_name": "科技数码",
+      "media_keywords": [
+        "科技",
+        "互联网",
+        "数码",
+        "人工智能"
+      ],
+      "head_fallback_key": "科技数码",
+      "legacy_names": [
+        "科技",
+        "科技数码",
+        "科技服务",
+        "消费电子"
+      ],
+      "research_industry_slug": "ind_f1b656874527"
+    },
+    {
+      "key": "ecommerce",
+      "name": "电商零售/消费品",
+      "aliases": [
+        "电商",
+        "电商平台",
+        "零售",
+        "购物",
+        "商城",
+        "便利店",
+        "连锁",
+        "直播电商",
+        "跨境电商",
+        "淘宝",
+        "天猫",
+        "拼多多",
+        "消费品",
+        "日化"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "电商",
+          "aliases": [
+            "电商",
+            "电商平台",
+            "直播电商",
+            "跨境电商",
+            "淘宝",
+            "天猫",
+            "拼多多"
+          ]
+        },
+        {
+          "name": "线下零售",
+          "aliases": [
+            "零售",
+            "便利店",
+            "连锁",
+            "商城"
+          ]
+        },
+        {
+          "name": "消费品",
+          "aliases": [
+            "消费品",
+            "日化"
+          ]
+        }
+      ],
+      "research_industry_name": "电商零售",
+      "media_keywords": [
+        "电商",
+        "零售",
+        "购物"
+      ],
+      "head_fallback_key": "电商零售",
+      "legacy_names": [
+        "电商零售"
+      ],
+      "research_industry_slug": "ind_a084bce7d2ba"
+    },
+    {
+      "key": "food",
+      "name": "食品餐饮",
+      "aliases": [
+        "食品",
+        "美食",
+        "餐饮",
+        "餐厅",
+        "小吃",
+        "茶饮",
+        "奶茶",
+        "咖啡",
+        "饮料",
+        "餐饮连锁",
+        "食品饮料",
+        "火锅",
+        "烘焙",
+        "酒店餐",
+        "健康食品",
+        "果脯",
+        "蜜饯",
+        "食品加工",
+        "农副食品",
+        "农产品深加工",
+        "粤菜",
+        "川菜",
+        "湘菜",
+        "私厨",
+        "宴请",
+        "融合菜",
+        "白酒",
+        "酒类",
+        "food",
+        "调味品",
+        "辣椒"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "餐饮",
+          "aliases": [
+            "餐饮",
+            "餐厅",
+            "小吃",
+            "火锅",
+            "餐饮连锁",
+            "酒店餐"
+          ]
+        },
+        {
+          "name": "茶饮咖啡",
+          "aliases": [
+            "茶饮",
+            "奶茶",
+            "咖啡"
+          ]
+        },
+        {
+          "name": "食品",
+          "aliases": [
+            "食品",
+            "饮料",
+            "食品饮料",
+            "烘焙",
+            "健康食品"
+          ]
+        }
+      ],
+      "research_industry_name": "食品餐饮",
+      "media_keywords": [
+        "食品",
+        "美食",
+        "餐饮"
+      ],
+      "head_fallback_key": "食品餐饮",
+      "legacy_names": [
+        "食品",
+        "食品餐饮",
+        "餐饮食品",
+        "餐饮"
+      ],
+      "research_industry_slug": "ind_674f3f34f17f"
+    },
+    {
+      "key": "travel",
+      "name": "旅游酒店",
+      "aliases": [
+        "旅游",
+        "旅行",
+        "酒店",
+        "景区",
+        "度假",
+        "民宿",
+        "航空",
+        "文旅",
+        "文化旅游",
+        "住宿",
+        "连锁酒店",
+        "商务酒店"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "酒店民宿",
+          "aliases": [
+            "酒店",
+            "民宿"
+          ]
+        },
+        {
+          "name": "旅游景区",
+          "aliases": [
+            "旅游",
+            "旅行",
+            "景区",
+            "度假",
+            "文旅",
+            "文化旅游"
+          ]
+        },
+        {
+          "name": "航空",
+          "aliases": [
+            "航空"
+          ]
+        }
+      ],
+      "research_industry_name": "旅游酒店",
+      "media_keywords": [
+        "旅游",
+        "旅行",
+        "酒店",
+        "景区"
+      ],
+      "head_fallback_key": "旅游酒店",
+      "legacy_names": [
+        "旅游",
+        "旅游酒店",
+        "文旅娱乐"
+      ],
+      "research_industry_slug": "ind_f3e73a7d4bd5"
+    },
+    {
+      "key": "maternal",
+      "name": "母婴亲子",
+      "aliases": [
+        "母婴",
+        "育儿",
+        "亲子",
+        "婴幼",
+        "早教",
+        "玩具",
+        "儿童"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "母婴用品",
+          "aliases": [
+            "母婴",
+            "婴幼",
+            "玩具"
+          ]
+        },
+        {
+          "name": "育儿早教",
+          "aliases": [
+            "育儿",
+            "早教",
+            "亲子",
+            "儿童"
+          ]
+        }
+      ],
+      "research_industry_name": "母婴亲子",
+      "media_keywords": [
+        "母婴",
+        "育儿",
+        "亲子"
+      ],
+      "head_fallback_key": "母婴亲子",
+      "legacy_names": [
+        "母婴",
+        "母婴亲子"
+      ],
+      "research_industry_slug": "ind_d817fd1a1079"
+    },
+    {
+      "key": "fashion_beauty",
+      "name": "时尚美妆",
+      "aliases": [
+        "时尚",
+        "美妆",
+        "穿搭",
+        "化妆品",
+        "服装",
+        "美容",
+        "护肤",
+        "彩妆",
+        "美发",
+        "美甲",
+        "SPA",
+        "珠宝",
+        "翡翠",
+        "饰品",
+        "黄金"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "美妆护肤",
+          "aliases": [
+            "美妆",
+            "化妆品",
+            "护肤",
+            "彩妆"
+          ]
+        },
+        {
+          "name": "美容美发",
+          "aliases": [
+            "美容",
+            "美发",
+            "美甲",
+            "SPA"
+          ]
+        },
+        {
+          "name": "服装时尚",
+          "aliases": [
+            "时尚",
+            "穿搭",
+            "服装"
+          ]
+        }
+      ],
+      "research_industry_name": "时尚美妆",
+      "media_keywords": [
+        "时尚",
+        "美妆",
+        "穿搭"
+      ],
+      "head_fallback_key": "时尚美妆",
+      "legacy_names": [
+        "时尚",
+        "时尚美妆"
+      ],
+      "research_industry_slug": "ind_df15841f79fd"
+    },
+    {
+      "key": "entertainment_media",
+      "name": "文娱/自媒体",
+      "aliases": [
+        "游戏",
+        "动漫",
+        "娱乐",
+        "影视",
+        "直播",
+        "短视频",
+        "自媒体",
+        "内容创作",
+        "文化传媒",
+        "传媒",
+        "MCN"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "游戏动漫",
+          "aliases": [
+            "游戏",
+            "动漫"
+          ]
+        },
+        {
+          "name": "影视娱乐",
+          "aliases": [
+            "影视",
+            "娱乐"
+          ]
+        },
+        {
+          "name": "自媒体与内容",
+          "aliases": [
+            "自媒体",
+            "内容创作",
+            "短视频",
+            "直播",
+            "MCN",
+            "传媒",
+            "文化传媒"
+          ]
+        }
+      ],
+      "research_industry_name": "文娱游戏",
+      "media_keywords": [
+        "娱乐",
+        "影视",
+        "游戏"
+      ],
+      "head_fallback_key": "文娱游戏",
+      "legacy_names": [
+        "文娱游戏",
+        "自媒体"
+      ],
+      "research_industry_slug": "ind_ae744b1b2852"
+    },
+    {
+      "key": "legal_business",
+      "name": "法律商务",
+      "aliases": [
+        "法律",
+        "律师",
+        "诉讼",
+        "法务",
+        "律所",
+        "知识产权",
+        "商标",
+        "专利"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "法律服务",
+          "aliases": [
+            "法律",
+            "律师",
+            "诉讼",
+            "法务",
+            "律所"
+          ]
+        },
+        {
+          "name": "知识产权",
+          "aliases": [
+            "知识产权",
+            "商标",
+            "专利"
+          ]
+        }
+      ],
+      "research_industry_name": "法律商务",
+      "media_keywords": [
+        "法律",
+        "律师"
+      ],
+      "head_fallback_key": "法律商务",
+      "legacy_names": [
+        "法律商务"
+      ],
+      "research_industry_slug": "ind_e603b7dcd851"
+    },
+    {
+      "key": "enterprise_services",
+      "name": "企业服务",
+      "aliases": [
+        "企业服务",
+        "财税",
+        "代账",
+        "代理记账",
+        "工商注册",
+        "人力资源",
+        "招聘",
+        "管理咨询",
+        "企业咨询",
+        "外包",
+        "办公",
+        "企业管理",
+        "商务服务"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "财税与注册",
+          "aliases": [
+            "财税",
+            "代账",
+            "代理记账",
+            "工商注册"
+          ]
+        },
+        {
+          "name": "人力与招聘",
+          "aliases": [
+            "人力资源",
+            "招聘"
+          ]
+        },
+        {
+          "name": "咨询与外包",
+          "aliases": [
+            "管理咨询",
+            "企业咨询",
+            "外包",
+            "办公"
+          ]
+        }
+      ],
+      "research_industry_name": "企业服务",
+      "media_keywords": [
+        "企业服务"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [
+        "企业服务"
+      ],
+      "research_industry_slug": "ind_da89135649a6"
+    },
+    {
+      "key": "agriculture",
+      "name": "农业农资",
+      "aliases": [
+        "农业",
+        "农资",
+        "种植",
+        "养殖",
+        "农药",
+        "兽药",
+        "化肥",
+        "种子",
+        "农机",
+        "畜牧",
+        "水产",
+        "果蔬",
+        "农林牧渔",
+        "农产品"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "种植养殖",
+          "aliases": [
+            "种植",
+            "养殖",
+            "畜牧",
+            "水产",
+            "果蔬"
+          ]
+        },
+        {
+          "name": "农资",
+          "aliases": [
+            "农资",
+            "农药",
+            "兽药",
+            "化肥",
+            "种子",
+            "农机"
+          ]
+        }
+      ],
+      "research_industry_name": "农业农资",
+      "media_keywords": [
+        "农业"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [],
+      "research_industry_slug": "ind_7b313851174d"
+    },
+    {
+      "key": "logistics",
+      "name": "物流运输",
+      "aliases": [
+        "物流",
+        "运输",
+        "货运",
+        "客运",
+        "快递",
+        "仓储",
+        "供应链",
+        "冷链",
+        "货代"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "货运物流",
+          "aliases": [
+            "物流",
+            "运输",
+            "货运",
+            "快递",
+            "冷链",
+            "货代"
+          ]
+        },
+        {
+          "name": "仓储供应链",
+          "aliases": [
+            "仓储",
+            "供应链"
+          ]
+        },
+        {
+          "name": "客运",
+          "aliases": [
+            "客运"
+          ]
+        }
+      ],
+      "research_industry_name": "物流运输",
+      "media_keywords": [
+        "物流",
+        "运输"
+      ],
+      "head_fallback_key": "物流运输",
+      "legacy_names": [],
+      "research_industry_slug": "ind_1444ec3386d3"
+    },
+    {
+      "key": "equipment",
+      "name": "设备(电梯等)",
+      "aliases": [
+        "电梯",
+        "电梯行业",
+        "扶梯",
+        "起重机",
+        "特种设备",
+        "电梯维保"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "电梯",
+          "aliases": [
+            "电梯",
+            "电梯行业",
+            "扶梯",
+            "电梯维保"
+          ]
+        },
+        {
+          "name": "特种设备",
+          "aliases": [
+            "起重机",
+            "特种设备"
+          ]
+        }
+      ],
+      "research_industry_name": "电梯行业",
+      "media_keywords": [
+        "电梯"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [
+        "电梯行业"
+      ],
+      "research_industry_slug": "ind_5dd9ae9339e0"
+    },
+    {
+      "key": "geo_marketing",
+      "name": "GEO/营销服务",
+      "aliases": [
+        "GEO",
+        "GEO优化",
+        "GEO 服务",
+        "GEO服务",
+        "SEO",
+        "数字营销",
+        "营销",
+        "营销服务",
+        "广告",
+        "品牌策划",
+        "代运营",
+        "搜索营销",
+        "网络推广",
+        "整合营销",
+        "工厂出海",
+        "出海",
+        "TikTok运营",
+        "社媒运营",
+        "AI搜索优化",
+        "AI搜索",
+        "搜索优化",
+        "品牌全案",
+        "品牌设计"
+      ],
+      "strong_aliases": [],
+      "subcategories": [
+        {
+          "name": "GEO/SEO",
+          "aliases": [
+            "GEO",
+            "GEO优化",
+            "GEO 服务",
+            "GEO服务",
+            "SEO",
+            "搜索营销"
+          ]
+        },
+        {
+          "name": "营销与广告",
+          "aliases": [
+            "数字营销",
+            "营销",
+            "营销服务",
+            "广告",
+            "品牌策划",
+            "网络推广",
+            "整合营销"
+          ]
+        },
+        {
+          "name": "代运营与出海",
+          "aliases": [
+            "代运营",
+            "工厂出海",
+            "出海",
+            "TikTok运营",
+            "社媒运营"
+          ]
+        }
+      ],
+      "research_industry_name": "GEO 优化服务",
+      "media_keywords": [
+        "营销",
+        "广告"
+      ],
+      "head_fallback_key": null,
+      "legacy_names": [
+        "GEO 优化服务",
+        "geo服务"
+      ],
+      "research_industry_slug": "geo-services"
+    },
+    {
+      "key": "other",
+      "name": "其他",
+      "aliases": [],
+      "strong_aliases": [],
+      "subcategories": [],
+      "research_industry_name": "通用",
+      "media_keywords": [],
+      "head_fallback_key": null,
+      "legacy_names": [
+        "其他",
+        "通用"
+      ],
+      "research_industry_slug": "ind_aa05fd09a619"
+    }
+  ],
+  "legacy_secondary": {
+    "房产家居": {
+      "secondary": "construction",
+      "needs_review": true
+    },
+    "文旅娱乐": {
+      "secondary": "entertainment_media",
+      "needs_review": true
+    },
+    "科技服务": {
+      "secondary": null,
+      "needs_review": true
+    }
+  },
+  "_doc_join_key": "字典 → geo_research_industries 的连接键是 slug,不是 name:管理员 CRUD 的 PATCH 允许改 name(api/research_monitor_industry_api.py UpdateIndustryRequest.name)但不许改 slug。research_industry_name 只作说明。生产 19 行里 18 行 slug=md5(name)(industry_registry.slug_for_name),GEO 优化服务 是手写 geo-services。新补 4 行用 slug_for_name 生成。",
+  "pending_research_rows": [
+    "农业农资",
+    "工业制造",
+    "新能源",
+    "物流运输"
+  ],
+  "_doc_weak": "弱段 = weak_segments 里的词,或以「业」「和相关服务」结尾的国民经济行业分类名(「软件和信息技术服务业」「互联网和相关服务」「商务服务业」…)。生产 285 条里大量是「分类名 / 具体业务」形状,分类名在前会把主类带偏(AI搜索优化/GEO服务 被 AI 带到科技、西药批发 被 批发 带到电商 都是 285 条差分里实测到的)。弱段的命中只在别的段都判不出时才当主类。"
+}

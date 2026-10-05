@@ -1,0 +1,90 @@
+name: Research Monitor Regression
+
+on:
+  pull_request:
+    paths:
+      - 'services/research_monitor/**'
+      - 'api/research_monitor_*.py'
+      - 'tests/research_monitor/**'
+      - 'tests/api/test_research_monitor_*.py'
+      - 'scripts/migration_geo_research_monitor*.sql'
+      - 'scripts/migration_research_monitor_*.sql'
+      - 'scripts/rollback_research_monitor_*.sql'
+      - 'server.py'
+      - '.github/workflows/research-monitor-regression.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'services/research_monitor/**'
+      - 'api/research_monitor_*.py'
+      - 'tests/research_monitor/**'
+      - 'tests/api/test_research_monitor_*.py'
+      - 'scripts/migration_geo_research_monitor*.sql'
+      - 'scripts/migration_research_monitor_*.sql'
+      - 'scripts/rollback_research_monitor_*.sql'
+
+jobs:
+  python-mock-tests:
+    runs-on: ubuntu-latest
+    name: research_monitor mock 测试 (无需 PG)
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio pydantic fastapi httpx psycopg2-binary oss2
+      - name: Run mock tests
+        env:
+          PYTHONIOENCODING: utf-8
+          # 项目 conftest 校验测试库 URL 必须含 'test', 用 dummy URL
+          # mock job 不会真连 DB,但 conftest 启动校验仍需通过
+          TEST_DATABASE_URL: postgresql://fake:fake@localhost:1/test_fake_db
+          SKIP_INTEGRATION_TESTS: "1"
+        run: |
+          pytest tests/research_monitor/ tests/api/test_research_monitor_*.py -v --no-header -m "not integration"
+
+  python-integration-tests:
+    runs-on: ubuntu-latest
+    name: research_monitor 真 PG 集成测试
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: geo_admin
+          POSTGRES_PASSWORD: ci_test_password
+          POSTGRES_DB: geo_agentscope_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U geo_admin"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-asyncio pydantic fastapi httpx psycopg2-binary aiohttp oss2 anthropic openai dashscope
+      - name: Apply schema migration
+        env:
+          PGPASSWORD: ci_test_password
+        run: |
+          # 安装 psql 客户端
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          psql -h localhost -U geo_admin -d geo_agentscope_test -f scripts/migration_geo_research_monitor.sql
+      - name: Run integration tests
+        env:
+          PYTHONIOENCODING: utf-8
+          TEST_DATABASE_URL: postgresql://geo_admin:ci_test_password@localhost:5432/geo_agentscope_test
+          DATABASE_URL: postgresql://geo_admin:ci_test_password@localhost:5432/geo_agentscope_test
+        run: |
+          # 跑标记为 integration 的测试 (并发 + e2e)
+          pytest tests/research_monitor/ tests/api/test_research_monitor_*.py -v --no-header -m "integration"

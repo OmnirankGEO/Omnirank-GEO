@@ -1,0 +1,190 @@
+{
+  "generated_at": "2026-04-26T05:07:09",
+  "data_scope": "simulation overlay on local docker DB · not production verified",
+  "ssot_module": "utils/brand_completeness.py",
+  "rows": [
+    {
+      "alias": "全域上榜",
+      "matched": true,
+      "brand_id": 1,
+      "brand_name": "全域上榜（深圳）科技有限公司",
+      "score_before": 25,
+      "score_after_ai_fill_persist": 80,
+      "score_after_full": 100,
+      "groups_before": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "groups_after_full": {
+        "identity": 30,
+        "business": 30,
+        "marketing": 20,
+        "deep_analysis": 10,
+        "market_insight": 10
+      },
+      "missing_before": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "missing_after_full": []
+    },
+    {
+      "alias": "一路顺风",
+      "matched": true,
+      "brand_id": 83,
+      "brand_name": "一路顺风",
+      "score_before": 25,
+      "score_after_ai_fill_persist": 75,
+      "score_after_full": 95,
+      "groups_before": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "groups_after_full": {
+        "identity": 30,
+        "business": 25,
+        "marketing": 20,
+        "deep_analysis": 10,
+        "market_insight": 10
+      },
+      "missing_before": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "missing_after_full": [
+        "products"
+      ]
+    },
+    {
+      "alias": "QZQZ",
+      "matched": true,
+      "brand_id": 10,
+      "brand_name": "QZQZ 美学定制",
+      "score_before": 25,
+      "score_after_ai_fill_persist": 80,
+      "score_after_full": 100,
+      "groups_before": {
+        "identity": 20,
+        "business": 5,
+        "marketing": 0,
+        "deep_analysis": 0,
+        "market_insight": 0
+      },
+      "groups_after_full": {
+        "identity": 30,
+        "business": 30,
+        "marketing": 20,
+        "deep_analysis": 10,
+        "market_insight": 10
+      },
+      "missing_before": [
+        "company_name",
+        "business",
+        "target_users",
+        "products",
+        "company_intro",
+        "selling_points",
+        "success_cases",
+        "core_value",
+        "testimonials",
+        "industry_brief",
+        "service_scope",
+        "local_competitors",
+        "authority_sources",
+        "hot_formats",
+        "my_differentiation"
+      ],
+      "missing_after_full": []
+    },
+    {
+      "alias": "驰鲸",
+      "matched": true,
+      "brand_id": 3,
+      "brand_name": "驰鲸科技",
+      "score_before": 75,
+      "score_after_ai_fill_persist": 80,
+      "score_after_full": 100,
+      "groups_before": {
+        "identity": 20,
+        "business": 25,
+        "marketing": 20,
+        "deep_analysis": 0,
+        "market_insight": 10
+      },
+      "groups_after_full": {
+        "identity": 30,
+        "business": 30,
+        "marketing": 20,
+        "deep_analysis": 10,
+        "market_insight": 10
+      },
+      "missing_before": [
+        "company_name",
+        "products",
+        "industry_brief"
+      ],
+      "missing_after_full": []
+    },
+    {
+      "alias": "揭阳大昀",
+      "matched": true,
+      "brand_id": 17,
+      "brand_name": "揭阳大昀地产・万汇广场",
+      "score_before": 75,
+      "score_after_ai_fill_persist": 80,
+      "score_after_full": 100,
+      "groups_before": {
+        "identity": 20,
+        "business": 25,
+        "marketing": 20,
+        "deep_analysis": 0,
+        "market_insight": 10
+      },
+      "groups_after_full": {
+        "identity": 30,
+        "business": 30,
+        "marketing": 20,
+        "deep_analysis": 10,
+        "market_insight": 10
+      },
+      "missing_before": [
+        "company_name",
+        "products",
+        "industry_brief"
+      ],
+      "missing_after_full": []
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+pool_version,scope,industry,engine,cell_n,authoritative_n,portal_n,vertical_n,self_media_n,douyin_n,unclassified_n
+citation-media-tier-v1-2026-08-07,global,,,36980,479,8088,10916,8931,1724,8566
+citation-media-tier-v1-2026-08-07,industry_engine,家装家居,doubao,622,0,98,135,285,222,104
+citation-media-tier-v1-2026-08-07,industry_engine,家装家居,deepseek,786,2,130,210,311,2,133
+citation-media-tier-v1-2026-08-07,industry_engine,家装家居,kimi,420,0,118,117,98,0,87
+citation-media-tier-v1-2026-08-07,industry_engine,家装家居,qwen,520,0,138,181,165,0,36
+citation-media-tier-v1-2026-08-07,industry,电梯行业,,377,0,82,40,171,0,84

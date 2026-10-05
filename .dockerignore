@@ -1,0 +1,109 @@
+# Git
+.git
+.gitignore
+
+# Secrets · 严禁打入 image 层(API key 泄漏 · 历史问题:cc829ec8 / 7d6f66 / 72ce4a)
+# 运行时由 docker compose env_file 注入 environment vars · 不依赖 /app/.env 文件
+.env
+.env.local
+.env.*.local
+.env.bak
+.env.bak.*
+.env.bak_*
+*.env.bak
+backup_env_*.env
+backup_env_*.bak
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+.venv
+venv
+
+# Node modules (will be rebuilt in Docker)
+node_modules
+frontend/node_modules
+frontend/dist
+# 下面全局排除了 *.txt;字体许可证(SIL OFL)要随字体一起发出去,单独放行(规则写在 *.txt 之后才生效,见文件末尾)
+
+# IDE
+.vscode
+.idea
+.agent
+.agents
+
+# Database files (SQLite遗留，不再使用)
+*.db
+db/*.db
+data/*.db
+
+# Migration scripts (仅迁移时使用)
+db/migrate_*.py
+!db/migrate_channel_tier.py
+
+# Test and debug scripts
+test_*.py
+debug_*.py
+check_*.py
+fix_*.py
+temp_*.py
+# Local/private one-off helpers are never runtime dependencies. Historical
+# copies included deployment credentials and must not enter build context.
+scripts/_*.py
+scripts/product/
+.planning/
+.restore-test/
+agent-test-artifacts*/
+qa-artifacts/
+
+# Output and cache (mounted as volumes)
+output/
+cache/*
+# cache/ 同时包含运行时数据与 Python 包。镜像只纳入源码；__pycache__ 仍由上方全局规则排除。
+!cache/*.py
+runs/
+logs/
+
+# Documentation not needed at runtime (only top-level docs)
+ARCHITECTURE_DESIGN.md
+CHANGELOG.md
+CONVERSATION_HISTORY.md
+DEV_ROADMAP.md
+ENGINEERING_OPTIMIZATION.md
+FRONTEND_DB_API.md
+ISSUES_AUDIT.md
+LLM_NODE_AUDIT.md
+PROJECT_HANDOVER.md
+DEPLOY.md
+implementation_plan.md
+
+# Temp files
+*.log
+*.tmp
+KIMI文档
+
+# Windows specific
+start.bat
+*.bat
+
+# Archived (all legacy/dev files)
+_archive/
+frontend_archived/
+
+# Large media
+omnirank-video/
+
+# Misc files not needed at runtime
+*.pdf
+*.txt
+!requirements*.txt
+docker-deploy/
+docker-deploy.zip
+diaoyan/
+# Documentation — 同步到 GitHub 但不进 Docker 镜像
+# 例外:合作协议条款 运行时需要(partner_api 读 /app/docs/条款/*.md · GET /api/partner/agreement/{version})
+docs/**
+!docs/条款/
+!docs/条款/**

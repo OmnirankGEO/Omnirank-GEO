@@ -1,0 +1,300 @@
+{
+  "generated_at": "2026-04-26T05:21:19",
+  "data_scope": "in-memory assemble · no DB write · 1 row uses monkeypatched _enrich_with_brief",
+  "rows": [
+    {
+      "brand_id": 1,
+      "brand_name": "全域上榜（深圳）科技有限公司",
+      "inject_brief": false,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 141,
+        "2": 168,
+        "3": 2161,
+        "4": 428,
+        "5": 370,
+        "6": 379,
+        "7": 183,
+        "8": 285
+      },
+      "evidence_count": {
+        "A": 6,
+        "B": 6,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": false,
+        "service_scope": null,
+        "local_competitors_count": 0,
+        "brief_local_competitors_in_module4": 0,
+        "differentiation_in_cover": false
+      },
+      "module_signals": {
+        "m1_has_differentiation": false,
+        "m4_has_brief_competitor": false,
+        "m5_has_service_scope_block": false
+      },
+      "errors": [],
+      "full_md_length": 4122,
+      "lint_warnings": []
+    },
+    {
+      "brand_id": 83,
+      "brand_name": "一路顺风",
+      "inject_brief": false,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 126,
+        "2": 168,
+        "3": 66,
+        "4": 90,
+        "5": 370,
+        "6": 379,
+        "7": 183,
+        "8": 214
+      },
+      "evidence_count": {
+        "A": 0,
+        "B": 0,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": false,
+        "service_scope": null,
+        "local_competitors_count": 0,
+        "brief_local_competitors_in_module4": 0,
+        "differentiation_in_cover": false
+      },
+      "module_signals": {
+        "m1_has_differentiation": false,
+        "m4_has_brief_competitor": false,
+        "m5_has_service_scope_block": false
+      },
+      "errors": [],
+      "full_md_length": 1603,
+      "lint_warnings": []
+    },
+    {
+      "brand_id": 10,
+      "brand_name": "QZQZ 美学定制",
+      "inject_brief": false,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 135,
+        "2": 168,
+        "3": 2222,
+        "4": 462,
+        "5": 369,
+        "6": 379,
+        "7": 183,
+        "8": 279
+      },
+      "evidence_count": {
+        "A": 8,
+        "B": 4,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": false,
+        "service_scope": null,
+        "local_competitors_count": 0,
+        "brief_local_competitors_in_module4": 0,
+        "differentiation_in_cover": false
+      },
+      "module_signals": {
+        "m1_has_differentiation": false,
+        "m4_has_brief_competitor": false,
+        "m5_has_service_scope_block": false
+      },
+      "errors": [],
+      "full_md_length": 4204,
+      "lint_warnings": []
+    },
+    {
+      "brand_id": 3,
+      "brand_name": "驰鲸科技",
+      "inject_brief": false,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 123,
+        "2": 168,
+        "3": 1680,
+        "4": 467,
+        "5": 370,
+        "6": 379,
+        "7": 183,
+        "8": 267
+      },
+      "evidence_count": {
+        "A": 12,
+        "B": 0,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": false,
+        "service_scope": null,
+        "local_competitors_count": 0,
+        "brief_local_competitors_in_module4": 0,
+        "differentiation_in_cover": false
+      },
+      "module_signals": {
+        "m1_has_differentiation": false,
+        "m4_has_brief_competitor": false,
+        "m5_has_service_scope_block": false
+      },
+      "errors": [],
+      "full_md_length": 3644,
+      "lint_warnings": []
+    },
+    {
+      "brand_id": 17,
+      "brand_name": "揭阳大昀地产・万汇广场",
+      "inject_brief": false,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 147,
+        "2": 168,
+        "3": 1673,
+        "4": 473,
+        "5": 370,
+        "6": 379,
+        "7": 183,
+        "8": 291
+      },
+      "evidence_count": {
+        "A": 8,
+        "B": 0,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": false,
+        "service_scope": null,
+        "local_competitors_count": 0,
+        "brief_local_competitors_in_module4": 0,
+        "differentiation_in_cover": false
+      },
+      "module_signals": {
+        "m1_has_differentiation": false,
+        "m4_has_brief_competitor": false,
+        "m5_has_service_scope_block": false
+      },
+      "errors": [],
+      "full_md_length": 3691,
+      "lint_warnings": []
+    },
+    {
+      "brand_id": 99999999,
+      "brand_name": "",
+      "inject_brief": false,
+      "modules_present": {},
+      "module_md_lengths": {},
+      "evidence_count": null,
+      "brief_consumption": null,
+      "module_signals": {},
+      "errors": [
+        "brand 不存在"
+      ]
+    },
+    {
+      "brand_id": 1,
+      "brand_name": "全域上榜（深圳）科技有限公司",
+      "inject_brief": true,
+      "modules_present": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true,
+        "6": true,
+        "7": true,
+        "8": true
+      },
+      "module_md_lengths": {
+        "1": 184,
+        "2": 168,
+        "3": 2161,
+        "4": 680,
+        "5": 445,
+        "6": 379,
+        "7": 183,
+        "8": 285
+      },
+      "evidence_count": {
+        "A": 6,
+        "B": 6,
+        "C": 0
+      },
+      "brief_consumption": {
+        "has_brief": true,
+        "service_scope": "local",
+        "local_competitors_count": 3,
+        "brief_local_competitors_in_module4": 3,
+        "differentiation_in_cover": true
+      },
+      "module_signals": {
+        "m1_has_differentiation": true,
+        "m4_has_brief_competitor": true,
+        "m5_has_service_scope_block": true
+      },
+      "errors": [],
+      "full_md_length": 4492,
+      "lint_warnings": []
+    }
+  ],
+  "summary": {
+    "expected_real": 5,
+    "real_brands_smoked": 5,
+    "missing_brand_ids": [],
+    "all_8_modules_present": 5,
+    "brief_consumption_active": 1,
+    "inject_module_signals_ok": true,
+    "lint_clean": true,
+    "lint_offenders": [],
+    "pass": true
+  }
+}

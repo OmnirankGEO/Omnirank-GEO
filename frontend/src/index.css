@@ -1,0 +1,1232 @@
+/* Scan production sources only. Playwright locators such as `:visible` are not
+   Tailwind classes and must never be compiled into the production stylesheet. */
+@import 'tailwindcss' source(none);
+@import 'tw-animate-css';
+@import "shadcn/tailwind.css";
+@import './styles/density.css';
+@source './';
+@source '../index.html';
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:is(.dark *));
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= --theme(--breakpoint-sm)) {
+    max-width: none;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@theme {
+  --font-sans: Inter, system-ui, -apple-system, sans-serif;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-brand: hsl(var(--brand));
+  --color-brand-hover: hsl(var(--brand-hover));
+  --color-brand-light: hsl(var(--brand-light));
+  --color-brand-dark: hsl(var(--brand-dark));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-active: hsl(var(--sidebar-active));
+  --color-sidebar-active-foreground: hsl(var(--sidebar-active-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    /* [CTO-15.23 2026-05-21 v8] 撤 overscroll-behavior: none · 保留 iOS bounce 手势反馈
+     * 老板要求:v7 找到真根因(useSwipeGesture 误触发 sidebar overlay)后 ·
+     * 把之前为修色块取消的"下滑刷新 / 拖底弹一下"等手势反馈加回来
+     * 保留 bg-card(bounce 露出 = card 色不是纯黑 · 防 dark mode 视觉异常) */
+    @apply bg-card text-foreground;
+  }
+  html {
+    @apply bg-card font-sans;
+  }
+}
+
+@layer base {
+  :root {
+    /* === OmniRank Design Tokens — Ultra-Flat Minimal SaaS === */
+    --background: 0 0% 100%;              /* #FFFFFF */
+    --foreground: 0 0% 14%;               /* #232323 深灰黑 */
+
+    --card: 0 0% 100%;                    /* #FFFFFF */
+    --card-foreground: 0 0% 14%;          /* #232323 */
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 14%;
+
+    --primary: 0 0% 10%;                  /* #1A1A1A — CTA按钮黑底 */
+    --primary-foreground: 0 0% 100%;      /* #FFFFFF */
+
+    --secondary: 0 0% 96%;               /* #F5F5F5 — 次要区域底色 */
+    --secondary-foreground: 0 0% 14%;    /* #232323 */
+
+    --muted: 0 0% 96%;                   /* #F5F5F5 */
+    --muted-foreground: 0 0% 45%;        /* #737373 辅助文字 */
+
+    --accent: 138 76% 97%;               /* #F0FDF4 — 品牌绿极浅底 */
+    --accent-foreground: 143 64% 24%;    /* #166534 */
+
+    --destructive: 0 84% 60%;            /* #EF4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 93%;                  /* #ECECEC — 极淡灰边框 */
+    --input: 0 0% 93%;                   /* #ECECEC */
+    --ring: 91 76% 43%;                  /* #6CBE1E — 品牌绿focus */
+
+    --radius: 0.75rem;                   /* 12px 基准圆角 */
+
+    /* === 品牌色 === */
+    --brand: 91 76% 43%;                 /* #6CBE1E 箭头绿 */
+    --brand-hover: 91 72% 38%;           /* #5BA618 */
+    --brand-light: 138 76% 97%;          /* #F0FDF4 */
+    --brand-dark: 211 52% 25%;           /* #1E3A5F 深海蓝 */
+
+    /* === 图表 === */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* === 侧边栏 === */
+    --sidebar: 0 0% 96%;                 /* #F5F5F5 */
+    --sidebar-foreground: 0 0% 45%;      /* #737373 */
+    --sidebar-active: 0 0% 100%;         /* #FFFFFF 当前项白底 */
+    --sidebar-active-foreground: 0 0% 14%; /* #232323 */
+    --sidebar-border: 0 0% 93%;          /* #ECECEC */
+    --sidebar-primary: 91 76% 43%;       /* 品牌绿 */
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 14%;
+    --sidebar-ring: 91 76% 43%;
+  }
+
+  .dark {
+    /* === v7 HSL 暗色主题 (色相 224-230°) === */
+    /* [CTO-15.23 2026-05-21 v5 token-align] --background 调到跟 --card 同色
+     * 之前 228 16% 10% vs 226 14% 13% 仅 3% lightness 差 · iOS WebKit
+     * bounce/zoom 露出 body bg 时老板感觉"纯黑色块"(微差肉眼难辨视为同黑)
+     * v4 hotfix 改 body @apply bg-card 编译产物正确 · 但仍有 sanity 担忧 +
+     * 其他元素(SidebarInset 内 / Drawer 等)若也用 bg-background 仍露差
+     * 一招治本:--background token = --card 值 · 任何 bg-background 元素永远 == bg-card
+     * 不破坏 design system:dark mode 二者本来差 3% 微妙 · 现在合并 · Card 层次靠 border 表达
+     * Light mode --background == --card == #FFFFFF 本来就同色 · 无变化 */
+    --background: 226 14% 13%;           /* s1+s2 合并 · 跟 --card 同色 · 解 iOS bounce 色块 */
+    --foreground: 210 40% 93%;           /* t1 — 主文字 */
+
+    --card: 226 14% 13%;                 /* s2 — 卡片背景 */
+    --card-foreground: 210 40% 93%;      /* t1 */
+
+    --popover: 226 14% 13%;             /* s2 */
+    --popover-foreground: 210 40% 93%;  /* t1 */
+
+    --primary: 210 40% 93%;             /* 白色CTA — 白底黑字 */
+    --primary-foreground: 230 20% 7%;   /* s0 */
+
+    --secondary: 224 12% 16%;           /* s3 — 高亮/悬浮面 */
+    --secondary-foreground: 210 40% 93%;
+
+    --muted: 224 12% 16%;              /* s3 */
+    --muted-foreground: 215 15% 63%;   /* t2 — 次级文字 */
+
+    --accent: 142 69% 58%;             /* #4ade80 — 微绿点缀 <5% */
+    --accent-foreground: 230 20% 7%;
+
+    --destructive: 0 84% 60%;          /* #ef4444 */
+    --destructive-foreground: 210 40% 93%;
+
+    --border: 226 14% 16%;             /* ~b1 rgba白6% 近似 */
+    --input: 226 12% 18%;              /* ~b2 */
+    --ring: 142 69% 58%;               /* accent 绿 focus */
+
+    --brand: 142 69% 58%;              /* #4ade80 */
+    --brand-hover: 142 69% 48%;
+    --brand-light: 143 50% 12%;
+    --brand-dark: 211 52% 60%;
+
+    /* === 图表 === */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* === 侧边栏 (v7 同色相深层) === */
+    --sidebar: 230 20% 7%;              /* s0 — 最深层 */
+    --sidebar-foreground: 215 15% 63%; /* t2 */
+    --sidebar-active: 224 12% 16%;     /* s3 */
+    --sidebar-active-foreground: 210 40% 93%; /* t1 */
+    --sidebar-border: 226 14% 16%;     /* b1 */
+    --sidebar-primary: 142 69% 58%;    /* accent 绿 */
+    --sidebar-primary-foreground: 230 20% 7%;
+    --sidebar-accent: 224 12% 16%;     /* s3 */
+    --sidebar-accent-foreground: 210 40% 93%;
+    --sidebar-ring: 142 69% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  /* [CTO-15.23 2026-05-20 v4 hotfix] 第二个 body 块 sync 跟首个一致
+   * 之前 prod 部署 bf29cd45 后 Deploy-CTO 警告:存在两个 body 块 ·
+   * 第二个仍是 bg-background · CSS specificity 覆盖 v4 修法(行 118 bg-card)
+   * iOS WebKit bounce 露出仍是纯黑 background · 老板真机仍报色块
+   * 修:第二个 body 块对齐首个 · 双重保险 bg-card + overscroll-behavior: none */
+  body {
+    @apply bg-card text-foreground;
+  }
+}
+
+/* [CTO-15.23 2026-05-21 v5] unlayered 兜底 · 比 @layer base 高 specificity
+ * 无 @layer 包裹的 CSS cascade 默认胜过所有 layered 规则(Tailwind v4 spec)
+ * 配合 --background = --card token 修法形成双保险 · 防 Tailwind preflight 覆盖 bg-card
+ * [v8] 撤 overscroll-behavior · 保留 iOS bounce 手势反馈(老板要求加回来) */
+html,
+body {
+  background-color: hsl(var(--card));
+}
+
+html.omnirank-shell-lock,
+html.omnirank-shell-lock body,
+html.omnirank-shell-lock #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+@layer base {
+  /* 暗色模式下 prose 文字自动反色 */
+  .dark .prose {
+    --tw-prose-body: hsl(210 40% 93%);
+    --tw-prose-headings: hsl(210 40% 96%);
+    --tw-prose-links: hsl(210 40% 93%);
+    --tw-prose-bold: hsl(210 40% 96%);
+    --tw-prose-code: hsl(210 40% 90%);
+    --tw-prose-quotes: hsl(215 15% 63%);
+    --tw-prose-counters: hsl(215 15% 63%);
+    --tw-prose-bullets: hsl(215 15% 50%);
+    --tw-prose-hr: hsl(226 14% 20%);
+    --tw-prose-th-borders: hsl(226 14% 20%);
+    --tw-prose-td-borders: hsl(226 14% 16%);
+  }
+}
+
+/* ================================================================
+   Global Dark Mode Overrides
+   覆盖页面中硬编码的 Tailwind 颜色类，使暗色模式统一生效
+   ================================================================ */
+
+/* --- 背景色覆盖 --- */
+.dark .bg-white {
+  background-color: hsl(var(--card)) !important;
+}
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-slate-50,
+.dark .bg-slate-100 {
+  background-color: hsl(var(--muted)) !important;
+}
+.dark .bg-gray-200,
+.dark .bg-gray-300,
+.dark .bg-slate-200 {
+  background-color: hsl(var(--border)) !important;
+}
+
+/* --- 文字色覆盖 --- */
+.dark .text-gray-900,
+.dark .text-gray-800,
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-black {
+  color: hsl(var(--foreground)) !important;
+}
+.dark .text-gray-700,
+.dark .text-gray-600,
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: hsl(var(--muted-foreground)) !important;
+}
+.dark .text-gray-500,
+.dark .text-gray-400,
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: hsl(0 0% 55%) !important;
+}
+
+/* --- 边框色覆盖 --- */
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-300 {
+  border-color: hsl(var(--border)) !important;
+}
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: hsl(var(--border)) !important;
+}
+
+/* --- 表单元素 --- */
+.dark select,
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark textarea {
+  background-color: hsl(var(--card)) !important;
+  color: hsl(var(--foreground)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+.dark select option {
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+}
+
+/* 社媒 C 端新版是独立浅色产品，不继承后台暗色覆写。 */
+.dark .social-studio-light,
+.dark .social-studio-light * {
+  color-scheme: light;
+}
+
+.dark .social-studio-light:not(.social-studio-dark) {
+  background-color: #f6f7f4 !important;
+  color: #161714 !important;
+}
+
+.dark .social-studio-light:not(.social-studio-dark) textarea.social-studio-textarea {
+  background-color: transparent !important;
+  color: #161714 !important;
+  border-color: transparent !important;
+}
+
+.dark .social-studio-light:not(.social-studio-dark) textarea.social-studio-textarea::placeholder {
+  color: #9aa094 !important;
+}
+
+.dark .social-studio-light:not(.social-studio-dark) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.dark .social-studio-light:not(.social-studio-dark) textarea:not(.social-studio-textarea),
+.dark .social-studio-light:not(.social-studio-dark) select {
+  background-color: var(--ss-panel-soft) !important;
+  color: var(--ss-text) !important;
+  border-color: var(--ss-line) !important;
+}
+
+.dark .social-studio-light:not(.social-studio-dark) input::placeholder,
+.dark .social-studio-light:not(.social-studio-dark) textarea::placeholder {
+  color: var(--ss-quiet) !important;
+}
+
+.social-studio-dark {
+  color-scheme: dark;
+  background-color: var(--ss-bg) !important;
+  color: var(--ss-text) !important;
+}
+
+.social-studio-dark textarea.social-studio-textarea {
+  background-color: transparent !important;
+  color: var(--ss-text) !important;
+  border-color: transparent !important;
+}
+
+.social-studio-dark textarea.social-studio-textarea::placeholder {
+  color: var(--ss-quiet) !important;
+}
+
+/* 小榜建档对话是 Dialog Portal，不一定挂在 .social-studio-light 下；
+   全局 .dark textarea 的 !important 会把浅色模式输入框染黑，因此这里用
+   Dialog 自己的 data-flywheel-theme 做局部强覆盖。 */
+[data-flywheel-theme="light"] .ss-flywheel-input {
+  background-color: #fffdf7 !important;
+  color: #2d2c28 !important;
+  border-color: #d8d4c4 !important;
+  box-shadow: inset 0 0 0 1px #d8d4c4 !important;
+}
+
+[data-flywheel-theme="light"] .ss-flywheel-textarea {
+  background-color: transparent !important;
+  color: #2d2c28 !important;
+  border-color: transparent !important;
+}
+
+[data-flywheel-theme="light"] .ss-flywheel-textarea::placeholder {
+  color: #8a8779 !important;
+}
+
+[data-flywheel-theme="dark"] .ss-flywheel-input {
+  background-color: #1b1d24 !important;
+  color: #f5f4ec !important;
+  box-shadow: inset 0 0 0 1px var(--chat-line) !important;
+}
+
+[data-flywheel-theme="dark"] .ss-flywheel-textarea {
+  background-color: transparent !important;
+  color: #f5f4ec !important;
+  border-color: transparent !important;
+}
+
+.social-studio-light {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+.social-studio-light * {
+  overscroll-behavior-y: auto;
+}
+
+/* --- hover 状态覆盖 --- */
+.dark .hover\:bg-gray-50:hover,
+.dark .hover\:bg-gray-100:hover,
+.dark .hover\:bg-slate-50:hover {
+  background-color: hsl(var(--muted)) !important;
+}
+
+/* --- ring/shadow 覆盖 --- */
+.dark .ring-gray-200,
+.dark .ring-gray-300 {
+  --tw-ring-color: hsl(var(--border)) !important;
+}
+.dark .shadow-sm,
+.dark .shadow {
+  --tw-shadow-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* --- placeholder 覆盖 --- */
+.dark .placeholder-gray-400::placeholder,
+.dark .placeholder-gray-500::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: hsl(0 0% 45%) !important;
+}
+
+/* --- 彩色浅背景覆盖（暗色模式用深色低饱和版本） --- */
+
+/* 蓝色系 */
+.dark .bg-blue-50,
+.dark .bg-blue-100,
+.dark .bg-blue-50\/50,
+.dark .bg-blue-50\/30 {
+  background-color: hsl(217 50% 15%) !important;
+}
+.dark .text-blue-900,
+.dark .text-blue-800,
+.dark .text-blue-700 {
+  color: hsl(217 80% 70%) !important;
+}
+.dark .text-blue-600,
+.dark .text-blue-500 {
+  color: hsl(217 80% 65%) !important;
+}
+.dark .border-blue-100,
+.dark .border-blue-200,
+.dark .border-blue-300 {
+  border-color: hsl(217 40% 25%) !important;
+}
+.dark .hover\:bg-blue-50:hover {
+  background-color: hsl(217 50% 18%) !important;
+}
+
+/* 绿色系 */
+.dark .bg-green-50,
+.dark .bg-green-100,
+.dark .bg-green-50\/50,
+.dark .bg-green-50\/30 {
+  background-color: hsl(143 40% 14%) !important;
+}
+.dark .text-green-900,
+.dark .text-green-800,
+.dark .text-green-700 {
+  color: hsl(143 60% 60%) !important;
+}
+.dark .text-green-600,
+.dark .text-green-500,
+.dark .text-green-400 {
+  color: hsl(143 60% 55%) !important;
+}
+.dark .border-green-100,
+.dark .border-green-200,
+.dark .border-green-300 {
+  border-color: hsl(143 30% 22%) !important;
+}
+.dark .hover\:bg-green-50:hover,
+.dark .hover\:bg-green-100:hover {
+  background-color: hsl(143 40% 18%) !important;
+}
+
+/* 黄色/琥珀色系 */
+.dark .bg-yellow-50,
+.dark .bg-yellow-100,
+.dark .bg-yellow-50\/50,
+.dark .bg-amber-50,
+.dark .bg-amber-100 {
+  background-color: hsl(40 50% 14%) !important;
+}
+.dark .text-yellow-900,
+.dark .text-yellow-800,
+.dark .text-yellow-700,
+.dark .text-amber-700,
+.dark .text-amber-600 {
+  color: hsl(40 80% 60%) !important;
+}
+.dark .text-yellow-600,
+.dark .text-yellow-500,
+.dark .text-amber-500 {
+  color: hsl(40 80% 55%) !important;
+}
+.dark .border-yellow-200,
+.dark .border-yellow-300,
+.dark .border-amber-200 {
+  border-color: hsl(40 30% 22%) !important;
+}
+.dark .hover\:bg-yellow-50:hover,
+.dark .hover\:bg-yellow-100:hover {
+  background-color: hsl(40 50% 18%) !important;
+}
+
+/* 红色系 */
+.dark .bg-red-50,
+.dark .bg-red-100,
+.dark .bg-red-50\/50 {
+  background-color: hsl(0 50% 14%) !important;
+}
+.dark .text-red-900,
+.dark .text-red-800,
+.dark .text-red-700 {
+  color: hsl(0 70% 65%) !important;
+}
+.dark .text-red-600,
+.dark .text-red-500,
+.dark .text-red-400 {
+  color: hsl(0 70% 60%) !important;
+}
+.dark .border-red-100,
+.dark .border-red-200,
+.dark .border-red-300 {
+  border-color: hsl(0 30% 22%) !important;
+}
+.dark .hover\:bg-red-50:hover,
+.dark .hover\:bg-red-100:hover {
+  background-color: hsl(0 50% 18%) !important;
+}
+
+/* 橙色系 */
+.dark .bg-orange-50,
+.dark .bg-orange-100 {
+  background-color: hsl(25 50% 14%) !important;
+}
+.dark .text-orange-700,
+.dark .text-orange-600,
+.dark .text-orange-500 {
+  color: hsl(25 80% 60%) !important;
+}
+.dark .border-orange-200,
+.dark .border-orange-300 {
+  border-color: hsl(25 30% 22%) !important;
+}
+
+/* 紫色系 */
+.dark .bg-purple-50,
+.dark .bg-purple-100 {
+  background-color: hsl(270 40% 15%) !important;
+}
+.dark .text-purple-900,
+.dark .text-purple-800,
+.dark .text-purple-700 {
+  color: hsl(270 60% 70%) !important;
+}
+.dark .text-purple-600,
+.dark .text-purple-500 {
+  color: hsl(270 60% 65%) !important;
+}
+.dark .border-purple-200,
+.dark .border-purple-300 {
+  border-color: hsl(270 30% 22%) !important;
+}
+
+/* 靛蓝色系 */
+.dark .bg-indigo-50,
+.dark .bg-indigo-100 {
+  background-color: hsl(240 40% 15%) !important;
+}
+.dark .text-indigo-700,
+.dark .text-indigo-600 {
+  color: hsl(240 60% 70%) !important;
+}
+
+/* Emerald 翠绿色系 */
+.dark .bg-emerald-50,
+.dark .bg-emerald-100 {
+  background-color: hsl(160 40% 14%) !important;
+}
+.dark .text-emerald-700,
+.dark .text-emerald-600 {
+  color: hsl(160 60% 55%) !important;
+}
+
+/* --- 渐变色覆盖 --- */
+.dark .from-blue-50,
+.dark .from-blue-50\/50 {
+  --tw-gradient-from: hsl(217 50% 15%) !important;
+}
+.dark .to-blue-50,
+.dark .to-indigo-50,
+.dark .to-transparent {
+  --tw-gradient-to: transparent !important;
+}
+.dark .from-purple-50 {
+  --tw-gradient-from: hsl(270 40% 15%) !important;
+}
+.dark .to-blue-50 {
+  --tw-gradient-to: hsl(217 50% 15%) !important;
+}
+.dark .from-green-50,
+.dark .from-emerald-50 {
+  --tw-gradient-from: hsl(143 40% 14%) !important;
+}
+.dark .from-amber-50,
+.dark .from-orange-50 {
+  --tw-gradient-from: hsl(40 50% 14%) !important;
+}
+.dark .to-orange-50 {
+  --tw-gradient-to: hsl(25 50% 14%) !important;
+}
+.dark .from-indigo-50 {
+  --tw-gradient-from: hsl(240 40% 15%) !important;
+}
+.dark .via-blue-50\/60,
+.dark .via-blue-50,
+.dark .via-purple-50 {
+  --tw-gradient-via: hsl(240 30% 15%) !important;
+}
+.dark .to-pink-50 {
+  --tw-gradient-to: hsl(330 30% 15%) !important;
+}
+.dark .from-blue-600 {
+  --tw-gradient-from: hsl(217 70% 40%) !important;
+}
+.dark .to-blue-500 {
+  --tw-gradient-to: hsl(217 70% 45%) !important;
+}
+
+/* --- hover 彩色背景覆盖 --- */
+.dark .hover\:bg-blue-100:hover {
+  background-color: hsl(217 50% 20%) !important;
+}
+.dark .hover\:bg-red-100:hover {
+  background-color: hsl(0 50% 20%) !important;
+}
+
+/* --- inline style 常见颜色覆盖 --- */
+.dark [style*="background-color: white"],
+.dark [style*="background-color: #fff"],
+.dark [style*="background-color: #ffffff"],
+.dark [style*="background: white"],
+.dark [style*="background: #fff"],
+.dark [style*="background: #ffffff"],
+.dark [style*="backgroundColor: 'white'"],
+.dark [style*="backgroundColor:'white'"],
+.dark [style*="backgroundColor: '#fff'"],
+.dark [style*="backgroundColor:'#fff'"] {
+  background-color: hsl(var(--card)) !important;
+}
+.dark [style*="color: #333"],
+.dark [style*="color: '#333'"],
+.dark [style*="color: #232323"],
+.dark [style*="color:'#333'"] {
+  color: hsl(var(--foreground)) !important;
+}
+.dark [style*="border-color: #e5e7eb"],
+.dark [style*="borderColor: '#e5e7eb'"],
+.dark [style*="border: 1px solid #e"],
+.dark [style*="border: 1px solid #d"] {
+  border-color: hsl(var(--border)) !important;
+}
+
+/* Selection page utilities */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 2026-05-19 Wave 2 T2 · 移动端 safe-area 全方位 utility · 替代裸 env() 写法
+ * 用法:
+ *   <div className="safe-pt"> 顶部接 iOS notch
+ *   <div className="safe-pb"> 底部接 home indicator
+ *   <header className="safe-pt safe-px"> 顶部 + 左右(横屏 / 折叠屏)
+ *
+ * 既兼容 viewport-fit=cover 设备 · 又在普通设备 fallback 0px 不破布局
+ */
+.safe-pt { padding-top: env(safe-area-inset-top, 0px); }
+.safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.safe-pl { padding-left: env(safe-area-inset-left, 0px); }
+.safe-pr { padding-right: env(safe-area-inset-right, 0px); }
+.safe-px {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+.safe-py {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* 触摸目标 SSOT · iOS HIG 44px · Material 48dp · 选 44 通用
+ * 用法:
+ *   <button className="min-touch"> 自动 44×44 触摸热区
+ *   配合 inline-flex / grid place-items-center 让内容居中
+ */
+.min-touch {
+  min-height: var(--touch-min, 44px);
+  min-width: var(--touch-min, 44px);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sidebar scrollbar: overlay style, never shifts layout */
+.sidebar-scroll {
+  min-height: 0;
+  contain: layout paint;
+  overflow-y: overlay; /* Chrome: scrollbar overlays content, no layout shift */
+  scrollbar-width: thin; /* Firefox: always thin */
+  scrollbar-color: transparent transparent; /* Firefox: invisible by default */
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+.sidebar-scroll:hover {
+  scrollbar-color: hsl(var(--border)) transparent; /* Firefox: show on hover */
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+}
+.sidebar-scroll:hover::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
+}
+/* 全局滚动条美化 — 所有可滚动元素统一风格 */
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--border));
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--muted-foreground));
+}
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+/* 2026-05-11 Social Studio · scrollbar idle 隐藏 · hover/focus 才显示(macOS 风格)
+   覆盖全局 *::-webkit-scrollbar 规则(specificity:class + pseudo > universal + pseudo)
+   应用到 社媒工作台 主滚动容器即可 · GEO 板块仍保留全局 always-thin scrollbar */
+.ss-autohide-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.ss-autohide-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.ss-autohide-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ss-autohide-scroll::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+  transition: background-color 0.25s;
+}
+.ss-autohide-scroll:hover,
+.ss-autohide-scroll:focus-within {
+  scrollbar-color: var(--ss-line, rgba(255, 255, 255, 0.18)) transparent;
+}
+.ss-autohide-scroll:hover::-webkit-scrollbar-thumb,
+.ss-autohide-scroll:focus-within::-webkit-scrollbar-thumb,
+.ss-autohide-scroll:active::-webkit-scrollbar-thumb {
+  background-color: var(--ss-line, rgba(255, 255, 255, 0.28));
+}
+.ss-autohide-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ss-muted, rgba(255, 255, 255, 0.4));
+}
+
+/* shadcn sidebar/chart variables are defined in @theme and :root blocks above */
+
+/* Bell shake animation (notification important level) */
+@keyframes bell-shake {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(12deg); }
+  30% { transform: rotate(-10deg); }
+  45% { transform: rotate(8deg); }
+  60% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+}
+
+/* Skeleton shimmer animation */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-shimmer {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--border)) 50%, hsl(var(--muted)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* 思考容器 — 思考容器动画 */
+@keyframes thinking-glow-pulse {
+  0%, 100% { border-color: rgba(96, 165, 250, 0.08); box-shadow: 0 0 0 0 rgba(96, 165, 250, 0); }
+  50% { border-color: rgba(96, 165, 250, 0.2); box-shadow: 0 0 20px -5px rgba(96, 165, 250, 0.1); }
+}
+.thinking-glow {
+  animation: thinking-glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-shimmer {
+  animation: shimmer-slide 2s ease-in-out infinite;
+}
+
+/* Agent 交互卡片 — 等待操作时的呼吸脉冲 */
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+/* Agent 快捷按钮 — 入场上滑 */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.3s ease-out both;
+}
+
+/* Agent 选择提示箭头 — 水平弹跳 */
+@keyframes bounce-x {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3px); }
+}
+.animate-bounce-x {
+  animation: bounce-x 1s ease-in-out infinite;
+}
+
+/* Reasoning 活动步骤呼吸 — 降低机械感 */
+@keyframes reasoning-breath {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.72; }
+}
+
+/* Dialog 下滑提示 — 垂直柔和弹跳, 比普通 bounce 慢一点 */
+@keyframes scroll-hint-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.7; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+.animate-scroll-hint {
+  animation: scroll-hint-bounce 1.6s ease-in-out infinite;
+}
+
+/* [2026-05-28] AwaitingConfirmDialog ContentEditor textarea 隐藏原生 selection
+   ContentEditor 是双层结构 (底 backdrop 渲染 <mark> 红色高亮 / 上 textarea 透明文字) ·
+   step3-pub-await-edit 时自动 setSelectionRange 选中第 1 个敏感词让用户按删除键 ·
+   原生 ::selection 蓝底白字会盖住 backdrop 红 mark · 整成透明让红 mark 透出来 ·
+   textarea 内部仍真实选中 (按 Delete 仍能删) */
+.awaiting-editor-input::selection {
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.awaiting-editor-input::-moz-selection {
+  background: transparent;
+  color: transparent;
+}
+
+/* [2026-05-28] 覆盖全局 .dark textarea !important · ContentEditor textarea 必须真透明
+   全局 .dark textarea 把 background-color/color/border-color 强制变成 card/foreground/border ·
+   导致 ContentEditor 上层 textarea 不透明背景盖住下层 backdrop 红 mark · 全空白 ·
+   用 !important 覆盖 · awaiting-editor-input 是 ContentEditor textarea 专用 class · 只影响这一处 */
+.dark textarea.awaiting-editor-input,
+textarea.awaiting-editor-input {
+  background-color: transparent !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  border-color: transparent !important;
+}
+
+/* MaterialConfirm public customer page: keep WeChat WebView readable even when the host app
+   applies dark-mode/color adjustments to translucent cards. */
+.material-confirm-page {
+  color-scheme: light;
+  background: #f8fafc;
+  color: #0f172a;
+  -webkit-text-size-adjust: 100%;
+}
+
+.material-confirm-page * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.material-confirm-page .mc-card {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+
+.material-confirm-page .mc-card *,
+.material-confirm-page .mc-subcard *,
+.material-confirm-page .mc-soft-panel *,
+.material-confirm-page .mc-testimonial *,
+.material-confirm-page .mc-warm-panel *,
+.material-confirm-page .mc-danger-panel *,
+.material-confirm-page .mc-success-panel * {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+.material-confirm-page .mc-subcard {
+  background: #f8fafc !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+
+.material-confirm-page .mc-soft-panel,
+.material-confirm-page .mc-testimonial {
+  background: #eef2ff !important;
+  background-image: none !important;
+  color: #1f2937 !important;
+  border-color: #c7d2fe !important;
+}
+
+.material-confirm-page .mc-soft-panel *,
+.material-confirm-page .mc-testimonial * {
+  color: #1f2937 !important;
+  -webkit-text-fill-color: #1f2937 !important;
+}
+
+.material-confirm-page .mc-warm-panel {
+  background: #fff7ed !important;
+  background-image: none !important;
+  color: #1f2937 !important;
+  border-color: #fed7aa !important;
+}
+
+.material-confirm-page .mc-danger-panel {
+  background: #fef2f2 !important;
+  color: #1f2937 !important;
+  border-color: #fecaca !important;
+}
+
+.material-confirm-page .mc-success-panel {
+  background: #ecfdf5 !important;
+  color: #1f2937 !important;
+  border-color: #a7f3d0 !important;
+}
+
+.material-confirm-page .mc-image-frame {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  overflow: hidden;
+}
+
+.material-confirm-page .mc-image-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.material-confirm-page .mc-image-fallback {
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  font-size: 12px;
+  text-align: center;
+  padding: 12px;
+}
+
+.material-confirm-page .mc-feedback-input {
+  background: #f8fafc !important;
+  color: #111827 !important;
+  border-color: #d1d5db !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.material-confirm-page .mc-bottom-bar {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+.material-confirm-page .material-confirm-content {
+  padding-bottom: calc(300px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .material-confirm-page,
+  .material-confirm-page .mc-card,
+  .material-confirm-page .mc-bottom-bar {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+}
+
+/* ==========================================================================
+   .safe-markdown — 全站用户可见 Markdown 唯一渲染面（SafeMarkdown.tsx / 后端
+   safe_markdown_renderer.SAFE_MARKDOWN_CSS 同语义）。屏幕 320–2560px 可读 +
+   打印还原。改动必须与后端 SAFE_MARKDOWN_CSS 同步审。
+   ========================================================================== */
+.safe-markdown {
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: normal;
+}
+.safe-markdown h1,
+.safe-markdown h2,
+.safe-markdown h3,
+.safe-markdown h4 {
+  margin: 1.1em 0 0.55em;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+}
+.safe-markdown p,
+.safe-markdown ul,
+.safe-markdown ol,
+.safe-markdown blockquote,
+.safe-markdown pre,
+.safe-markdown details { margin: 0.7em 0; }
+.safe-markdown ul,
+.safe-markdown ol { padding-left: 1.5em; }
+.safe-markdown ul { list-style: disc; }
+.safe-markdown ol { list-style: decimal; }
+.safe-markdown blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding: 0.2em 0.9em;
+  color: hsl(var(--muted-foreground));
+}
+.safe-markdown pre {
+  max-width: 100%;
+  overflow: auto;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px;
+  white-space: pre;
+}
+.safe-markdown code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.safe-markdown :not(pre) > code {
+  border-radius: 4px;
+  background: hsl(var(--muted));
+  padding: 0.1em 0.3em;
+}
+.safe-markdown-table {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0.8em 0;
+  -webkit-overflow-scrolling: touch;
+}
+.safe-markdown table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+}
+.safe-markdown th,
+.safe-markdown td {
+  border: 1px solid hsl(var(--border));
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+.safe-markdown th { background: hsl(var(--muted)); font-weight: 700; }
+.safe-markdown details {
+  border: 1px solid hsl(var(--border));
+  border-radius: 6px;
+  padding: 0.55em 0.7em;
+}
+.safe-markdown summary { cursor: pointer; font-weight: 650; }
+.safe-markdown a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.safe-markdown .safe-markdown-dead-link { color: inherit; }
+.safe-markdown .safe-markdown-img-placeholder {
+  display: inline-block;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 4px;
+  background: hsl(var(--muted));
+  padding: 0 6px;
+  font-size: 0.85em;
+  color: hsl(var(--muted-foreground));
+}
+.safe-markdown-anomaly {
+  margin: 0.65em 0;
+  border-left: 3px solid #d97706;
+  background: #fffbeb;
+  color: #92400e;
+  padding: 0.55em 0.7em;
+  font-size: 0.9em;
+}
+@media print {
+  .safe-markdown-table { overflow: visible; }
+  .safe-markdown table { min-width: 0; font-size: 9pt; }
+  .safe-markdown details { break-inside: avoid; }
+  .safe-markdown details > * { display: block !important; }
+}
+
+/* ============================================================
+ * [WO_IOS_TOUCH_UX 2026-08-05] 触屏设备表单元素字号下限 16px
+ * ============================================================
+ * iOS Safari 硬规则:input / textarea / select 的**计算**字号 < 16px 时,
+ * 聚焦会自动缩放整个页面。用户体感 = "页面突然跳一下 / 点不准 / 像卡住了"。
+ * 实测本仓 1019 个表单元素里 800 个 < 16px(text-sm 14px / text-xs 12px),
+ * 其中 421 个来自 ui/input.tsx + ui/textarea.tsx 的默认 class 串。
+ *
+ * 🔴 为什么不用 shadcn 常规的 `text-base md:text-sm`:
+ *   md 断点是 768px,而 iPad Safari 视口 810/1024 → 命中 md: 又退回 14px。
+ *   按**宽度**判定治不了 iPad,必须按**触屏**判定 → (hover:none) and (pointer:coarse)。
+ *   这样桌面(含窄窗口)视觉零变化,只有真触屏设备生效。
+ *
+ * 🔴 为什么不改 ui/input.tsx 的 text-sm:
+ *   那会改变桌面视觉密度(14→16px),波及 421 处调用点。这里只动触屏,风险最小。
+ *
+ * 🔴 为什么故意**不写** `!important`,也不用 [class*="text-"]:
+ *   · 本文件 271 行已确立:unlayered CSS 在 Tailwind v4 里胜过所有 @layer 规则
+ *     (cascade layer 顺序优先于 specificity)→ 无需 !important 就能压过 utilities。
+ *   · `:not([class*="text-"])` 是个陷阱:text-center / text-foreground / text-muted-foreground
+ *     全都含 "text-",会被误判成"已设字号"而跳过 → 规则形同虚设。
+ *     所以改成**显式排除大字号类**,只抬小的,不碰故意放大的输入框。
+ *
+ * 反向对照(门禁 test-ios-touch-ux.mjs 会验):
+ *   必须命中 → text-sm / text-xs / 未写字号的 input、textarea、select
+ *   必须不命中 → text-lg 及以上的输入框(金额等大字号设计保持原样)
+ *                checkbox / radio / range(不弹软键盘,与缩放无关)
+ */
+@media (hover: none) and (pointer: coarse) {
+  input:not(.text-lg):not(.text-xl):not(.text-2xl):not(.text-3xl):not(.text-4xl):not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+  textarea:not(.text-lg):not(.text-xl):not(.text-2xl):not(.text-3xl):not(.text-4xl),
+  select:not(.text-lg):not(.text-xl):not(.text-2xl):not(.text-3xl):not(.text-4xl) {
+    font-size: 16px;
+  }
+}

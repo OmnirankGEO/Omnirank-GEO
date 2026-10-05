@@ -1,0 +1,58 @@
+{
+  "templates": [
+    {
+      "id": "product_review",
+      "name": "产品测评",
+      "description": "适合产品种草、开箱体验",
+      "structure": "【标题】吸引人的标题 + emoji\n\n【正文】\n🔥 开箱体验\n📌 产品亮点 x3\n💡 使用感受\n⚠️ 注意事项\n\n【标签】#产品名 #测评 #种草",
+      "example_title": "天花板级别的GEO优化工具，用了就回不去了💯",
+      "platform": "xiaohongshu",
+      "tags": ["种草", "测评", "开箱"]
+    },
+    {
+      "id": "tutorial",
+      "name": "干货教程",
+      "description": "适合知识分享、操作教程",
+      "structure": "【标题】数字+痛点+解决方案\n\n【正文】\n📚 背景/问题\n✅ 步骤1: xxx\n✅ 步骤2: xxx\n✅ 步骤3: xxx\n💡 小贴士\n\n【标签】#教程 #干货 #学习",
+      "example_title": "3步学会AI搜索优化，小白也能上手！",
+      "platform": "xiaohongshu",
+      "tags": ["教程", "干货", "学习"]
+    },
+    {
+      "id": "case_study",
+      "name": "案例拆解",
+      "description": "适合客户案例、效果展示",
+      "structure": "【标题】结果导向 + 具体数据\n\n【正文】\n📊 客户背景\n🎯 目标和挑战\n💡 我们的方案\n📈 效果数据\n🔑 关键心得\n\n【标签】#案例 #效果 #实战",
+      "example_title": "帮客户3个月搜索曝光涨了10倍，复盘全过程📈",
+      "platform": "xiaohongshu",
+      "tags": ["案例", "复盘", "效果"]
+    },
+    {
+      "id": "story",
+      "name": "故事型",
+      "description": "适合个人经历、情感共鸣",
+      "structure": "【标题】悬念/反转 + 情感词\n\n【正文】\n🌟 故事开头（制造共鸣）\n😱 转折/冲突\n💪 如何解决\n❤️ 收获/感悟\n\n【标签】#故事 #成长 #分享",
+      "example_title": "从0开始做AI搜索优化，半年后客户主动找上门…",
+      "platform": "xiaohongshu",
+      "tags": ["故事", "经历", "分享"]
+    },
+    {
+      "id": "list",
+      "name": "清单盘点",
+      "description": "适合资源整理、工具推荐",
+      "structure": "【标题】数字+类型+对象\n\n【正文】\n1️⃣ 推荐一: xxx\n2️⃣ 推荐二: xxx\n3️⃣ 推荐三: xxx\n4️⃣ 推荐四: xxx\n5️⃣ 推荐五: xxx\n\n💡 总结\n\n【标签】#盘点 #推荐 #合集",
+      "example_title": "5个AI搜索优化必备工具，第3个超好用！",
+      "platform": "xiaohongshu",
+      "tags": ["盘点", "推荐", "合集"]
+    },
+    {
+      "id": "comparison",
+      "name": "对比测评",
+      "description": "适合竞品对比、选择建议",
+      "structure": "【标题】A vs B + 选择建议\n\n【正文】\n⚖️ 对比维度\n🅰️ A的优缺点\n🅱️ B的优缺点\n📊 详细对比表\n💡 我的建议\n\n【标签】#对比 #测评 #选择",
+      "example_title": "GEO优化 vs 传统SEO，到底选哪个？一篇讲清楚",
+      "platform": "xiaohongshu",
+      "tags": ["对比", "选择", "测评"]
+    }
+  ]
+}

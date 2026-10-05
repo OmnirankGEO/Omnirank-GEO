@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-04-26T05:20:16",
+  "data_scope": "config consistency check · no real billing called",
+  "feature_code": "autofill_brand",
+  "expected_cost_points": 130,
+  "checks": [
+    {
+      "check": "feature_pricing.autofill_brand exists with cost_points=130",
+      "pass": true,
+      "detail": "cost_points=130"
+    },
+    {
+      "check": "api/profile_api.py uses _bill_ctx(request, 'autofill_brand')",
+      "pass": true,
+      "detail": "OK"
+    },
+    {
+      "check": "frontend uses featureCode='autofill_brand'",
+      "pass": true,
+      "detail": "OK"
+    },
+    {
+      "check": "BatchUpgradeDialog uses getCost('autofill_brand')",
+      "pass": true,
+      "detail": "OK"
+    },
+    {
+      "check": "BrandWizardBanner toast not hardcoded 130",
+      "pass": true,
+      "detail": "OK"
+    },
+    {
+      "check": "no wrong-code residue grep",
+      "pass": true,
+      "detail": "0 残留"
+    }
+  ],
+  "all_pass": true,
+  "e2e_paths_for_deploy_cto": [
+    {
+      "id": "P1-no-balance",
+      "expect_status": 402,
+      "expect_ledger_delta": 0,
+      "expect_llm_called": false
+    },
+    {
+      "id": "P2-success",
+      "expect_status": 200,
+      "expect_ledger_delta": -130,
+      "expect_llm_called": true
+    },
+    {
+      "id": "P3-llm-fail",
+      "expect_status": 500,
+      "expect_ledger_delta": 0,
+      "expect_llm_called": true
+    }
+  ]
+}

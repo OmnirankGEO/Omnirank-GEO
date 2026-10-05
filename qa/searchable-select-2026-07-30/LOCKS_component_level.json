@@ -1,0 +1,64 @@
+{
+  "what": "SearchableSelect 组件级锁取证（Playwright 真渲染 · harness: /searchable-select-harness.html）",
+  "recorded": "2026-07-30",
+  "env": "本地 vite dev 5173 · React 真渲染 · 断言取自 document.activeElement / role 属性 / offsetParent 可见性",
+
+  "🔴 assertion_caveat": {
+    "finding": "@base-ui/react combobox 每个 Combobox.Root 都会渲染一个不可见的 <input type=\"text\">（表单值载体）。harness 6 个实例 → DOM 里恒有 6 个 input 标签，即使一个搜索框都没渲染。",
+    "consequence": "「DOM 里有 input 标签」这类断言在本组件上必然假绿 —— 与工单 §4 的警告(ui/progress.tsx aria-valuenow 恒 0)同型。",
+    "adopted_predicate": "可见输入框 = Array.from(document.querySelectorAll('input')).filter(i => i.type !== 'hidden' && i.offsetParent !== null).length"
+  },
+
+  "LOCK1_filter_and_restore": {
+    "30 项 → 输入 'Item-17'": { "optionCount": 1, "matched": "选项 17 · Item-17" },
+    "输入 'abc-keyword'(小写) 命中 'ABC-Keyword'(大写)": { "optionCount": 10 },
+    "点清空 → 恢复全部": { "optionCount": 30, "query": "", "focusStaysInInput": true },
+    "verdict": "PASS"
+  },
+
+  "LOCK2_autofocus_real_render": {
+    "predicate": "document.activeElement === 搜索输入框",
+    "open_30": { "activeIsInput": true, "activeTag": "INPUT", "activeRole": "combobox" },
+    "reopen_after_esc": { "autofocus": true },
+    "nine_options": { "autofocus": true },
+    "forced_on_6_options": { "autofocus": true },
+    "verdict": "PASS"
+  },
+
+  "LOCK3_close_resets_4_paths": {
+    "esc":            { "reopenQuery": "", "reopenOptionCount": 30, "reopenAutofocus": true },
+    "outside_click":  { "reopenQuery": "", "reopenOptionCount": 30 },
+    "trigger_toggle": { "reopenQuery": "", "reopenOptionCount": 30 },
+    "select_item":    { "reopenQuery": "", "reopenOptionCount": 30, "selectedValue": "opt-11", "ariaSelectedOption": "选项 11 · Item-11" },
+    "note": "四条路径都只做 setOpen(false)；清空由 SearchableRoot 内唯一 effect 完成（open true→false）",
+    "verdict": "PASS"
+  },
+
+  "LOCK4_keyboard": {
+    "ArrowDown ×2": { "aria-activedescendant": "base-ui-:r0:-1", "highlightedOption": "选项 2 · Item-2", "idsMatch": true },
+    "Enter": { "selected": "opt-2", "triggerText": "选项 2 · Item-2", "panelClosed": true },
+    "Escape": { "panelClosed": true },
+    "searchable=false 时焦点落在 role=listbox 上，键盘仍可用",
+    "verdict": "PASS"
+  },
+
+  "LOCK6_threshold_split": {
+    "6 项(自动)":              { "visibleTextInputs": 0, "optionCount": 6 },
+    "9 项(自动 · 阈值边界)":    { "visibleTextInputs": 1, "optionCount": 9 },
+    "30 项 + searchable=false": { "visibleTextInputs": 0, "optionCount": 30 },
+    "6 项 + searchable=true":   { "visibleTextInputs": 1 },
+    "threshold_constant": "SEARCHABLE_MIN_OPTIONS = 9",
+    "verdict": "PASS"
+  },
+
+  "LOCK7_aria_not_degraded": {
+    "before(ClientSwitcher 手写实现)": { "input": "零 aria 属性", "trigger": "只有 aria-label" },
+    "after(base-ui combobox)": {
+      "input": { "role": "combobox", "aria-expanded": "true", "aria-controls": ":r1:", "aria-autocomplete": "list", "aria-activedescendant": "键盘移动时联动" },
+      "list": { "role": "listbox" },
+      "option": { "role": "option", "aria-selected": "true/false", "id": "base-ui-:r0:-N" },
+      "trigger": { "role": "combobox", "aria-expanded": "true", "aria-haspopup": "dialog", "aria-label": "透传" }
+    },
+    "verdict": "PASS(改进 · 非退化)"
+  }
+}

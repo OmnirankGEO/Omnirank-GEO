@@ -1,0 +1,47 @@
+# OmniRank 开源仓 .gitignore
+# 只忽略「运行时生成的」与「本地机密」。仓里跟踪的每个文件都不会被这里的规则忽略(开源导出有一道闸逐个核)。
+
+# ---- 本地机密与环境配置(.env.example 是模板,要进仓)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+data/jwt_secret.key
+# 运行时设置(系统设置页保存的 API Key 会写进这里)
+/settings.json
+
+# ---- Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# ---- 前端
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ---- 运行时产物(诊断断点、导出文件、日志、上传)
+logs/
+*.log
+output/
+cache/*.json
+uploads/
+data/uploads/
+assets_archive/
+
+# ---- 本地数据库文件(开发时 SQLite 兜底会在仓根生成)
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- 编辑器与系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

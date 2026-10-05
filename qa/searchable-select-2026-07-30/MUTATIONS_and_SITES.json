@@ -1,0 +1,72 @@
+{
+  "what": "变异验证（工单 §4 五条 + Review 追加的清空收敛结构性验证）+ 第一批 6 站点真页面取证",
+  "recorded": "2026-07-30",
+  "method": "改代码 → Playwright 真渲染取值 → 对照绿基线 → git checkout 还原（还原前已 commit,不会冲掉未提交改动）",
+
+  "mutations": [
+    {
+      "id": "① 去掉 autofocus",
+      "目标锁": "锁2",
+      "结果": "分模式",
+      "明细": {
+        "①-a 只删共用层 focus effect": {
+          "inline 模式(ClientSwitcher)": "RED · activeElement 落在 trigger button(基线 true)",
+          "Select 模式(harness)": "SURVIVED · 仍聚焦"
+        },
+        "①-b 再删 Popup 的 initialFocus": {
+          "Select 模式": "仍 SURVIVED"
+        }
+      },
+      "结论": "🔴 Select 模式的自动聚焦由 base-ui Popup 默认 initialFocus(聚焦首个可 tab 元素)提供,我的代码删不掉 → 该模式下这条锁无法用「改我的代码」转红,只能作为对库行为的契约校验(库升级时才会红)。inline 模式的自动聚焦确实由我的 effect 承担,变异转红。"
+    },
+    {
+      "id": "② 关闭不重置 search",
+      "目标锁": "锁3",
+      "结果": "复合变异才 RED",
+      "明细": {
+        "②-a 只删共用层清空 effect": "SURVIVED(两种模式)",
+        "②-b 只掐库的 onInputValueChange 清空回调": "SURVIVED",
+        "②-c 两条同时掐": "RED · 重开残留 'Item-17' 且列表只剩 1 条(基线 query='' / 30 条)"
+      },
+      "结论": "🔴 单点变异 SURVIVED ≠ 锁假绿：清空由两道独立守卫兜(共用层 effect + 受控 inputValue 回写),必须写复合变异才能证明锁有牙。"
+    },
+    {
+      "id": "③ 过滤改成大小写敏感",
+      "目标锁": "锁1(+锁5)",
+      "结果": "RED",
+      "明细": {
+        "harness 小写 'abc-keyword' 命中大写 'ABC-Keyword'": "10 → 0",
+        "ClientSwitcher 小写 'meigou' 命中 'MEIGOU-OVERSEAS'": "1 → 0"
+      }
+    },
+    {
+      "id": "④ 阈值判定去掉",
+      "目标锁": "锁6",
+      "结果": "RED",
+      "明细": { "6 选项下拉的可见输入框数": "0 → 1" }
+    },
+    {
+      "id": "⑤ 破坏 ClientSwitcher 状态筛选",
+      "目标锁": "锁5",
+      "结果": "RED",
+      "明细": { "选「未定」(生产 0 条)": "0 → 201" },
+      "🔴 夹具教训": "用「跟进」做夹具毫无判别力(生产 206/共 243,改前改后都是 201)。状态筛选锁必须用「未定 0 条」或「归档 37 条」这种与全量差异明显的档位。"
+    },
+    {
+      "id": "Review 追加 · 清空收敛结构性验证",
+      "做法": "把共用层两条清空机制同时掐掉,再跑 ClientSwitcher 的 Esc→重开",
+      "结果": "仍然干净(query='' / 201 条)",
+      "结论": "ClientSwitcher 的关闭清空实际由「面板条件渲染 {open && ...} 的卸载」保证,连共用层 effect 都不需要 → 「漏掉某条关闭路径」在该组件里结构上不可表达(任何关闭路径都会卸载面板)。三层保障排序:卸载 > 共用层 effect > 受控 inputValue 回写。残余风险:若将来把面板改成 keepMounted,保障就退回后两层 —— 而后两层已被变异②-c 锁住。",
+      "静态核对": "ClientSwitcherSidebar.tsx 内 setSearch 调用 = 0(仅注释提及);searchable-select.tsx 内 setQuery('') = 2 处(1 = 关闭 effect,1 = 用户点清空按钮)"
+    }
+  ],
+
+  "first_batch_sites_real_page_evidence": [
+    { "站点": "Employees/MeetingRoom:815 选择客户/品牌", "取证": "100 个选项(limit=100)· 输入「科技服务」→ 11 条(按 keywords=行业过滤)· 自动聚焦 true", "判定": "PASS" },
+    { "站点": "Writing/WritingCenter:264 选择诊断记录", "取证": "37 个选项 · 输入「美构」→ 2 条 · 自动聚焦 true", "判定": "PASS" },
+    { "站点": "Admin/UserManagement:1650 新的直属上游", "取证": "41 个选项(1 平台 + 40 服务商)· 输入「136」→ 1 条(按用户号)· Dialog 内自动聚焦 true · 弹层在 dialog 子树内 · 未点保存(仅本地 draft,零写库)", "判定": "PASS" },
+    { "站点": "Admin/ResearchMonitor/IndustriesPromptsPanel:1099 行业改判", "取证": "19 个选项(= 生产 geo_research_industries 19)· 输入「医疗」→ 1 条 · 只输入不选中(选中会触发 reassign 写库)", "判定": "PASS" },
+    { "站点": "Wallet/BankCardsPage:405 开户行", "取证": "qa_agent_2026(已实名)→ 展开绑卡表单 → 15 个选项 · 输入「招商」→ 1 条 · 自动聚焦 true · id=bank_name 保留 · 未提交表单", "判定": "PASS", "备注": "qa_admin 未实名,该表单不渲染,故换服务商账号取证" },
+    { "站点": "Monitoring/components/MonitoringSettingsDialog:170 时间轮盘 24 项", "取证": "无法真页面取证", "判定": "⚠️ 该组件全仓零 import = 死代码", "详情": "grep 全仓 MonitoringSettingsDialog 仅命中自身定义;线上真用的是 ScheduleDialog(Monitoring/index.tsx:51 lazy import),而 ScheduleDialog 里没有任何小时选择器(无 startHour / 无 length:24)。全站唯一的 24 项时间选择器就在这个死组件里。改动已按 Review 裁决落地(阈值例外),但对用户零可见效果。" }
+  ]
+}

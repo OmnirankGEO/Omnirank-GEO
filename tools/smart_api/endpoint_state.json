@@ -1,0 +1,12 @@
+{
+  "xiaohongshu_app_search_notes": {
+    "url": "",
+    "tool_name": "xiaohongshu_app_search_notes",
+    "last_success": "2026-01-03T20:32:12.864849",
+    "last_failure": null,
+    "failure_count": 0,
+    "success_count": 1,
+    "is_healthy": true,
+    "cooldown_until": null
+  }
+}

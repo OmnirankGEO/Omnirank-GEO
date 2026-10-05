@@ -1,0 +1,33 @@
+{
+  "_doc": "已验证域名→自然载体名映射(返修单 v3 §B-R7 · 补接管工单 §5.E 另一半)。只收人工核过的常识性载体;分档如实:official_media=持证官方媒体 / portal_media=门户媒体(仅限有自有编辑团队、'据XX报道'成立的媒体) / platform_ugc=平台内容(UGC,按平台身份表述,禁写成'权威媒体/报道')。🔴 [R3-A1 2026-08-11 Review 裁定] 搜狐/网易/腾讯/凤凰/新浪主域从 portal_media 降档 platform_ugc:生产 portal_media 档 584 items 实测几乎全是自发布频道(搜狐号 m.sohu.com/网易号 163.com/dy//新浪看点 k.sina.cn/企鹅号 news.qq.com/新浪家居地方站 *.jiaju.sina.cn),按域名根本分不出'门户编辑内容'还是'任何人可发的号',具名成'据搜狐网报道'=Owner 亲裁类别②假冒第三方归属。降档后走'据XX上的公开内容'+禁'报道'。真编辑媒体(澎湃/36氪/界面+三家官媒)保留具名档。未收录域名维持 fail-closed:省略归属,不编造。匹配规则:先精确后最长后缀;子域名想要不同身份(如 mp.weixin.qq.com≠qq.com)必须单列。增删条目须人工核验载体真名,并升 version。",
+  "version": "1.1.0",
+  "entries": {
+    "people.com.cn": {"carrier": "人民网", "tier": "official_media"},
+    "xinhuanet.com": {"carrier": "新华网", "tier": "official_media"},
+    "cctv.com": {"carrier": "央视网", "tier": "official_media"},
+    "163.com": {"carrier": "网易新闻", "tier": "platform_ugc"},
+    "sina.com.cn": {"carrier": "新浪网", "tier": "platform_ugc"},
+    "sina.cn": {"carrier": "新浪网", "tier": "platform_ugc"},
+    "qcc.com": {"carrier": "企查查", "tier": "platform_ugc"},
+    "jia.com": {"carrier": "齐家网", "tier": "platform_ugc"},
+    "zhuangyi.com": {"carrier": "装一网", "tier": "platform_ugc"},
+    "sohu.com": {"carrier": "搜狐网", "tier": "platform_ugc"},
+    "qq.com": {"carrier": "腾讯网", "tier": "platform_ugc"},
+    "ifeng.com": {"carrier": "凤凰网", "tier": "platform_ugc"},
+    "thepaper.cn": {"carrier": "澎湃新闻", "tier": "portal_media"},
+    "36kr.com": {"carrier": "36氪", "tier": "portal_media"},
+    "jiemian.com": {"carrier": "界面新闻", "tier": "portal_media"},
+    "cnblogs.com": {"carrier": "博客园", "tier": "platform_ugc"},
+    "csdn.net": {"carrier": "CSDN", "tier": "platform_ugc"},
+    "zhihu.com": {"carrier": "知乎", "tier": "platform_ugc"},
+    "toutiao.com": {"carrier": "今日头条", "tier": "platform_ugc"},
+    "baike.baidu.com": {"carrier": "百度百科", "tier": "platform_ugc"},
+    "baijiahao.baidu.com": {"carrier": "百家号", "tier": "platform_ugc"},
+    "zhidao.baidu.com": {"carrier": "百度知道", "tier": "platform_ugc"},
+    "mp.weixin.qq.com": {"carrier": "微信公众号", "tier": "platform_ugc"},
+    "bilibili.com": {"carrier": "哔哩哔哩", "tier": "platform_ugc"},
+    "xiaohongshu.com": {"carrier": "小红书", "tier": "platform_ugc"},
+    "douban.com": {"carrier": "豆瓣", "tier": "platform_ugc"},
+    "jianshu.com": {"carrier": "简书", "tier": "platform_ugc"}
+  }
+}

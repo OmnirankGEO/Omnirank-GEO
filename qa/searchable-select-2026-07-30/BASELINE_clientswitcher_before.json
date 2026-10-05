@@ -1,0 +1,57 @@
+{
+  "what": "ClientSwitcherSidebar 改前行为基线（Playwright 真渲染取证 · 锁5 对照组）",
+  "recorded": "2026-07-30",
+  "baseline_sha": "80132d5f225b6e6e585529536ed90500dbc02c7f",
+  "env": "本地 vite dev (127.0.0.1:5173) + 生产后端 (https://omnirank.top) · 账号 qa_admin_2026",
+  "dataset": { "footer_total": "共 243 个客户", "pill_counts": ["日常 206", "跟进 206", "未定 0", "成交 0", "归档 37"], "test_hidden": 5 },
+
+  "B1_autofocus_on_open": { "activeIsSearchInput": true, "activeTag": "INPUT", "activePlaceholder": "搜索品牌名 / 行业 / 代码" },
+  "B1b_autofocus_on_reopen": true,
+
+  "B2_instant_filter": { "query": "悠哉", "rowCount_incl_admin_row": 2, "matched": 1, "footer": "共 243 个客户 · 匹配 1", "clearButtonPresent": true },
+  "B2b_case_insensitive": { "query": "meigou", "matchedRow": "MEIGOU-OVERSEAS的创作空间_146", "note": "小写查询命中大写 brand_code · 变异③(大小写敏感)的判据" },
+
+  "B3_coexist_search_and_status": {
+    "with_query_and_archived_pill": { "query": "meigou", "activePill": "归档 37", "rowCount_incl_admin_row": 1, "emptyText": "没有匹配的客户" },
+    "after_clear_query_pill_persists": { "query": "", "activePill": "归档 37", "rowCount_incl_admin_row": 38 }
+  },
+
+  "B4_coexist_test_toggle": {
+    "default_hidden": { "rowCount_incl_admin_row": 202, "toggleLabel": "隐藏测试 5" },
+    "after_show_all": { "rowCount_incl_admin_row": 207, "toggleLabel": "显示全部", "localStorage": "omnirank_m3_show_test_clients=1" }
+  },
+
+  "B5_close_reset_4_paths": {
+    "esc":            { "closed": true, "reopenQuery": "", "reopenRowCount": 202, "reopenAutofocus": true },
+    "outside_click":  { "closed": true, "reopenQuery": "", "reopenRowCount": 202 },
+    "trigger_toggle": { "closed": true, "reopenQuery": "", "reopenRowCount": 202 },
+    "select_item":    { "closed": true, "reopenQuery": "", "reopenRowCount": 202,
+                        "triggerTextAfterSelect": "淡 | 当前客户 | 悠哉的创作空间_100",
+                        "selectedRowHighlightClass": "bg-brand/10" }
+  },
+
+  "B6_structural_rows": {
+    "admin_all_clients_row": "全部客户(管理员模式) / 243 个客户 · 全数据视图",
+    "create_row": "+ 新建客户",
+    "clear_button_aria_label": "清空"
+  },
+
+  "B7_aria_before": {
+    "input": { "role": null, "aria-expanded": null, "aria-controls": null, "aria-activedescendant": null, "aria-autocomplete": null },
+    "trigger": { "aria-label": "切换客户", "aria-expanded": null, "role": null },
+    "note": "改前 input 上零 aria 属性。锁7 判据 = 改后不得少于改前（base-ui combobox 会补齐 role/aria-*，属改进不属退化）"
+  },
+
+  "reset_sites_before": {
+    "count": 6,
+    "sites": [
+      "ClientSwitcherSidebar.tsx:77  外部点击(关闭路径)",
+      "ClientSwitcherSidebar.tsx:132 选中项(关闭路径)",
+      "ClientSwitcherSidebar.tsx:183 trigger collapsed 分支(打开时清空)",
+      "ClientSwitcherSidebar.tsx:191 trigger 切换(打开/关闭路径)",
+      "ClientSwitcherSidebar.tsx:270 Esc(关闭路径)",
+      "ClientSwitcherSidebar.tsx:276 清空按钮(用户显式清空 · 非关闭路径 · 保留)"
+    ],
+    "close_paths_to_lock": ["trigger 切换关闭", "选中项", "Esc", "外部点击"]
+  }
+}

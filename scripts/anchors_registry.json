@@ -1,0 +1,161 @@
+{
+  "_README": [
+    "防回退锚登记表(ENG_MGMT_REFORM_2026-09-05 · R2 · 窗口B)。",
+    "",
+    "为什么要这张表:计数型锚会过期,而过期的锚有两种坏法,信号相反 ——",
+    "  · 恒红:锚绑的那个数变了,判据从此天天红,久了被当噪音忽略;",
+    "  · 恒绿:锚绑的东西没了/被绕过,判据再也不会响,而没有任何信号提示。",
+    "以前靠人记「哪条锚该退役了」。人记不住:2026-09-04 一天之内同一类漏登记发生三次。",
+    "",
+    "🔴 分母不是本表自身。`check_anchors.py` 的分母 = 本表列出的全部条目,",
+    "   但「本表有没有漏掉真实存在的锚」由**另一条**判据管(见 successor 字段与 gate9 登记);",
+    "   拿本表当唯一分母 ⇒ 没登记的锚永远在分母之外(DOC_ONLY_TABLES 踩过这个坑)。",
+    "",
+    "字段:",
+    "  id                 稳定标识,退役后也不复用",
+    "  introduced_train   引入它的班次(tip sha + 标签)",
+    "  kind               count = 锚在一个**数**上(会过期) | set = 锚在一个**集合/性质**上(相对稳)",
+    "  file               锚所在文件(仓相对路径)",
+    "  pattern            在该文件里定位它的**逐字**子串;活锚必须命中,退役锚必须不命中",
+    "  expected           count 型:那个数;set 型:null",
+    "  retired_by         null = 仍在役;否则填退役它的班次(tip sha + 标签)",
+    "  successor          退役锚**必须**有继任者(id 列表);在役锚为空数组",
+    "  last_reviewed_train 最后一次人工复核它的班次;count 型超过 2 班未复核 ⇒ WARN",
+    "  why                为什么有这条锚 / 为什么退役 —— 不许空,空理由等于没登记"
+  ],
+  "schema_version": 1,
+  "_trains_README": [
+    "按时间顺序;check_anchors.py 用它算「几班没复核」。",
+    "最后一项的 tip 必须是 HEAD 或 HEAD 的祖先,否则本表落后于树 ⇒ WARN。"
+  ],
+  "trains": [
+    {
+      "label": "B12-#48v2",
+      "tip": "accba214e543f039e2fc8a499a714ea2eb3f3bf0"
+    },
+    {
+      "label": "B13-C30",
+      "tip": "972d31027"
+    },
+    {
+      "label": "B13-C31",
+      "tip": "238beeb11"
+    },
+    {
+      "label": "B13-C58",
+      "tip": "185f88bca"
+    },
+    {
+      "label": "B13-B53",
+      "tip": "91df2732978bebb2c4b1341f2ae239ecc7802a8f"
+    },
+    {
+      "label": "B14-#54-55",
+      "tip": "aacc086e03bc0d81b3cc06179483535597280140"
+    },
+    {
+      "label": "B15-eb3dac670",
+      "tip": "eb3dac670"
+    }
+  ],
+  "anchors": [
+    {
+      "id": "publications-count-reads-total-articles",
+      "introduced_train": "9f7ced35e (第八班 · 完整度三处 quote 取值改对)",
+      "kind": "count",
+      "file": "tests/report_metrics_quote_keys_2026_09_03/test_completeness_values.py",
+      "pattern": "_missing_keys(quote={\"total_articles\": 3})",
+      "expected": 3,
+      "retired_by": "aacc086e03bc0d81b3cc06179483535597280140 (B14 · #54/#55)",
+      "successor": [
+        "published-evidence-has-quote-published-satisfied",
+        "published-evidence-has-quote-zero-missing",
+        "total-articles-never-read-in-report-metrics"
+      ],
+      "last_reviewed_train": "B14-#54-55",
+      "why": "样板条目。它锚在 total_articles=3 上,而 #54/#55 裁定该列**根本不是**「已发布」的事实源(它是报价承诺篇数,且主力链路硬编码 0 从不回写)⇒ 数据源本身被判错,锚随之退役。三条继任者分别接替正臂 / 反臂 / 「旧数据源禁读」。"
+    },
+    {
+      "id": "published-evidence-has-quote-published-satisfied",
+      "introduced_train": "aacc086e03bc0d81b3cc06179483535597280140 (B14 · #54/#55)",
+      "kind": "set",
+      "file": "tests/report_metrics_quote_keys_2026_09_03/test_published_evidence_tri_state.py",
+      "pattern": "def test_state_has_quote_published_is_satisfied()",
+      "expected": null,
+      "retired_by": null,
+      "successor": [],
+      "last_reviewed_train": "B14-#54-55",
+      "why": "接替退役锚的**正臂**:有报价且已发布 ≥1 篇 ⇒ 满足。改读真实发布事实源(quote_published_active),不再读 total_articles。⚠️ 该臂是**夹具证**的,不是生产实证 —— 前置门读数 Q6 为 0 行,Review 裁「不否决本单」,这句必须留着。"
+    },
+    {
+      "id": "published-evidence-has-quote-zero-missing",
+      "introduced_train": "aacc086e03bc0d81b3cc06179483535597280140 (B14 · #54/#55)",
+      "kind": "set",
+      "file": "tests/report_metrics_quote_keys_2026_09_03/test_published_evidence_tri_state.py",
+      "pattern": "def test_state_has_quote_zero_published_is_missing()",
+      "expected": null,
+      "retired_by": null,
+      "successor": [],
+      "last_reviewed_train": "B14-#54-55",
+      "why": "接替退役锚的**反臂**:真的是 0 篇就该记缺失 —— 否则上一条可能只是「永远不缺」。头号毒是 `if published_count:` 把 None 与 0 压成一档,而两者处置正好相反(退出分母 vs 记缺失)。"
+    },
+    {
+      "id": "total-articles-never-read-in-report-metrics",
+      "introduced_train": "aacc086e03bc0d81b3cc06179483535597280140 (B14 · #54/#55)",
+      "kind": "set",
+      "file": "tests/report_metrics_quote_keys_2026_09_03/test_published_evidence_tri_state.py",
+      "pattern": "def test_total_articles_is_not_read_anywhere_in_report_metrics()",
+      "expected": null,
+      "retired_by": null,
+      "successor": [],
+      "last_reviewed_train": "B14-#54-55",
+      "why": "第三个继任者,也是最要紧的一个:它锁死**旧数据源回不来**。退役一条锚时,只补「新的对不对」不够 —— 还要防「有人把旧的接回去」,否则退役只是把问题推迟。"
+    },
+    {
+      "id": "defgeo-copy-version-agrees-across-the-seam",
+      "introduced_train": "eb3dac670 (B15 · #85)",
+      "kind": "set",
+      "file": "tests/wob39_collection_scope_2026_09_03/test_defgeo_copy_version_cross_layer.py",
+      "pattern": "def test_copy_registry_version_agrees_across_the_seam()",
+      "expected": null,
+      "retired_by": null,
+      "successor": [],
+      "last_reviewed_train": "B15-eb3dac670",
+      "why": "后端 copy_registry 版本 == 前端生成物版本。登记它是因为 `DEFGEO_COPY_REGISTRY_VERSION` 在全仓**零读点**(只有生成物自己 + 写它的生成器),node 校验器里 \"version\" 一次都没出现,而后端侧那条 `test_wp2_user_copy.py` 的两句断言都在后端这一侧 —— 对前端结构性不可见。#58 升 v7 时前端停在 v6,没有任何东西红,还随合并班上了线。⚠️ 本锁在 eb3dac670 上**是红的**(后端 v7 / 前端 v6),因为漂移是真的;C 的 77e00fc54(两侧同升 v8)落链后转绿(已核该 commit 上两侧逐字相等)。注意 77e00fc54 只把旧判据的硬编码字面量 v7→v8,旧判据**仍只钉后端**,所以本锁不是重复,它补的是旧判据覆盖不到的那一格。"
+    },
+    {
+      "id": "plan-side-mismatch-server-guard-alive",
+      "introduced_train": "da2cbca00 (#103)",
+      "kind": "set",
+      "file": "services/defensive_geo/question_plan.py",
+      "pattern": "code=\"plan_side_mismatch\"",
+      "expected": null,
+      "retired_by": null,
+      "successor": [],
+      "last_reviewed_train": "B15-eb3dac670",
+      "why": "🔴 **肯定式**继任者:服务端侧别守卫**仍在**(typed 409 `plan_side_mismatch`)。不写成「intrudingSide 不再出现」那种缺席锁 —— 那一个读数同时被『前端自动收敛被正确替换』与『整块侧别保护被误删』满足,而两者含义相反。退役 = 换人守,不是不守了。"
+    },
+    {
+      "id": "plan-side-converge-intruding-side",
+      "introduced_train": "第十班 planSideConverge",
+      "kind": "set",
+      "file": "frontend/src/pages/Diagnosis/launch/planSideConverge.ts",
+      "pattern": "export function intrudingSide(",
+      "expected": null,
+      "retired_by": "c6aaed780 (包一阶段④ · 订正八① · 整文件删 planSideConverge.ts)",
+      "successor": [
+        "plan-side-mismatch-server-guard-alive"
+      ],
+      "last_reviewed_train": "B-train2-c88d0f02d",
+      "why": "前端「系统替你切模式」的自动收敛。订正八① 判它**退役**:三标签下模式由用户点选,自动收敛无存在理由;两颗撤销按钮与 autoHybridOptOut/autoHybridApplied 一并删。🔴 它此前**从未登记**(实测 registry 0 命中)—— 靠人凭记忆想起来的锚,就是没登记的锚。继任者只登了服务端那一半(现在就在);前端那半(全面测试自定义题带侧别选择器 sideDefaults 两处)要等 A 的实现落地后补登。 【2026-09-05 合流后兑现】退役条件已发生(文件被 c6aaed780 整份删除),继任者 plan-side-mismatch-server-guard-alive 实测仍命中 `code=\\\"plan_side_mismatch\\\"` ⇒ 正式退役。"
+    }
+  ],
+  "_retiring_README": [
+    "🔴 [#103] 第三态 `retiring_in`:继任者已定、退役随某班一起做。",
+    "   原来核对器一律 FAIL(「在役锚不该有 successor」)⇒ 这一档被规则**主动禁止**,",
+    "   写进去当场红。与「遗漏第三态」症状相同(写不进去),处置不同:",
+    "   遗漏是补一档,禁止是**先改那条规则**。",
+    "   约束:待退役必须有 successor(否则是永不到期的挂起状态),",
+    "   且 successor 不许是**缺席锁**(「旧的不见了」同时被『正确替换』与『整块被误删』满足)。"
+  ]
+}

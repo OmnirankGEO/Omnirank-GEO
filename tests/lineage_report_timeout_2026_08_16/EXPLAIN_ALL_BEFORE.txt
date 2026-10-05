@@ -1,0 +1,66 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                    QUERY PLAN                                                                                                                                                                                                                                                                                                                                                                                                                                     
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=61043.68..61043.68 rows=1 width=694) (actual time=10639.532..10639.553 rows=300 loops=1)
+   Sort Key: ranked.is_adopted DESC, ranked.is_cited DESC, ranked.source_weight DESC, ranked.cleaned_char_count DESC NULLS LAST, ranked.id DESC
+   Sort Method: quicksort  Memory: 191kB
+   Buffers: shared hit=10845 read=17831, temp read=1388 written=1391
+   ->  Subquery Scan on ranked  (cost=61043.62..61043.67 rows=1 width=694) (actual time=10639.123..10639.334 rows=300 loops=1)
+         Buffers: shared hit=10836 read=17831, temp read=1388 written=1391
+         ->  WindowAgg  (cost=61043.62..61043.66 rows=1 width=726) (actual time=10639.122..10639.312 rows=300 loops=1)
+               Run Condition: (row_number() OVER (?) <= 300)
+               Buffers: shared hit=10836 read=17831, temp read=1388 written=1391
+               ->  Sort  (cost=61043.62..61043.62 rows=1 width=717) (actual time=10639.112..10639.167 rows=781 loops=1)
+                     Sort Key: (CASE WHEN (COALESCE((max((max(COALESCE(sig.is_adopted, 0))))), 0) > 0) THEN 'adopted'::text WHEN (COALESCE((max((max(COALESCE(sig.is_cited, 0))))), 0) > 0) THEN 'cited'::text WHEN (COALESCE((max((max(COALESCE(sig.is_search_only, 0))))), 0) > 0) THEN 'search'::text WHEN ((COALESCE((max((max(COALESCE(sig.is_adopted_legacy, 0))))), 0) > 0) OR (COALESCE((max((max(COALESCE(sig.is_cited_legacy, 0))))), 0) > 0) OR (COALESCE((max((max(COALESCE(sig.is_search_only_legacy, 0))))), 0) > 0)) THEN 'legacy'::text ELSE 'reference'::text END), (COALESCE((max((max(COALESCE(sig.source_weight, '0'::numeric))))), '0'::numeric)) DESC, article.cleaned_char_count DESC NULLS LAST, article.id DESC
+                     Sort Method: quicksort  Memory: 461kB
+                     Buffers: shared hit=10836 read=17831, temp read=1388 written=1391
+                     ->  Nested Loop Left Join  (cost=57583.72..61043.61 rows=1 width=717) (actual time=504.517..10637.341 rows=781 loops=1)
+                           Join Filter: (citation.article_id = article.id)
+                           Rows Removed by Join Filter: 12965496
+                           Buffers: shared hit=10833 read=17831, temp read=1388 written=1391
+                           ->  Seq Scan on geo_research_articles article  (cost=0.00..1665.85 rows=1 width=621) (actual time=0.009..13.897 rows=781 loops=1)
+                                 Filter: ((NOT COALESCE(expired, false)) AND (canonical_body_hash IS NOT NULL) AND (content_cluster_id IS NOT NULL) AND (label_provenance_version IS NOT NULL) AND ((COALESCE(review_status, ''::character varying))::text <> 'rejected'::text) AND ((COALESCE(clean_status, ''::character varying))::text <> 'failed'::text) AND ((corpus_grade)::text = 'JC5'::text) AND (COALESCE(cleaned_char_count, char_length(COALESCE(inline_cleaned_content, ''::text))) >= 500))
+                                 Rows Removed by Filter: 16368
+                                 Buffers: shared hit=1280
+                           ->  GroupAggregate  (cost=57583.72..59373.24 rows=200 width=72) (actual time=0.633..13.084 rows=16602 loops=781)
+                                 Group Key: citation.article_id
+                                 Buffers: shared hit=9553 read=17831, temp read=1388 written=1391
+                                 ->  GroupAggregate  (cost=57583.72..58541.32 rows=25536 width=128) (actual time=0.632..8.136 rows=18309 loops=781)
+                                       Group Key: citation.article_id, raw.cite_url
+                                       Buffers: shared hit=9553 read=17831, temp read=1388 written=1391
+                                       ->  Sort  (cost=57583.72..57647.56 rows=25536 width=128) (actual time=0.631..1.412 rows=24991 loops=781)
+                                             Sort Key: citation.article_id, raw.cite_url
+                                             Sort Method: quicksort  Memory: 3829kB
+                                             Buffers: shared hit=9553 read=17831, temp read=1388 written=1391
+                                             ->  Hash Left Join  (cost=32748.47..55714.45 rows=25536 width=128) (actual time=384.990..487.055 rows=25536 loops=1)
+                                                   Hash Cond: (raw.cite_url = sig.source_url)
+                                                   Buffers: shared hit=9553 read=17831, temp read=1388 written=1391
+                                                   ->  Hash Join  (cost=998.56..23897.51 rows=25536 width=64) (actual time=6.470..99.912 rows=25536 loops=1)
+                                                         Hash Cond: (raw.id = citation.raw_id)
+                                                         Buffers: shared hit=1929 read=17831
+                                                         ->  Seq Scan on geo_research_raw raw  (cost=0.00..21541.06 rows=220506 width=60) (actual time=0.126..65.098 rows=220506 loops=1)
+                                                               Buffers: shared hit=1505 read=17831
+                                                         ->  Hash  (cost=679.36..679.36 rows=25536 width=16) (actual time=4.824..4.825 rows=25536 loops=1)
+                                                               Buckets: 32768  Batches: 1  Memory Usage: 1453kB
+                                                               Buffers: shared hit=424
+                                                               ->  Seq Scan on geo_research_article_citations citation  (cost=0.00..679.36 rows=25536 width=16) (actual time=0.005..2.831 rows=25536 loops=1)
+                                                                     Buffers: shared hit=424
+                                                   ->  Hash  (cost=31170.14..31170.14 rows=46382 width=119) (actual time=378.357..378.359 rows=58626 loops=1)
+                                                         Buckets: 65536  Batches: 1  Memory Usage: 7633kB
+                                                         Buffers: shared hit=7624, temp read=1388 written=1391
+                                                         ->  Subquery Scan on sig  (cost=21328.70..31170.14 rows=46382 width=119) (actual time=264.853..359.496 rows=58626 loops=1)
+                                                               Buffers: shared hit=7624, temp read=1388 written=1391
+                                                               ->  GroupAggregate  (cost=21328.70..30706.32 rows=46382 width=119) (actual time=264.852..355.676 rows=58626 loops=1)
+                                                                     Group Key: geo_research_source_signals.source_url
+                                                                     Buffers: shared hit=7624, temp read=1388 written=1391
+                                                                     ->  Sort  (cost=21328.70..21551.54 rows=89138 width=114) (actual time=264.838..317.391 rows=89138 loops=1)
+                                                                           Sort Key: geo_research_source_signals.source_url, ((CASE WHEN (((geo_research_source_signals.lineage_status)::text = 'complete'::text) AND ((geo_research_source_signals.label_provenance_type)::text = 'direct_observation'::text)) THEN CASE WHEN (lower((geo_research_source_signals.engine)::text) = ANY ('{doubao,豆包}'::text[])) THEN '豆包'::character varying WHEN (lower((geo_research_source_signals.engine)::text) = 'kimi'::text) THEN 'Kimi'::character varying WHEN (lower((geo_research_source_signals.engine)::text) = 'deepseek'::text) THEN 'DeepSeek'::character varying WHEN (lower((geo_research_source_signals.engine)::text) = ANY ('{qwen,千问}'::text[])) THEN '千问'::character varying ELSE geo_research_source_signals.engine END ELSE NULL::character varying END)::text)
+                                                                           Sort Method: external merge  Disk: 11104kB
+                                                                           Buffers: shared hit=7624, temp read=1388 written=1391
+                                                                           ->  Seq Scan on geo_research_source_signals  (cost=0.00..8515.38 rows=89138 width=114) (actual time=0.014..40.599 rows=89138 loops=1)
+                                                                                 Buffers: shared hit=7624
+ Planning:
+   Buffers: shared hit=838
+ Planning Time: 2.711 ms
+ Execution Time: 10641.281 ms
+(62 rows)
+

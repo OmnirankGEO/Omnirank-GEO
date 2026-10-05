@@ -1,0 +1,123 @@
+/* Public report presentation theme.
+ *
+ * The report is a standalone customer artifact.  It must not inherit a
+ * partially-applied theme from the authenticated app or a saved browser
+ * preference.  Light is the product default; dark is an explicit user choice.
+ */
+.prp-report[data-public-report-theme='light'] {
+    color-scheme: light;
+}
+
+.prp-report[data-public-report-theme='dark'] {
+    color-scheme: dark;
+    background: #020617 !important;
+    color: #e2e8f0 !important;
+}
+
+.prp-report ::selection {
+    background: #1d4ed8;
+    color: #ffffff;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-white,
+.prp-report[data-public-report-theme='dark'] .bg-white\/95 {
+    background-color: #0f172a !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-slate-50,
+.prp-report[data-public-report-theme='dark'] .bg-slate-50\/50,
+.prp-report[data-public-report-theme='dark'] .bg-slate-50\/60,
+.prp-report[data-public-report-theme='dark'] .bg-slate-100 {
+    background-color: #111827 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-slate-900,
+.prp-report[data-public-report-theme='dark'] .text-slate-800 {
+    color: #f8fafc !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-slate-700 {
+    color: #e2e8f0 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-slate-600 {
+    color: #cbd5e1 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-slate-500 {
+    color: #94a3b8 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-slate-400,
+.prp-report[data-public-report-theme='dark'] .text-slate-300 {
+    color: #94a3b8 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .border-slate-100,
+.prp-report[data-public-report-theme='dark'] .border-slate-200,
+.prp-report[data-public-report-theme='dark'] .border-slate-300 {
+    border-color: #334155 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+.prp-report[data-public-report-theme='dark'] .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #334155 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-emerald-50,
+.prp-report[data-public-report-theme='dark'] .bg-teal-50 {
+    background-color: rgb(6 78 59 / 0.35) !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-sky-50,
+.prp-report[data-public-report-theme='dark'] .bg-sky-50\/50 {
+    background-color: rgb(12 74 110 / 0.35) !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-amber-50,
+.prp-report[data-public-report-theme='dark'] .bg-orange-50 {
+    background-color: rgb(120 53 15 / 0.35) !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .bg-rose-50 {
+    background-color: rgb(136 19 55 / 0.32) !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-emerald-700,
+.prp-report[data-public-report-theme='dark'] .text-teal-700 {
+    color: #6ee7b7 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-sky-700,
+.prp-report[data-public-report-theme='dark'] .text-sky-800 {
+    color: #7dd3fc !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-amber-700,
+.prp-report[data-public-report-theme='dark'] .text-amber-800,
+.prp-report[data-public-report-theme='dark'] .text-orange-700 {
+    color: #fbbf24 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .text-rose-700 {
+    color: #fda4af !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .prp-expand-surface {
+    background: #111827 !important;
+    color: #e2e8f0 !important;
+}
+
+.prp-report[data-public-report-theme='dark'] .hover\:bg-slate-50:hover,
+.prp-report[data-public-report-theme='dark'] .hover\:bg-slate-100:hover {
+    background-color: #1e293b !important;
+}
+
+@media print {
+    .prp-report,
+    .prp-report[data-public-report-theme='dark'] {
+        color-scheme: light;
+        background: #ffffff !important;
+        color: #0f172a !important;
+    }
+}

@@ -1,0 +1,430 @@
+{
+  "brandName": "深圳美栖堂",
+  "industry": "医疗美容服务/生活美容服务/健康养生服务",
+  "date": "2026.03.15",
+  "geoScore": 22,
+  "maxScore": 100,
+  "level": "起步",
+  "aiTests": 32,
+  "aiRecommendRate": 12.5,
+  "executiveSummary": {
+    "headline": "AI搜索时代近乎隐形",
+    "subline": "社媒内容0条，本地场景推荐率0%，错失深圳产后修复精准流量",
+    "quickWins": [
+      {
+        "action": "开通抖音小红书蓝V",
+        "impact": "+8-12分",
+        "effort": "低",
+        "timeline": "3天"
+      },
+      {
+        "action": "发布首周10条内容",
+        "impact": "+5-8分",
+        "effort": "低",
+        "timeline": "7天"
+      },
+      {
+        "action": "布局本地问答15篇",
+        "impact": "+10-15分",
+        "effort": "中",
+        "timeline": "10天"
+      }
+    ]
+  },
+  "revenueImpact": {
+    "monthlySearchVolume": "21900",
+    "currentMonthlyOrders": "~2单",
+    "potentialMonthlyOrders": "~21单",
+    "avgOrderValue": "¥5000",
+    "currentMonthlyRevenue": "¥10,000",
+    "potentialMonthlyRevenue": "¥105,000",
+    "annualLoss": "¥114万",
+    "lossNote": "每延迟1个月损失9.5万"
+  },
+  "dims": [
+    {
+      "name": "AI可见度",
+      "score": 10,
+      "max": 25,
+      "pct": 40,
+      "desc": "品牌认知尚可，场景推荐缺失",
+      "status": "严重不足",
+      "advice": "抢占本地场景问答，提升推荐率"
+    },
+    {
+      "name": "社媒声量",
+      "score": 0,
+      "max": 20,
+      "pct": 0,
+      "desc": "抖音小红书完全空白",
+      "status": "完全缺失",
+      "advice": "立即启动双平台内容矩阵"
+    },
+    {
+      "name": "网页内容",
+      "score": 6,
+      "max": 18,
+      "pct": 33,
+      "desc": "引用稀疏，品牌提及不足",
+      "status": "严重不足",
+      "advice": "增加本地化案例与媒体报道"
+    },
+    {
+      "name": "权威背书",
+      "score": 2,
+      "max": 15,
+      "pct": 13,
+      "desc": "仅有基础百科，深度缺失",
+      "status": "完全缺失",
+      "advice": "完善百科，获取医疗资质认证"
+    },
+    {
+      "name": "结构化内容",
+      "score": 1,
+      "max": 12,
+      "pct": 8,
+      "desc": "无FAQ与知识库体系",
+      "status": "完全缺失",
+      "advice": "构建产后修复专业内容库"
+    },
+    {
+      "name": "内容质量",
+      "score": 1,
+      "max": 5,
+      "pct": 20,
+      "desc": "无内容可评估质量",
+      "status": "完全缺失",
+      "advice": "建立专业科普内容标准"
+    },
+    {
+      "name": "品牌基础",
+      "score": 2,
+      "max": 5,
+      "pct": 40,
+      "desc": "品牌词可被基础识别",
+      "status": "严重不足",
+      "advice": "强化地域标签与核心服务词"
+    }
+  ],
+  "engines": [
+    {
+      "name": "DeepSeek",
+      "status": false,
+      "detail": "场景搜索零推荐，仅品牌词识别",
+      "mentions": 1,
+      "total": 8
+    },
+    {
+      "name": "Kimi",
+      "status": false,
+      "detail": "本地竞争完全缺席",
+      "mentions": 1,
+      "total": 8
+    },
+    {
+      "name": "豆包",
+      "status": false,
+      "detail": "医疗场景推荐公立医院",
+      "mentions": 1,
+      "total": 8
+    },
+    {
+      "name": "千问",
+      "status": false,
+      "detail": "产后修复推荐月子中心",
+      "mentions": 1,
+      "total": 8
+    }
+  ],
+  "testQuestions": [
+    {
+      "q": "深圳产后修复中心哪家靠谱",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "宝安区皮肤管理机构推荐",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "深圳医美抗衰哪里效果好",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "深圳高端养生保健会所",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "全国最好产后修复品牌",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "医美抗衰哪家专业可靠",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    },
+    {
+      "q": "深圳美栖堂是什么公司",
+      "ds": "✓",
+      "kimi": "✓",
+      "db": "✓",
+      "gpt": "✓"
+    },
+    {
+      "q": "深圳医美香港技术背景",
+      "ds": "✗",
+      "kimi": "✗",
+      "db": "✗",
+      "gpt": "✗"
+    }
+  ],
+  "industryAvg": 45,
+  "industryBest": 82,
+  "competitors": [
+    {
+      "name": "西安刘青整形医生",
+      "tag": "专业医生IP",
+      "score": 55,
+      "strength": "手术实录",
+      "points": [
+        "医生第一视角建立专业信任",
+        "治疗过程全透明展示",
+        "实时对话缓解用户恐惧",
+        "产品原理解答安全顾虑",
+        "高互动率验证内容吸引力"
+      ]
+    },
+    {
+      "name": "恩恩还没睡",
+      "tag": "探店种草达人",
+      "score": 48,
+      "strength": "极致性价比",
+      "points": [
+        "31.5万粉丝基础庞大",
+        "价格反差钩子抓眼球",
+        "沉浸式Vlog细节丰富",
+        "本地标签精准触达",
+        "场景代入感强转化高"
+      ]
+    },
+    {
+      "name": "深圳市妇幼保健院",
+      "tag": "AI高频推荐",
+      "score": 78,
+      "strength": "公立权威",
+      "points": [
+        "医疗级首选背书",
+        "三大引擎同时推荐",
+        "产后修复场景霸榜",
+        "安全信任度最高",
+        "公立资质天然壁垒"
+      ]
+    }
+  ],
+  "funnel": [
+    {
+      "label": "月AI渠道搜索量",
+      "value": "~21,900次",
+      "width": 100,
+      "note": "5118真实数据，关键词覆盖"
+    },
+    {
+      "label": "被AI推荐曝光",
+      "value": "~2,738次",
+      "width": 72,
+      "note": "按12.5%推荐率估算"
+    },
+    {
+      "label": "用户点击搜索",
+      "value": "~55次",
+      "width": 45,
+      "note": "2%行业点击率参考"
+    },
+    {
+      "label": "产生咨询意向",
+      "value": "~14个",
+      "width": 28,
+      "note": "25%咨询转化率"
+    },
+    {
+      "label": "最终成交",
+      "value": "~3单/月",
+      "width": 16,
+      "note": "20%成交转化率"
+    }
+  ],
+  "findings": [
+    {
+      "title": "社媒资产归零",
+      "status": "danger",
+      "desc": "抖音小红书热门搜索零内容，与竞品数千笔记差距巨大，完全错失种草流量入口",
+      "fix": "立即启动双平台内容矩阵，日更抢占本地关键词"
+    },
+    {
+      "title": "本地场景隐形",
+      "status": "danger",
+      "desc": "深圳产后修复等核心业务搜索中，AI推荐全是竞品，精准客户被完全截流",
+      "fix": "批量布局本地问答与案例内容，抢占AI答案位"
+    },
+    {
+      "title": "医疗资质未凸显",
+      "status": "warning",
+      "desc": "拥有医疗美容诊所资质，但内容中未强化，未能与美容院形成差异化",
+      "fix": "所有内容突出医疗资质与香港技术背景"
+    },
+    {
+      "title": "品牌认知有基础",
+      "status": "good",
+      "desc": "四大AI引擎均能识别品牌，百度百科等6个权威来源背书，具备优化起点",
+      "fix": "基于现有基础快速扩展本地化内容"
+    }
+  ],
+  "existingAdvantages": [
+    {
+      "title": "AI品牌认知",
+      "desc": "四大引擎均可识别品牌"
+    },
+    {
+      "title": "医疗资质壁垒",
+      "desc": "宝安实体医疗美容诊所"
+    },
+    {
+      "title": "香港技术背景",
+      "desc": "差异化信任背书"
+    }
+  ],
+  "actions": [
+    {
+      "phase": "基建启动",
+      "days": "Day 1-10",
+      "items": [
+        {
+          "task": "开通双平台蓝V",
+          "detail": "抖音小红书企业认证"
+        },
+        {
+          "task": "优化百科词条",
+          "detail": "突出医疗资质与香港背景"
+        },
+        {
+          "task": "发布首周内容",
+          "detail": "抖音3条+小红书5篇"
+        },
+        {
+          "task": "布局本地问答",
+          "detail": "3平台15篇深圳+行业回答"
+        },
+        {
+          "task": "搭建关键词库",
+          "detail": "覆盖80个长尾词组合"
+        }
+      ],
+      "goal": "社媒从0到1",
+      "kpi": "内容发布量≥20条"
+    },
+    {
+      "phase": "密集铺设",
+      "days": "Day 11-20",
+      "items": [
+        {
+          "task": "启动日更机制",
+          "detail": "抖音7条+小红书7篇"
+        },
+        {
+          "task": "媒体软文投放",
+          "detail": "2家本地生活媒体发声"
+        },
+        {
+          "task": "产出深度文章",
+          "detail": "2篇深圳产后修复指南"
+        },
+        {
+          "task": "客户案例包装",
+          "detail": "3个真实体验故事"
+        },
+        {
+          "task": "专家内容策划",
+          "detail": "医生IP科普系列启动"
+        }
+      ],
+      "goal": "本地声量突破",
+      "kpi": "月内容量≥100篇"
+    },
+    {
+      "phase": "巩固发声",
+      "days": "Day 21-30",
+      "items": [
+        {
+          "task": "持续日更执行",
+          "detail": "保持双平台高频输出"
+        },
+        {
+          "task": "专家直播首秀",
+          "detail": "产后修复答疑专场"
+        },
+        {
+          "task": "垂直媒体发声",
+          "detail": "1篇专家访谈发布"
+        },
+        {
+          "task": "AI效果复测",
+          "detail": "本地场景推荐率验证"
+        },
+        {
+          "task": "策略迭代优化",
+          "detail": "基于数据调整方向"
+        }
+      ],
+      "goal": "AI推荐率40%+",
+      "kpi": "GEO分数≥55分"
+    }
+  ],
+  "effectPrediction": {
+    "day30Score": 55,
+    "day60Score": 68,
+    "day90Score": 75,
+    "day30Rate": "40%",
+    "day60Rate": "55%",
+    "day90Rate": "65%",
+    "risks": [
+      {
+        "risk": "内容审核限流",
+        "level": "medium",
+        "mitigation": "多平台分散，医疗合规预审"
+      },
+      {
+        "risk": "AI模型更新",
+        "level": "medium",
+        "mitigation": "季度复测，动态调整策略"
+      },
+      {
+        "risk": "竞品快速跟进",
+        "level": "low",
+        "mitigation": "深耕垂直差异化壁垒"
+      }
+    ]
+  },
+  "methodology": {
+    "dataPoints": "280+条",
+    "engines": "4大AI引擎实测",
+    "questions": "8个行业高频问题",
+    "platforms": "7个关键词×2大平台",
+    "version": "GEO诊断系统 v4.0"
+  }
+}

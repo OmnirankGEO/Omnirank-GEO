@@ -1,0 +1,345 @@
+{
+  "_doc": "产品事实 SSOT 包(GEO 获客内容中心 v2)。只收录 docs/SYSTEM_TRUTH/* 与平台代码可核验的真实产品事实;不编造数字、不做效果承诺。kind: concept=GEO 是什么 / capability=平台真实能力 / differentiator=真实差异化 / terminology=术语正确口径 / forbidden=禁用表述。prompt 注入只取 concept/capability/differentiator/terminology 四类;forbidden 由 guards.py 出口守卫硬执行,不重复进 prompt(管理端点可见)。relevance 供按 quick_task/channel/angle 选相关条目,空数组=该维度不参与匹配。改包不发版:更新本文件即热生效;旧 job 以 geo_snapshot.product_facts 冻结的 pack_id+version+facts 为准。",
+  "pack_id": "product_facts",
+  "version": "1.0.0",
+  "updated_at": "2026-07-22",
+  "source_docs": [
+    "docs/SYSTEM_TRUTH/00_QUICK_REFERENCE.md",
+    "docs/SYSTEM_TRUTH/02_geo_funnel.md",
+    "docs/SYSTEM_TRUTH/06_ai_tools.md",
+    "docs/SYSTEM_TRUTH/08_billing.md",
+    "docs/SYSTEM_TRUTH/09_report_portal.md",
+    "services/marketing/guards.py"
+  ],
+  "facts": [
+    {
+      "id": "concept_geo",
+      "kind": "concept",
+      "name": "GEO 是什么",
+      "one_liner": "GEO(生成式引擎优化)就是让客户在问 AI 时,答案里能准确提到你的品牌",
+      "points": [
+        "客户现在会直接问豆包、DeepSeek、Kimi、通义千问等 AI 该选谁,答案里有没有你成了新的获客入口",
+        "完整服务链路是:客户资料→诊断→搜索项→报价→内容→发布→监测→报告→复盘",
+        "它不是传统 SEO:优化对象是 AI 问答引擎给出的答案,不是搜索结果排名"
+      ],
+      "relevance": {
+        "quick_tasks": ["explain_geo", "promote_geo", "invite_trial"],
+        "channels": ["moments", "xiaohongshu", "douyin", "private_chat", "infographic", "professional_poster"],
+        "angles": ["industry_observation", "business_logic", "philosophy"]
+      },
+      "provenance": "system_verified",
+      "source": "00_QUICK_REFERENCE.md(GEO 主链) + 09_report_portal.md(四大 AI 平台)"
+    },
+    {
+      "id": "cap_diagnosis",
+      "kind": "capability",
+      "name": "GEO 诊断",
+      "one_liner": "一次诊断给出品牌在 AI 答案里的 GEO 评分和等级,缺什么一眼看清",
+      "points": [
+        "诊断产出评分与等级,等级分起步/待提升/空白等真实档位,不虚报",
+        "诊断报告可导出 PDF/PPTX,直接发给客户看",
+        "诊断在系统内留痕,之后做内容可引用已发布诊断作为证据"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "invite_trial", "explain_geo"],
+        "channels": ["professional_poster", "diagnosis_case", "xiaohongshu", "douyin", "private_chat", "infographic", "moments"],
+        "angles": ["trust_persona", "business_logic", "industry_observation"]
+      },
+      "provenance": "system_verified",
+      "source": "06_ai_tools.md(run_diagnosis/export_diagnosis_report) + 02_geo_funnel.md(等级真实分布)"
+    },
+    {
+      "id": "cap_monitoring",
+      "kind": "capability",
+      "name": "每日监测",
+      "one_liner": "开启后按天自动复查品牌在多个 AI 平台答案里的出现情况,结果逐条留痕",
+      "points": [
+        "监测覆盖多个主流 AI 问答平台,按天自动跑,不用人工盯",
+        "监测结果全部落库可追溯(2026-04 平台审计口径已累计 2.6 万+ 条,监测引擎真实在跑)",
+        "按词条逐一记录出现情况,能看到变化趋势"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo"],
+        "channels": ["infographic", "diagnosis_case", "xiaohongshu", "professional_poster", "moments"],
+        "angles": ["industry_observation", "trust_persona", "business_logic"]
+      },
+      "provenance": "system_verified",
+      "source": "02_geo_funnel.md(monitoring_results 26,919 条·监测引擎工作正常) + 06_ai_tools.md(start_monitoring)"
+    },
+    {
+      "id": "cap_quote",
+      "kind": "capability",
+      "name": "报价工具",
+      "one_liner": "报价单可以反复调整到客户认可再确认,一键生成链接发给客户",
+      "points": [
+        "生成报价本身不扣费,可以反复调整(2026-04 审计口径平均每个品牌调整约 4.6 次)",
+        "报价支持分档套餐,按客户预算选档",
+        "报价汇总成链接直接发给客户,客户点开就能看"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "invite_trial"],
+        "channels": ["private_chat", "moments", "douyin"],
+        "angles": ["business_logic", "trust_persona"]
+      },
+      "provenance": "system_verified",
+      "source": "02_geo_funnel.md(报价不扣费/4.6 次/tier 分档) + 06_ai_tools.md(create_quote_from_draft)"
+    },
+    {
+      "id": "cap_writing",
+      "kind": "capability",
+      "name": "GEO 内容写作",
+      "one_liner": "按诊断确认的搜索项生成 GEO 文章,还能重写和 AI 拓词",
+      "points": [
+        "文章围绕客户会问 AI 的真实问题写,不是泛泛软文",
+        "支持文章重写/补发与关键词 AI 扩展",
+        "写作、发布、监测在同一条链路里,写完能接着发"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "explain_geo"],
+        "channels": ["xiaohongshu", "douyin", "infographic"],
+        "angles": ["business_logic", "industry_observation"]
+      },
+      "provenance": "system_verified",
+      "source": "06_ai_tools.md(generate_article/keyword_expand) + 08_billing.md(article_gen/article_rewrite)"
+    },
+    {
+      "id": "cap_publishing",
+      "kind": "capability",
+      "name": "媒体投放与发布",
+      "one_liner": "平台内有媒体列表和发布订单,发没发、发到哪,订单里查得到",
+      "points": [
+        "可查看可投放的媒体列表",
+        "发布以订单形式留痕,进度可查",
+        "手动证据、代发提交、真发布、草稿四种状态分开记,不混"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo"],
+        "channels": ["private_chat", "professional_poster"],
+        "angles": ["trust_persona"]
+      },
+      "provenance": "system_verified",
+      "source": "06_ai_tools.md(list_publish_media/get_publish_orders) + 00_QUICK_REFERENCE.md(发布四态不混)"
+    },
+    {
+      "id": "cap_client_mgmt",
+      "kind": "capability",
+      "name": "客户管理",
+      "one_liner": "一个客户一份档案,AI 辅助补全资料;客户点链接就能看报价和报告,不用注册",
+      "points": [
+        "客户资料集中建档,AI 可联网辅助补全品牌信息",
+        "客户通过免登录链接查看报价、报告和监测快照",
+        "客户只看得到你发给他的那一份,不是平台后台账号"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "invite_trial", "explain_geo"],
+        "channels": ["private_chat", "moments"],
+        "angles": ["trust_persona", "philosophy", "business_logic"]
+      },
+      "provenance": "system_verified",
+      "source": "00_QUICK_REFERENCE.md(免登录 token 链接) + 06_ai_tools.md(create_brand/autofill_brand)"
+    },
+    {
+      "id": "cap_reports",
+      "kind": "capability",
+      "name": "监测报告",
+      "one_liner": "监测结果自动汇总成日报/周报/月报,周报自带与上周对比,可导出发给客户",
+      "points": [
+        "报告按日/周/月生成,含出现情况汇总与关键词明细",
+        "周报自带与上周的变化对比",
+        "报告可导出 CSV/Excel,也可导出 PDF/PPTX 发给客户"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case"],
+        "channels": ["infographic", "diagnosis_case", "professional_poster"],
+        "angles": ["industry_observation", "business_logic"]
+      },
+      "provenance": "system_verified",
+      "source": "09_report_portal.md(日报/周报/月报函数·rate_change·导出) + 08_billing.md(report_export)"
+    },
+    {
+      "id": "diff_evidence_first",
+      "kind": "differentiator",
+      "name": "证据先行,不编数字",
+      "one_liner": "品牌事实先于生成结果:没有证据的地方如实标注,绝不用 AI 反推客户资料",
+      "points": [
+        "客户确认过的资料是最高事实,文章和 AI 不能反向覆盖",
+        "证据分级决定结论能写多强",
+        "引用诊断数字以系统冻结快照为准,事后可回溯核验"
+      ],
+      "relevance": {
+        "quick_tasks": ["diagnosis_case", "promote_geo", "explain_geo", "invite_trial"],
+        "channels": ["diagnosis_case", "infographic", "professional_poster", "xiaohongshu", "moments", "private_chat"],
+        "angles": ["philosophy", "trust_persona", "industry_observation"]
+      },
+      "provenance": "system_verified",
+      "source": "00_QUICK_REFERENCE.md(真相 #10 品牌事实先于生成/#11 同一 SSOT)"
+    },
+    {
+      "id": "diff_no_login_delivery",
+      "kind": "differentiator",
+      "name": "免登录交付",
+      "one_liner": "给客户交付不用教他装系统:一个链接打开报价、报告和监测快照",
+      "points": [
+        "客户是链接接收方,不需要后台账号",
+        "每个链接只授权对应的那一份资源",
+        "权限收回立即生效,链接可随时失效"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "invite_trial", "explain_geo"],
+        "channels": ["private_chat", "moments", "douyin"],
+        "angles": ["business_logic", "trust_persona"]
+      },
+      "provenance": "system_verified",
+      "source": "00_QUICK_REFERENCE.md(客户是链接接收方/token 最小授权/真相 #13 撤权即时)"
+    },
+    {
+      "id": "diff_transparent_pricing",
+      "kind": "differentiator",
+      "name": "明码标价",
+      "one_liner": "每个功能都在价目表里明码标价,花了多少、花在哪,账能对上",
+      "points": [
+        "全部功能按条计价,价目表在系统内可查",
+        "扣费记录逐条留痕,可对账",
+        "服务商只看到自己的实付与对客售价,账目互相隔离"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "invite_trial"],
+        "channels": ["private_chat", "moments", "infographic"],
+        "angles": ["business_logic", "philosophy"]
+      },
+      "provenance": "system_verified",
+      "source": "08_billing.md(feature_pricing 40 条明码) + 00_QUICK_REFERENCE.md(资金关系分离)"
+    },
+    {
+      "id": "term_suanli",
+      "kind": "terminology",
+      "name": "算力",
+      "one_liner": "对客统一说「算力」,不说「积分」",
+      "points": [
+        "算力是平台功能的使用计量单位,按功能明码扣减",
+        "客户听到的任何价格都应换算成算力口径表述"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "explain_geo", "invite_trial", "diagnosis_case", "showcase_deal"],
+        "channels": [],
+        "angles": ["business_logic"]
+      },
+      "provenance": "system_verified",
+      "source": "guards.py(积分字样红线) + PROMISE_GUARD_PROMPT(对客一律算力)"
+    },
+    {
+      "id": "term_diagnosis_vs_monitoring",
+      "kind": "terminology",
+      "name": "诊断与监测的区别",
+      "one_liner": "诊断是一次性的全面摸底,监测是之后按天的持续复查,两回事",
+      "points": [
+        "诊断给评分和等级,回答「现在处于什么水平」",
+        "监测看「被提到的情况怎么变」,结果按天累积"
+      ],
+      "relevance": {
+        "quick_tasks": ["explain_geo", "promote_geo", "diagnosis_case"],
+        "channels": ["infographic", "xiaohongshu", "douyin", "moments"],
+        "angles": ["industry_observation", "business_logic"]
+      },
+      "provenance": "system_verified",
+      "source": "02_geo_funnel.md(诊断/监测两表分工) + 06_ai_tools.md(run_diagnosis/start_monitoring)"
+    },
+    {
+      "id": "term_appearance_wording",
+      "kind": "terminology",
+      "name": "出现情况的说法",
+      "one_liner": "说品牌在 AI 答案里的出现情况,用「问 N 次约出现 M 次」的人话,不写裸百分比和技术指标",
+      "points": [
+        "不用 SOV/share of voice 这类术语对客",
+        "不裸写「出现率 65%」这类百分比,换算成问几次出现几次"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "explain_geo", "diagnosis_case"],
+        "channels": ["infographic", "xiaohongshu", "moments", "douyin"],
+        "angles": ["business_logic", "industry_observation"]
+      },
+      "provenance": "system_verified",
+      "source": "guards.py(NAKED_METRIC_PATTERNS) + PROMISE_GUARD_PROMPT(出现率口语话术)"
+    },
+    {
+      "id": "fb_no_promise",
+      "kind": "forbidden",
+      "name": "禁承诺结果",
+      "one_liner": "不写「保证排名/保证上榜/必上/包上/100%/稳上」等任何结果承诺",
+      "points": [
+        "平台本身不做结果承诺,文案也不得替自己或客户承诺",
+        "出现情况只描述已测量的事实,不外推成承诺"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo", "invite_trial", "showcase_deal"],
+        "channels": [],
+        "angles": []
+      },
+      "provenance": "system_verified",
+      "source": "guards.py(PROMISE_WORDS)"
+    },
+    {
+      "id": "fb_no_adlaw",
+      "kind": "forbidden",
+      "name": "禁广告法极限词",
+      "one_liner": "不写「最/第一/顶级/国家级」等广告法违禁极限词(以 Owner 签发的法律禁止目录包为准;「唯一」「领先」类非明令词只提醒不硬拦)",
+      "points": [
+        "法律禁止目录包(config/legal_prohibited_pack.json)命中的明令项是法律红线,唯一会被硬拦截的文案问题",
+        "非明令灰词(唯一/领先/专业/专注等)只落 advisory 提醒,不阻断生成"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo", "invite_trial", "showcase_deal"],
+        "channels": [],
+        "angles": []
+      },
+      "provenance": "system_verified",
+      "source": "config/legal_prohibited_pack.json(Owner 签发 2026-07-23)"
+    },
+    {
+      "id": "fb_no_fabrication",
+      "kind": "forbidden",
+      "name": "禁编造数字与证言",
+      "one_liner": "诊断分数、监测数字、客户评价只能引用冻结证据,没有证据就不写",
+      "points": [
+        "只有本事实包(platform 级)与用户选择的冻结证据(客户级)两类事实可引用"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo", "invite_trial", "showcase_deal"],
+        "channels": [],
+        "angles": []
+      },
+      "provenance": "system_verified",
+      "source": "00_QUICK_REFERENCE.md(真相 #10/#12) + evidence.py(冻结语义)"
+    },
+    {
+      "id": "fb_no_platform_brand",
+      "kind": "forbidden",
+      "name": "禁平台品牌兜底",
+      "one_liner": "成品不出现「OmniRank/全域上榜」等平台名称;品牌位只放服务商自己配置的公司名,没配置就留白",
+      "points": [
+        "匿名晒单时品牌名与 Logo 均不上图"
+      ],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo", "invite_trial", "showcase_deal"],
+        "channels": [],
+        "angles": []
+      },
+      "provenance": "system_verified",
+      "source": "Owner 品牌轴心裁决(2026-07-22)"
+    },
+    {
+      "id": "fb_no_jifen",
+      "kind": "forbidden",
+      "name": "对客禁说「积分」",
+      "one_liner": "对客统一「算力」,任何成品文案不出现「积分」字样",
+      "points": [],
+      "relevance": {
+        "quick_tasks": ["promote_geo", "diagnosis_case", "explain_geo", "invite_trial", "showcase_deal"],
+        "channels": [],
+        "angles": []
+      },
+      "provenance": "system_verified",
+      "source": "guards.py(forbidden_term 积分)"
+    }
+  ]
+}

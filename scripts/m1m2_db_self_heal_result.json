@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-04-26T05:17:35",
+  "data_scope": "local docker DB snapshot, not production verified",
+  "db_dsn_masked": "postgresql://geo_admin:***@localhost:5432/geo_agentscope",
+  "before": {
+    "client_profiles_missing": [],
+    "monitoring_reports_missing": []
+  },
+  "after": {
+    "client_profiles_missing": [],
+    "monitoring_reports_missing": []
+  },
+  "added": {
+    "client_profiles": [],
+    "monitoring_reports": []
+  },
+  "errors": {
+    "profile": null,
+    "reports": null,
+    "seed": null
+  },
+  "autofill_brand_seed": {
+    "expected_cost_points": 130,
+    "actual_cost_points": 130,
+    "ok": true
+  }
+}

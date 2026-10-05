@@ -1,0 +1,59 @@
+{
+  "_comment": "M3 sales full-flow acceptance smoke fixtures. Keep M3_ACCEPTANCE_TOKEN out of git; mint it per target container with the command in _token_meta.regen_cmd.",
+  "M3_ACCEPTANCE_BASE_URL": "http://localhost:8003",
+  "M3_EXPECT_M3_DEFAULT_OPEN": true,
+  "M3_ACCEPTANCE_TOKEN": null,
+  "_token_meta": {
+    "user_id": 1,
+    "username": "admin",
+    "is_admin": true,
+    "regen_cmd": "docker exec omnirank-staging-8003 python -c \"import sys; sys.path.insert(0,'/app'); from auth.jwt_utils import create_jwt; print(create_jwt(1))\""
+  },
+  "M3_LOW_COMPLETENESS_BRAND_ID": 87,
+  "_M3_LOW_COMPLETENESS_BRAND_ID_meta": {
+    "name": "Shenzhen Hongchuang Building Materials",
+    "score": 45,
+    "tier": "block (<60)",
+    "diagnosis_id": 143
+  },
+  "M3_RISK_COMPLETENESS_BRAND_ID": 3,
+  "_M3_RISK_COMPLETENESS_BRAND_ID_meta": {
+    "name": "Chijing Technology",
+    "score": 75,
+    "tier": "warn (60-79)",
+    "diagnosis_id": 141
+  },
+  "M3_WRONG_STAGE_BRAND_ID": 164,
+  "_M3_WRONG_STAGE_BRAND_ID_meta": {
+    "name": "CTO-A acceptance test client",
+    "stage": "inquiry"
+  },
+  "M3_DIAGNOSIS_ID": 141,
+  "_M3_DIAGNOSIS_ID_meta": {
+    "brand_id": 3,
+    "brand_name": "Chijing Technology"
+  },
+  "M3_QUOTE_ID": 178,
+  "_M3_QUOTE_ID_meta": {
+    "brand_id": 63,
+    "brand_name": "Chongqing Bishan Wanjia Decoration",
+    "status": "confirmed",
+    "monthly_price": 77791,
+    "service_status": "pending"
+  },
+  "M3_PUBLIC_REPORT_ID": 141,
+  "M3_S_TOKEN": "J3F-AMBXHs5QH_fr",
+  "M3_PORTAL_TOKEN": "S8_3XEWTBYHU",
+  "M3_Q_CODE": null,
+  "_M3_Q_CODE_meta": {
+    "skip_reason": "No usable agent_quotes share_code in this staging DB."
+  },
+  "M3_M_TOKEN": null,
+  "_M3_M_TOKEN_meta": {
+    "skip_reason": "No usable material confirmation token in this staging DB."
+  },
+  "M3_PUBLIC_SMOKE_URLS": "/s/J3F-AMBXHs5QH_fr,/portal/S8_3XEWTBYHU,/public/report/141",
+  "_M3_PUBLIC_SMOKE_URLS_meta": {
+    "coverage": "Partial public-token coverage: /s, /portal, /public/report. /q and /m remain explicit null fixtures."
+  }
+}

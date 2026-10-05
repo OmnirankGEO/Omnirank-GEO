@@ -1,0 +1,39 @@
+{
+ "what": "体积基线对照(Review 放行条件)· 同 worktree 同 node_modules · BEFORE=detach 80132d5f · gzip level 9",
+ "entry": {
+  "before_file": "index-OPLWdKfp.js",
+  "after_file": "index-DNPxI3ge.js",
+  "gzip_before_KB": 103.7,
+  "gzip_after_KB": 142.9,
+  "gzip_delta_KB": 39.2,
+  "raw_delta_KB": 113.9
+ },
+ "total_js": {
+  "gzip_before_KB": 2358.7,
+  "gzip_after_KB": 2376.8,
+  "gzip_delta_KB": 18.1,
+  "file_count": "244 -> 243"
+ },
+ "verdict": "entry gzip +39.2KB 落在 Review 判据 20~50KB 区间 → 放行 + EXIT 记明",
+ "chunks_changed_gte_0.5KB": [
+  {
+   "chunk": "index",
+   "gzip_delta_KB": 35.9,
+   "before_KB": 763.1,
+   "after_KB": 799.0
+  },
+  {
+   "chunk": "sheet",
+   "gzip_delta_KB": -15.8,
+   "before_KB": 20.8,
+   "after_KB": 5.0
+  },
+  {
+   "chunk": "useOpenChangeComplete",
+   "gzip_delta_KB": -1.8,
+   "before_KB": 1.8,
+   "after_KB": 0.0
+  }
+ ],
+ "解读": "entry +39.2KB 中约 17.6KB 是搬家(sheet -15.8 / useOpenChangeComplete -1.8,base-ui 公共内核从懒加载 chunk 提到 entry);真正新增看全站合计 +18.1KB。提到 entry 的原因=searchable-select 同时被首屏 Layout 里的 ClientSwitcherSidebar 和懒加载页面引用,Rollup 判为共享模块。"
+}

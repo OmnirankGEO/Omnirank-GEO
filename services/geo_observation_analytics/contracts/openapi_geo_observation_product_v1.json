@@ -1,0 +1,2571 @@
+{
+  "components": {
+    "schemas": {
+      "AdminAggregateDiffDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminAggregateDiffItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "AdminAggregateDiffDTO",
+        "type": "object"
+      },
+      "AdminAggregateDiffItemDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "delta_bps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delta Bps"
+          },
+          "diff_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Diff Reason"
+          },
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "legacy_bps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Bps"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "shadow_bps": {
+            "title": "Shadow Bps",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "industry_key",
+          "metric",
+          "shadow_bps"
+        ],
+        "title": "AdminAggregateDiffItemDTO",
+        "type": "object"
+      },
+      "AdminCountsDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "pending_review": {
+            "minimum": 0.0,
+            "title": "Pending Review",
+            "type": "integer"
+          },
+          "private_only": {
+            "minimum": 0.0,
+            "title": "Private Only",
+            "type": "integer"
+          },
+          "rejected": {
+            "minimum": 0.0,
+            "title": "Rejected",
+            "type": "integer"
+          },
+          "stuck_claims": {
+            "minimum": 0.0,
+            "title": "Stuck Claims",
+            "type": "integer"
+          },
+          "withdrawn": {
+            "minimum": 0.0,
+            "title": "Withdrawn",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pending_review",
+          "private_only",
+          "rejected",
+          "withdrawn",
+          "stuck_claims"
+        ],
+        "title": "AdminCountsDTO",
+        "type": "object"
+      },
+      "AdminModelShiftDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "bucket_granularity": {
+            "enum": [
+              "day",
+              "week",
+              "month"
+            ],
+            "title": "Bucket Granularity",
+            "type": "string"
+          },
+          "bucket_start": {
+            "title": "Bucket Start",
+            "type": "string"
+          },
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "model_revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Revision"
+          },
+          "model_shift_index_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Model Shift Index Bps",
+            "type": "integer"
+          },
+          "platform_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Platform Key"
+          },
+          "stability_status": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient",
+              "shifted"
+            ],
+            "title": "Stability Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "industry_key",
+          "bucket_granularity",
+          "bucket_start",
+          "model_shift_index_bps",
+          "stability_status"
+        ],
+        "title": "AdminModelShiftDTO",
+        "type": "object"
+      },
+      "AdminModelShiftsDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AdminModelShiftDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "AdminModelShiftsDTO",
+        "type": "object"
+      },
+      "AdminOverviewDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "aggregate_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aggregate Updated At"
+          },
+          "collection_readiness": {
+            "$ref": "#/components/schemas/CollectionReadinessDTO"
+          },
+          "counts": {
+            "$ref": "#/components/schemas/AdminCountsDTO"
+          },
+          "platform_health": {
+            "items": {
+              "$ref": "#/components/schemas/AdminPlatformHealthDTO"
+            },
+            "title": "Platform Health",
+            "type": "array"
+          },
+          "policy_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Policy Version"
+          },
+          "readiness": {
+            "enum": [
+              "ready",
+              "attention_required",
+              "unavailable"
+            ],
+            "title": "Readiness",
+            "type": "string"
+          },
+          "reconciler_delay_seconds": {
+            "minimum": 0.0,
+            "title": "Reconciler Delay Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "readiness",
+          "counts",
+          "reconciler_delay_seconds",
+          "platform_health",
+          "collection_readiness"
+        ],
+        "title": "AdminOverviewDTO",
+        "type": "object"
+      },
+      "AdminPlatformHealthDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled_by_policy": {
+            "title": "Enabled By Policy",
+            "type": "boolean"
+          },
+          "model_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Key"
+          },
+          "model_revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Revision"
+          },
+          "platform": {
+            "title": "Platform",
+            "type": "string"
+          },
+          "provider_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider Key"
+          },
+          "runtime_health": {
+            "enum": [
+              "healthy",
+              "degraded",
+              "unavailable",
+              "unknown"
+            ],
+            "title": "Runtime Health",
+            "type": "string"
+          },
+          "surface_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Surface Key"
+          }
+        },
+        "required": [
+          "platform",
+          "enabled_by_policy",
+          "runtime_health"
+        ],
+        "title": "AdminPlatformHealthDTO",
+        "type": "object"
+      },
+      "BrandPlatformsDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "historical_platforms": {
+            "items": {
+              "$ref": "#/components/schemas/HistoricalPlatformDTO"
+            },
+            "title": "Historical Platforms",
+            "type": "array"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlatformItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items",
+          "historical_platforms"
+        ],
+        "title": "BrandPlatformsDTO",
+        "type": "object"
+      },
+      "BrandRefDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "brand_id": {
+            "title": "Brand Id",
+            "type": "integer"
+          },
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "brand_id",
+          "display_name"
+        ],
+        "title": "BrandRefDTO",
+        "type": "object"
+      },
+      "BrandSummaryDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "brand": {
+            "$ref": "#/components/schemas/BrandRefDTO"
+          },
+          "comparison": {
+            "$ref": "#/components/schemas/ComparisonDTO"
+          },
+          "data_updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Updated At"
+          },
+          "metric_version": {
+            "title": "Metric Version",
+            "type": "string"
+          },
+          "next_actions": {
+            "items": {
+              "$ref": "#/components/schemas/NextActionDTO"
+            },
+            "title": "Next Actions",
+            "type": "array"
+          },
+          "outcomes": {
+            "items": {
+              "$ref": "#/components/schemas/OutcomeCountDTO"
+            },
+            "title": "Outcomes",
+            "type": "array"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/BrandSummaryMetricsDTO"
+          },
+          "window": {
+            "$ref": "#/components/schemas/WindowDTO"
+          }
+        },
+        "required": [
+          "brand",
+          "window",
+          "metric_version",
+          "summary",
+          "comparison",
+          "outcomes",
+          "next_actions"
+        ],
+        "title": "BrandSummaryDTO",
+        "type": "object"
+      },
+      "BrandSummaryMetricsDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "candidate_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Candidate Rate Bps"
+          },
+          "citation_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Citation Rate Bps"
+          },
+          "conditional_recommendation_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conditional Recommendation Rate Bps"
+          },
+          "criteria_only_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Criteria Only Rate Bps"
+          },
+          "evidence_coverage_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Coverage Rate Bps"
+          },
+          "explicit_recommendation_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Explicit Recommendation Rate Bps"
+          },
+          "not_mentioned_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Not Mentioned Rate Bps"
+          },
+          "presence_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Presence Rate Bps"
+          },
+          "refusal_no_evidence_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refusal No Evidence Rate Bps"
+          },
+          "refusal_risk_rate_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Refusal Risk Rate Bps"
+          },
+          "share_of_voice_bps": {
+            "anyOf": [
+              {
+                "maximum": 10000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Share Of Voice Bps"
+          },
+          "stability_explanation": {
+            "title": "Stability Explanation",
+            "type": "string"
+          },
+          "stability_status": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient",
+              "shifted"
+            ],
+            "title": "Stability Status",
+            "type": "string"
+          },
+          "valid_observations": {
+            "minimum": 0.0,
+            "title": "Valid Observations",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "valid_observations",
+          "stability_status",
+          "stability_explanation"
+        ],
+        "title": "BrandSummaryMetricsDTO",
+        "type": "object"
+      },
+      "BrandTrendDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "brand": {
+            "$ref": "#/components/schemas/BrandRefDTO"
+          },
+          "comparison_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Note"
+          },
+          "granularity": {
+            "enum": [
+              "day",
+              "week",
+              "month"
+            ],
+            "title": "Granularity",
+            "type": "string"
+          },
+          "metric_version": {
+            "title": "Metric Version",
+            "type": "string"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/TrendPointDTO"
+            },
+            "title": "Points",
+            "type": "array"
+          },
+          "window": {
+            "$ref": "#/components/schemas/WindowDTO"
+          }
+        },
+        "required": [
+          "brand",
+          "window",
+          "metric_version",
+          "granularity",
+          "points"
+        ],
+        "title": "BrandTrendDTO",
+        "type": "object"
+      },
+      "ChannelDisclosureDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "platform": {
+            "title": "Platform",
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform"
+        ],
+        "title": "ChannelDisclosureDTO",
+        "type": "object"
+      },
+      "CitationDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "title": "Domain",
+            "type": "string"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "source_type": {
+            "enum": [
+              "citation",
+              "source"
+            ],
+            "title": "Source Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "source_type"
+        ],
+        "title": "CitationDTO",
+        "type": "object"
+      },
+      "CollectionReadinessDTO": {
+        "additionalProperties": false,
+        "description": "AI-1 control-plane readiness folded into the admin view: whether the\ncollection pipeline is actually runnable (sampling driver + reservation\nreaper wired, no unresolved surface substitution, scheduler up). Composed by\nthe integrator from AI-1's scheduler_wiring.check_readiness() +\nregistry.readiness() and injected via collection_readiness_provider.\nUnwired / exception / attention_required never reads 'ready'.",
+        "properties": {
+          "problems": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Problems",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "attention_required",
+              "unavailable"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "CollectionReadinessDTO",
+        "type": "object"
+      },
+      "ComparisonDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "comparison_allowed": {
+            "title": "Comparison Allowed",
+            "type": "boolean"
+          },
+          "presence_change_bps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Presence Change Bps"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "recommendation_change_bps": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommendation Change Bps"
+          }
+        },
+        "required": [
+          "comparison_allowed"
+        ],
+        "title": "ComparisonDTO",
+        "type": "object"
+      },
+      "EvidenceDetailDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "answer_excerpt": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer Excerpt"
+          },
+          "channel_disclosure": {
+            "$ref": "#/components/schemas/ChannelDisclosureDTO"
+          },
+          "citations": {
+            "items": {
+              "$ref": "#/components/schemas/CitationDTO"
+            },
+            "title": "Citations",
+            "type": "array"
+          },
+          "evidence_gap": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Gap",
+            "type": "array"
+          },
+          "matched_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matched Text"
+          },
+          "next_action": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceNextActionDTO"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "observation_id": {
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "recommended",
+              "conditionally_recommended",
+              "candidate_only",
+              "mentioned_only",
+              "criteria_only",
+              "refused_no_evidence",
+              "refused_risk",
+              "not_mentioned",
+              "entity_ambiguous",
+              "engine_error"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id",
+          "question",
+          "outcome",
+          "citations",
+          "evidence_gap",
+          "channel_disclosure"
+        ],
+        "title": "EvidenceDetailDTO",
+        "type": "object"
+      },
+      "EvidenceNextActionDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "may_charge": {
+            "title": "May Charge",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "title",
+          "may_charge"
+        ],
+        "title": "EvidenceNextActionDTO",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HistoricalPlatformDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "last_observed_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Observed At"
+          },
+          "platform_key": {
+            "title": "Platform Key",
+            "type": "string"
+          },
+          "status": {
+            "const": "historical",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "platform_key",
+          "display_name",
+          "status"
+        ],
+        "title": "HistoricalPlatformDTO",
+        "type": "object"
+      },
+      "IndustryBaselineDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "citation_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Citation Rate Bps",
+            "type": "integer"
+          },
+          "conditional_recommendation_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Conditional Recommendation Rate Bps",
+            "type": "integer"
+          },
+          "criteria_only_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Criteria Only Rate Bps",
+            "type": "integer"
+          },
+          "evidence_coverage_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Evidence Coverage Rate Bps",
+            "type": "integer"
+          },
+          "explicit_recommendation_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Explicit Recommendation Rate Bps",
+            "type": "integer"
+          },
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "metric_version": {
+            "title": "Metric Version",
+            "type": "string"
+          },
+          "presence_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Presence Rate Bps",
+            "type": "integer"
+          },
+          "refusal_no_evidence_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Refusal No Evidence Rate Bps",
+            "type": "integer"
+          },
+          "refusal_risk_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Refusal Risk Rate Bps",
+            "type": "integer"
+          },
+          "sample_scope": {
+            "title": "Sample Scope",
+            "type": "string"
+          },
+          "stability_status": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient",
+              "shifted"
+            ],
+            "title": "Stability Status",
+            "type": "string"
+          },
+          "valid_observations": {
+            "minimum": 0.0,
+            "title": "Valid Observations",
+            "type": "integer"
+          },
+          "window": {
+            "$ref": "#/components/schemas/WindowDTO"
+          }
+        },
+        "required": [
+          "industry_key",
+          "window",
+          "metric_version",
+          "valid_observations",
+          "presence_rate_bps",
+          "explicit_recommendation_rate_bps",
+          "conditional_recommendation_rate_bps",
+          "criteria_only_rate_bps",
+          "refusal_no_evidence_rate_bps",
+          "refusal_risk_rate_bps",
+          "citation_rate_bps",
+          "evidence_coverage_rate_bps",
+          "stability_status",
+          "sample_scope"
+        ],
+        "title": "IndustryBaselineDTO",
+        "type": "object"
+      },
+      "IndustrySourcePatternsDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SourcePatternItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "metric_version": {
+            "title": "Metric Version",
+            "type": "string"
+          },
+          "sample_scope": {
+            "title": "Sample Scope",
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/WindowDTO"
+          }
+        },
+        "required": [
+          "industry_key",
+          "window",
+          "metric_version",
+          "items",
+          "sample_scope"
+        ],
+        "title": "IndustrySourcePatternsDTO",
+        "type": "object"
+      },
+      "InsightJobStatusDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "allowed_actions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allowed Actions"
+          },
+          "evidence_refs": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Refs"
+          },
+          "job_id": {
+            "title": "Job Id",
+            "type": "string"
+          },
+          "progress_percent": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Progress Percent"
+          },
+          "request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Request Id"
+          },
+          "state": {
+            "enum": [
+              "pending",
+              "running",
+              "completed",
+              "failed"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          }
+        },
+        "required": [
+          "job_id",
+          "state"
+        ],
+        "title": "InsightJobStatusDTO",
+        "type": "object"
+      },
+      "NextActionDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "may_charge": {
+            "title": "May Charge",
+            "type": "boolean"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "requires_confirmation": {
+            "title": "Requires Confirmation",
+            "type": "boolean"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "title",
+          "reason",
+          "requires_confirmation",
+          "may_charge"
+        ],
+        "title": "NextActionDTO",
+        "type": "object"
+      },
+      "OpportunitiesDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OpportunityItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "OpportunitiesDTO",
+        "type": "object"
+      },
+      "OpportunityItemDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "auto_action_allowed": {
+            "const": false,
+            "default": false,
+            "title": "Auto Action Allowed",
+            "type": "boolean"
+          },
+          "opportunity_id": {
+            "title": "Opportunity Id",
+            "type": "string"
+          },
+          "priority": {
+            "minimum": 1.0,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "recommended_content_type": {
+            "enum": [
+              "case_study",
+              "comparison_method",
+              "qualification_evidence",
+              "faq",
+              "data_report"
+            ],
+            "title": "Recommended Content Type",
+            "type": "string"
+          },
+          "recommended_evidence": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Recommended Evidence",
+            "type": "array"
+          },
+          "recommended_media_pattern": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Recommended Media Pattern",
+            "type": "array"
+          },
+          "sample_size": {
+            "minimum": 0.0,
+            "title": "Sample Size",
+            "type": "integer"
+          },
+          "stability": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient"
+            ],
+            "title": "Stability",
+            "type": "string"
+          },
+          "topic": {
+            "title": "Topic",
+            "type": "string"
+          }
+        },
+        "required": [
+          "opportunity_id",
+          "priority",
+          "topic",
+          "recommended_content_type",
+          "recommended_evidence",
+          "reason",
+          "sample_size",
+          "stability"
+        ],
+        "title": "OpportunityItemDTO",
+        "type": "object"
+      },
+      "OutcomeCountDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "minimum": 0.0,
+            "title": "Count",
+            "type": "integer"
+          },
+          "outcome": {
+            "enum": [
+              "recommended",
+              "conditionally_recommended",
+              "candidate_only",
+              "mentioned_only",
+              "criteria_only",
+              "refused_no_evidence",
+              "refused_risk",
+              "not_mentioned",
+              "entity_ambiguous",
+              "engine_error"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "required": [
+          "outcome",
+          "count"
+        ],
+        "title": "OutcomeCountDTO",
+        "type": "object"
+      },
+      "PlatformItemDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "explicit_recommendation_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Explicit Recommendation Rate Bps",
+            "type": "integer"
+          },
+          "platform_key": {
+            "title": "Platform Key",
+            "type": "string"
+          },
+          "presence_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Presence Rate Bps",
+            "type": "integer"
+          },
+          "stability_status": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient",
+              "shifted"
+            ],
+            "title": "Stability Status",
+            "type": "string"
+          },
+          "surface_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Surface Note"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "valid_observations": {
+            "minimum": 0.0,
+            "title": "Valid Observations",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "platform_key",
+          "display_name",
+          "valid_observations",
+          "presence_rate_bps",
+          "explicit_recommendation_rate_bps",
+          "stability_status"
+        ],
+        "title": "PlatformItemDTO",
+        "type": "object"
+      },
+      "PublicBaselineResponseDTO": {
+        "additionalProperties": false,
+        "description": "Public baseline never silently falls back; it explicitly reports whether\nthe k-anonymity gate is met and the ACTUAL scope used.",
+        "properties": {
+          "baseline": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IndustryBaselineDTO"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "sample_scope": {
+            "title": "Sample Scope",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "insufficient_samples"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "industry_key",
+          "sample_scope"
+        ],
+        "title": "PublicBaselineResponseDTO",
+        "type": "object"
+      },
+      "PublicOpportunitiesResponseDTO": {
+        "additionalProperties": false,
+        "description": "Public content opportunities distinguish 'no opportunities' (status ok,\nempty items) from 'privacy-blocked' (status insufficient_samples).",
+        "properties": {
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OpportunityItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "sample_scope": {
+            "title": "Sample Scope",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "insufficient_samples"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "industry_key",
+          "sample_scope"
+        ],
+        "title": "PublicOpportunitiesResponseDTO",
+        "type": "object"
+      },
+      "PublicSourcePatternsResponseDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "industry_key": {
+            "title": "Industry Key",
+            "type": "string"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "patterns": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IndustrySourcePatternsDTO"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sample_scope": {
+            "title": "Sample Scope",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "insufficient_samples"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "industry_key",
+          "sample_scope"
+        ],
+        "title": "PublicSourcePatternsResponseDTO",
+        "type": "object"
+      },
+      "QuestionItemDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "changed": {
+            "title": "Changed",
+            "type": "boolean"
+          },
+          "citations": {
+            "minimum": 0.0,
+            "title": "Citations",
+            "type": "integer"
+          },
+          "evidence_available": {
+            "title": "Evidence Available",
+            "type": "boolean"
+          },
+          "matched_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matched Text"
+          },
+          "observation_id": {
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "outcome": {
+            "enum": [
+              "recommended",
+              "conditionally_recommended",
+              "candidate_only",
+              "mentioned_only",
+              "criteria_only",
+              "refused_no_evidence",
+              "refused_risk",
+              "not_mentioned",
+              "entity_ambiguous",
+              "engine_error"
+            ],
+            "title": "Outcome",
+            "type": "string"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "question": {
+            "title": "Question",
+            "type": "string"
+          }
+        },
+        "required": [
+          "observation_id",
+          "question",
+          "outcome",
+          "citations",
+          "changed",
+          "evidence_available"
+        ],
+        "title": "QuestionItemDTO",
+        "type": "object"
+      },
+      "QuestionsPageDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionItemDTO"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "minimum": 1.0,
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "minimum": 1.0,
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "total": {
+            "minimum": 0.0,
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page",
+          "page_size",
+          "total",
+          "items"
+        ],
+        "title": "QuestionsPageDTO",
+        "type": "object"
+      },
+      "SourcePatternItemDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "appearance_count": {
+            "minimum": 0.0,
+            "title": "Appearance Count",
+            "type": "integer"
+          },
+          "domain": {
+            "title": "Domain",
+            "type": "string"
+          },
+          "platforms": {
+            "minimum": 0.0,
+            "title": "Platforms",
+            "type": "integer"
+          },
+          "source_type": {
+            "enum": [
+              "citation",
+              "source"
+            ],
+            "title": "Source Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "domain",
+          "appearance_count",
+          "platforms",
+          "source_type"
+        ],
+        "title": "SourcePatternItemDTO",
+        "type": "object"
+      },
+      "TrendPointDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "bucket_end": {
+            "title": "Bucket End",
+            "type": "string"
+          },
+          "bucket_start": {
+            "title": "Bucket Start",
+            "type": "string"
+          },
+          "confirmed_change": {
+            "title": "Confirmed Change",
+            "type": "boolean"
+          },
+          "explicit_recommendation_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Explicit Recommendation Rate Bps",
+            "type": "integer"
+          },
+          "model_shift_marker": {
+            "title": "Model Shift Marker",
+            "type": "boolean"
+          },
+          "presence_rate_bps": {
+            "maximum": 10000.0,
+            "minimum": 0.0,
+            "title": "Presence Rate Bps",
+            "type": "integer"
+          },
+          "stability_status": {
+            "enum": [
+              "stable",
+              "watch",
+              "insufficient",
+              "shifted"
+            ],
+            "title": "Stability Status",
+            "type": "string"
+          },
+          "valid_observations": {
+            "minimum": 0.0,
+            "title": "Valid Observations",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bucket_start",
+          "bucket_end",
+          "valid_observations",
+          "presence_rate_bps",
+          "explicit_recommendation_rate_bps",
+          "stability_status",
+          "model_shift_marker",
+          "confirmed_change"
+        ],
+        "title": "TrendPointDTO",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "WindowDTO": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "title": "End",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "start": {
+            "title": "Start",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "start",
+          "end"
+        ],
+        "title": "WindowDTO",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "OmniRank GEO Observation Product API",
+    "version": "geo-observation-contract-v1.4"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/admin/geo-observation/aggregate-diff": {
+      "get": {
+        "operationId": "admin_aggregate_diff_api_admin_geo_observation_aggregate_diff_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminAggregateDiffDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Admin Aggregate Diff",
+        "tags": [
+          "GEO 观测治理"
+        ]
+      }
+    },
+    "/api/admin/geo-observation/content-opportunities": {
+      "get": {
+        "operationId": "admin_content_opportunities_api_admin_geo_observation_content_opportunities_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunitiesDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Admin Content Opportunities",
+        "tags": [
+          "GEO 观测治理"
+        ]
+      }
+    },
+    "/api/admin/geo-observation/model-shifts": {
+      "get": {
+        "operationId": "admin_model_shifts_api_admin_geo_observation_model_shifts_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminModelShiftsDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Admin Model Shifts",
+        "tags": [
+          "GEO 观测治理"
+        ]
+      }
+    },
+    "/api/admin/geo-observation/overview": {
+      "get": {
+        "operationId": "admin_overview_api_admin_geo_observation_overview_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOverviewDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Admin Overview",
+        "tags": [
+          "GEO 观测治理"
+        ]
+      }
+    },
+    "/api/admin/geo-observation/platform-health": {
+      "get": {
+        "operationId": "admin_platform_health_api_admin_geo_observation_platform_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/AdminPlatformHealthDTO"
+                  },
+                  "title": "Response Admin Platform Health Api Admin Geo Observation Platform Health Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Admin Platform Health",
+        "tags": [
+          "GEO 观测治理"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/evidence/{observation_id}": {
+      "get": {
+        "operationId": "brand_evidence_api_geo_observation_brands__brand_id__evidence__observation_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "observation_id",
+            "required": true,
+            "schema": {
+              "title": "Observation Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceDetailDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Evidence",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/insights": {
+      "post": {
+        "operationId": "create_insight_api_geo_observation_brands__brand_id__insights_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InsightJobStatusDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Insight",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/insights/{job_id}": {
+      "get": {
+        "operationId": "get_insight_api_geo_observation_brands__brand_id__insights__job_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "job_id",
+            "required": true,
+            "schema": {
+              "title": "Job Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InsightJobStatusDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Insight",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/opportunities": {
+      "get": {
+        "operationId": "brand_opportunities_api_geo_observation_brands__brand_id__opportunities_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpportunitiesDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Opportunities",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/platforms": {
+      "get": {
+        "operationId": "brand_platforms_api_geo_observation_brands__brand_id__platforms_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandPlatformsDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Platforms",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/questions": {
+      "get": {
+        "operationId": "brand_questions_api_geo_observation_brands__brand_id__questions_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Page Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionsPageDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Questions",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/summary": {
+      "get": {
+        "operationId": "brand_summary_api_geo_observation_brands__brand_id__summary_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandSummaryDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Summary",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/brands/{brand_id}/trend": {
+      "get": {
+        "operationId": "brand_trend_api_geo_observation_brands__brand_id__trend_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "brand_id",
+            "required": true,
+            "schema": {
+              "title": "Brand Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrandTrendDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Brand Trend",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/industries/{industry_key}/baseline": {
+      "get": {
+        "operationId": "industry_baseline_api_geo_observation_industries__industry_key__baseline_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "industry_key",
+            "required": true,
+            "schema": {
+              "title": "Industry Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicBaselineResponseDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Industry Baseline",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/industries/{industry_key}/content-opportunities": {
+      "get": {
+        "operationId": "industry_content_opportunities_api_geo_observation_industries__industry_key__content_opportunities_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "industry_key",
+            "required": true,
+            "schema": {
+              "title": "Industry Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicOpportunitiesResponseDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Industry Content Opportunities",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    },
+    "/api/geo-observation/industries/{industry_key}/source-patterns": {
+      "get": {
+        "operationId": "industry_source_patterns_api_geo_observation_industries__industry_key__source_patterns_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "industry_key",
+            "required": true,
+            "schema": {
+              "title": "Industry Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "granularity",
+            "required": false,
+            "schema": {
+              "default": "day",
+              "pattern": "^(day|week|month)$",
+              "title": "Granularity",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicSourcePatternsResponseDTO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Industry Source Patterns",
+        "tags": [
+          "GEO 观测洞察"
+        ]
+      }
+    }
+  }
+}

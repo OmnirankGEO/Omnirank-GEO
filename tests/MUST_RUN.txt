@@ -1,0 +1,40 @@
+# tests/MUST_RUN.txt —— 必跑集(WO_263 · 2026-09-22 立)
+#
+# preflight G2b 每班对**待发树**真跑这几项。格式:`路径<TAB>守什么`。
+#
+# 🔴 为什么要这张表:2026-09-22 实测,全仓 pytest **没有任何常驻运行者** ——
+#    782 个 tests/ 顶层项里只有 3 项被 workflow 选择器覆盖(其中 1 项还只是部分),
+#    其余 779 项从来没有被任何自动化跑过。
+#    `preflight.sh:410` 那句「MUST_RUN 必跑集」在此之前**只是一句注释**,
+#    而它的上一行恰好写着「注释传不出去,只有会自己报错的东西才拦得住」。
+#
+# 加进来之前先问:①它红了是不是真的该拦车 ②它要多久(必跑集有时长预算,见下,超了红)
+# ③它要不要库(要库就得能在 TEST_DATABASE_URL 下跑起来)。
+#
+# ⏱ 时长预算(WO_266 · Review 09-23 裁定 ①)。下面这一行是**机器读的**(普查门用 Python、
+#    G2b 用 bash 各读一次,正则逐字同形):只认整行 `# MUST_RUN_BUDGET_SECONDS=<正整数>`,
+#    不加空格、不写前导零。
+# MUST_RUN_BUDGET_SECONDS=300
+# 🔴 G2b 实测必跑集耗时超预算 ⇒ **红**(WO_266 之前这里只是一行 ⚠️)。处置三选一:
+#      ① 拆包;② 肯定式退役(搬进 tests/RETIRED_TESTS.txt,写明接替者);
+#      ③ 调预算 —— **只能是单独一笔、只改上面那一行**的提交(普查门 ⑧ 机器核:
+#         夹在别的改动里调大 ⇒ 红),并且签字条必须点名那一笔。
+#    随单包(tests/ONESHOT_RUNS.txt)「提进本表」之后同样受这条预算约束。
+#
+# 🔴 [WO_258 · 2026-09-23 A] `tests/test_geo_douyin_detail_ui.py` 已修绿并登记(见下)。
+#    那 7 格红从 09-08 起就在(6b491ab23 删了它读的创作页、baf70539c 挪走了它找的调用),
+#    不是 0913P 弄坏的 —— 只是这张表出现以前,没有人跑它,所以没人看见。
+tests/response_model_contract	运行时那半:handler 多返回一个键 + response_model extra=forbid ⇒ 该端点每次必 500。静态门 G1 抓不到 **kwargs / update() / 计算键,靠它兜底(preflight.sh:410 注释点名)
+tests/security	密钥闸全套判据:规则有没有牙、登记表是不是精确计数、公开门是否不认过渡豁免。闸本身烂了不会有人喊,只能靠它
+tests/test_geo_douyin_card_templates.py	抖音卡片模板契约 —— 与 detail_ui 同族(WO_263 登记时,同族前端锁里只有它全绿)
+tests/test_asset_generations_distinct_and_release_2026_09_23.py	发车路径上的账本行为:merge_frontend_assets 每一次 go 都会被 deploy-blue-green.sh 调用。它回归 ⇒ 下一班 dist 静默少留旧前端构建(按条目计会被纯后端班次挤掉),或账本 release 重新变空 —— 两者都不会有任何别的东西红。0.2s · 不要库 [WO_264 §3-①]
+tests/test_frontend_asset_retention_2026_07_28.py	merge_frontend_assets 的其余行为:首轮无账本全量保留 · 账本损坏 fail-open 到不删 · 窗口=1 拒绝 · 候选构建被改动当场拦 · 账本按窗口截断。与 test_asset_generations_distinct_* 守同一个函数、互补;该函数每次 go 都被 deploy-blue-green.sh 调用。0.2s · 不要库 [WO_264 §3-①]
+tests/partner_agreement_files_2026_09_23	服务商申请协议文件必须在 HEAD 树里、且进得了镜像构建上下文(按 _load_agreement_text 真实读取的路径认;dockerignore 语义用两棵全树对拍过真 BuildKit 的移植匹配器)。07-12 起目录名 cp437 乱码 ⇒ 镜像无协议 ⇒ 申请第 3 步与 /apply 都 404,两个月 0 申请没人喊(WO_268)
+tests/runtime_nonascii_paths_2026_09_23	运行时按路径读取的非 ASCII 仓内路径(AST 机械枚举成分母,只许增):每条在 HEAD 树里且非空、进得了镜像构建上下文、没有「代码写正确名树里只有 cp437 乱码名」;config/runtime_required_paths.txt == 枚举输出(Deploy 镜像门读它);知识库缺文件必出 ERROR。07-12 起 knowledge/ 乱码名 ⇒ GEO 诊断/写作静默无知识库两个多月(WO_272)
+tests/test_hotfix_recommend_deep_nameerror_2026_07_28.py	recommend_deep 及其嵌套 lambda 的全局名必有定义 + media_balance 灰度(WO_274:生产 live NameError success_table;锁原在冻结名单无运行者,同班提进)
+tests/test_geo_douyin_detail_ui.py	图文详情页验收九条 + 创作流入口锁(风格首发可选且沿调用链透传到生产 / 请求体取值的闭包不锁旧值 / 列表侧不存副本 / 客户不是编号步骤 / 前端不自算配额),每条带同一谓词的反臂;纯读源码约 2 秒,不连库
+tests/extension_retirement_2026_09_23	浏览器插件后端「不许悄悄回来」的永久锁:真导入的 app.routes 里无 /api/extension* 与 /ws/extension(middleware 那两条死白名单因此只能放行 404)· 插件三模块与两个手工脚本不在树里、全仓零导入(含懒导入 / 包内相对导入 / importlib 字符串;防生产运行时根里的旧副本被静默加载)· 非测试代码 `api.extension_api|/api/extension` 只剩 middleware 两个字面量 · publish_records 冷启动建表与基线提交对象逐字同、全空库上契约列全在且读者 SQL 片段能跑 · 帮助中心不再提插件。28 格约 55s · 要测试库(冷库那几格要 CREATE DATABASE;基线对象取自 git)[WO_273 · Review 09-23 裁定进必跑集]
+tests/test_article_count_meta_lock_2026_08_08.py	篇数只有一个地方说了算的元判据:后端不许第二套档位篇数阶梯、不许 `.get("required_articles", 1)` / `or 1` 内联兜底,前端不许三档篇数字面量、不许 `|| 1` / `?? 1` 给篇数兜底(会把显式 0 槽吃成 1)—— 红了 = 某处又自己算篇数,或 0 槽覆盖词被当成 1 篇。Review 09-28 登记:此前不在任何登记表里、09-19 起在 WritingHall 上红而无人跑;按 ONESHOT 预算(AM 实测 172/180s)提进必跑集(登记表规则 ①)
+tests/title_request_replay_2026_09_28	个人路径生成标题同一请求编号只扣一次(真 PG · 真 api_generate_titles · 真扣费):同编号并发两次恰一笔扣费、另一次 409、第一次的草稿一条不少;不同编号各扣各的;整批失败全额退费后同编号能重试;抢占行 charge_tx_id 为 NULL 不算已付(不给免费补救)、扣完回填且不覆盖第一笔;组织路径两道 409 仍在;第五笔:进程被掐留下的抢占行超 30 分钟且该编号下没存下选题才接管 —— 没扣过的扣一次、扣过没退的不再扣、扣过已退的重扣,未超时或已有选题照旧 409 —— 红了 = 双击 / 两个标签页 / 网络重试会一份标题扣两份钱,或发车掐断后同内容永远 409、已付的钱出不了题。WO_317 第四笔(Review 09-28,由 quote 483 追出);18s 真 PG,ONESHOT 预算装不下按登记表规则 ① 进必跑集
+tests/oneshot_registry_ratchet_2026_09_23	普查门 5-d 的 WO_266 七格:随单登记必写守什么、时长预算只降不升、冻结名单只减不增、登记过的包不许不声不响地失去运行者、退役必须有带运行者的接替者、删文件时全仓引用者本班都得看过 —— 红了 = 超预算或变红的随单包可以绕开三选一处置(09-28 自 ONESHOT 挪入:ONESHOT 段读数 166/180 过 165 触发线,Review 定挪这个门的自测包腾位置;原出处 WO_266)
+tests/publish_channels_2026_10_03	开源版发布渠道:模拟发布(dry_run)下单 → 状态回流 → 已发布 / 撤单退回全流程,拦掉出站连接后 0 次外呼;发布渠道 API 客户端按公开契约发请求(带 Key 与幂等键、先报价后下单)、报错文字不含成本 / 加价类词

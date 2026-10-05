@@ -1,0 +1,15 @@
+# 允许「未映射(= 只 admin 能用)」的 /api 路由。格式:路径<TAB>类别<TAB>原因。路径用 FastAPI 原样写法(含 {参数})。
+# 类别只有两种:
+#   NO_FRONTEND     前端没有任何调用,默认只 admin 可用是可接受的现状
+#   PENDING_REVIEW  前端页面按模块放行、后端却未映射;涉及全局配置,放不放给服务商待 Review / Owner 裁定
+# 🔴 这张表只许减。新路由进来一律先映射;真要只给 admin,写明原因再加。表里某行一旦被映射或路由消失,门会红,逼着删行。
+/api/clusters/{cluster_id}/delivery	NO_FRONTEND	server.api_cluster_delivery_update;frontend/src 无调用
+/api/identity/invite-codes	NO_FRONTEND	api/identity_api.py(V3.3.1 邀请码,受 v3_3_1 旗标控制);frontend/src 无调用
+/api/identity/invite-codes/issue	NO_FRONTEND	同上
+/api/identity/invite-codes/revoke	NO_FRONTEND	同上
+/api/identity/invite-codes/verify	NO_FRONTEND	同上
+/api/identity/me	NO_FRONTEND	同上
+/api/pipeline-stage-log	NO_FRONTEND	server.api_log_pipeline_stage;frontend/src 无调用
+/api/route/team	NO_FRONTEND	server.smart_route_team;frontend/src 无调用
+/api/service/overview	NO_FRONTEND	server.get_service_overview;frontend/src 无调用
+/api/route	PENDING_REVIEW	EmployeeHall 页按 ai_agents 放行,调 POST /api/route(智能分派任务),后端未映射;放开前需裁

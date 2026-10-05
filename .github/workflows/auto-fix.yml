@@ -1,0 +1,36 @@
+name: PR Auto-Fix with Claude
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  auto-fix:
+    # 只在 PR 评论中触发，且评论包含特定触发词
+    if: |
+      github.event.issue.pull_request != null &&
+      (contains(github.event.comment.body, 'auto-fix') ||
+       contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.issue.pull_request.head.ref || github.head_ref }}
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            请查看这条评论并自动修复代码问题：
+            ${{ github.event.comment.body }}
+
+            修复后请 commit 并 push 到当前分支。
+          claude_args: "--max-turns 10"

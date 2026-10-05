@@ -1,0 +1,1263 @@
+"""
+GEO 
+ GEO 
+ Coze 8 
+"""
+
+import json
+from typing import Any, Dict
+from agentscope.tool import ToolResponse
+
+
+def calculate_opportunity_loss(
+    mention_rate: float,
+    industry: str = "TikTok"
+) -> Dict[str, Any]:
+    """
+    AI
+    
+    Args:
+        mention_rate: AI (0-100)
+        industry: 
+    
+    Returns:
+        {
+            daily_lost_searches: int,
+            monthly_lost_value: int,
+            description: str
+        }
+    """
+    # 
+    benchmarks = {
+        "TikTok": {
+            "daily_searches": 2000,      # 
+            "avg_order_value": 250000,   # 
+            "conversion_rate": 0.01      # 
+        }
+    }
+    
+    data = benchmarks.get(industry, benchmarks["TikTok"])
+    
+    # 
+    daily_lost = int(data["daily_searches"] * (1 - mention_rate / 100))
+    monthly_lost_value = int(
+        daily_lost * 30 * 
+        data["conversion_rate"] * 
+        data["avg_order_value"]
+    )
+    
+    return {
+        "daily_lost_searches": daily_lost,
+        "monthly_lost_value": monthly_lost_value,
+        "monthly_lost_value_wan": monthly_lost_value / 10000,
+        "description": f"{daily_lost:,},¥{monthly_lost_value/10000:.0f}"
+    }
+
+
+# GEO 8 100-  Coze 
+SCORING_DIMENSIONS = {
+    # 1:  (15)
+    "web_search_score": {
+        "weight": 15,
+        "desc": " ",
+        "full_desc": ""
+    },
+    # 2:  (15)
+    "platform_score": {
+        "weight": 15,
+        "desc": " ",
+        "full_desc": ""
+    },
+    # 3:  (15) - 
+    "content_quality_score": {
+        "weight": 15,
+        "desc": " ",
+        "full_desc": ""
+    },
+    # 4:  (10)
+    "authority_score": {
+        "weight": 10,
+        "desc": " ",
+        "full_desc": ""
+    },
+    # 5:  (10) - 
+    "brand_ownership_score": {
+        "weight": 10,
+        "desc": " ",
+        "full_desc": "AI"
+    },
+    # 6: AI (20)
+    "ai_visibility_score": {
+        "weight": 20,
+        "desc": " AI",
+        "full_desc": "DeepSeek/Kimi/AI"
+    },
+    # 7: AI (10) - 
+    "ai_citation_score": {
+        "weight": 10,
+        "desc": " AI",
+        "full_desc": "AI"
+    },
+    # 8:  (5) - 
+    "update_frequency_score": {
+        "weight": 5,
+        "desc": " ",
+        "full_desc": ""
+    }
+}
+
+
+def get_coverage_level(score: float) -> tuple[str, str]:
+    """"""
+    if score >= 80:
+        return ("", "AI")
+    elif score >= 60:
+        return ("", "")
+    elif score >= 40:
+        return ("", ",")
+    elif score >= 20:
+        return ("", ",")
+    else:
+        return ("", "")
+
+
+async def calculate_geo_score(
+    douyin_data: dict = None,
+    xiaohongshu_data: dict = None,
+    web_search_data: dict = None,
+    ai_visibility_data: dict = None,
+    brand_name: str = ""
+) -> ToolResponse:
+    """
+     GEO  (8 -  Coze)
+    
+    Args:
+        douyin_data (dict): 
+        xiaohongshu_data (dict): 
+        web_search_data (dict): 
+        ai_visibility_data (dict): AI 
+        brand_name (str): 
+        
+    Returns:
+        ToolResponse: 
+    """
+    scores = {}
+    
+    # ========================================
+    #  -  NoneType 
+    # ========================================
+    if douyin_data is None:
+        douyin_data = {}
+    if xiaohongshu_data is None:
+        xiaohongshu_data = {}
+    if web_search_data is None:
+        web_search_data = {}
+    if ai_visibility_data is None:
+        ai_visibility_data = {}
+    
+    # ========================================
+    # 1:  (15)
+    # ========================================
+    web_search_score = 0
+    if web_search_data:
+        result_count = web_search_data.get("result_count", 0)
+        brand_mentions = web_search_data.get("brand_mentions", 0)
+        
+        if brand_mentions >= 100:
+            web_search_score = 15
+        elif brand_mentions >= 50:
+            web_search_score = 12
+        elif brand_mentions >= 20:
+            web_search_score = 9
+        elif brand_mentions >= 10:
+            web_search_score = 6
+        elif brand_mentions >= 5:
+            web_search_score = 4
+        elif brand_mentions >= 1:
+            web_search_score = 2
+        elif result_count >= 50:
+            web_search_score = 7
+        elif result_count >= 20:
+            web_search_score = 4
+    
+    scores["web_search_score"] = web_search_score
+    
+    # ========================================
+    # 2:  (15)
+    # ========================================
+    platform_score = 0
+    douyin_active = False
+    xhs_active = False
+    
+    # 8
+    if douyin_data:
+        video_count = douyin_data.get("video_count", 0) or len(douyin_data.get("videos", []))
+        if video_count >= 10:
+            platform_score += 8
+            douyin_active = True
+        elif video_count >= 5:
+            platform_score += 6
+            douyin_active = True
+        elif video_count >= 1:
+            platform_score += 3
+            douyin_active = True
+    
+    # 7
+    if xiaohongshu_data:
+        note_count = xiaohongshu_data.get("note_count", 0) or len(xiaohongshu_data.get("notes", []))
+        if note_count >= 10:
+            platform_score += 7
+            xhs_active = True
+        elif note_count >= 5:
+            platform_score += 5
+            xhs_active = True
+        elif note_count >= 1:
+            platform_score += 2
+            xhs_active = True
+    
+    scores["platform_score"] = platform_score
+    
+    # ========================================
+    # 3:  (15) - 
+    # ========================================
+    content_quality_score = 0
+    total_engagement = 0
+    content_count = 0
+    
+    # 
+    if douyin_data:
+        videos = douyin_data.get("videos", []) or douyin_data.get("top20", [])
+        for v in videos:
+            stats = v.get("stats", {})
+            total_engagement += (stats.get("digg", 0) or v.get("like_count", 0))
+            total_engagement += (stats.get("share", 0) or v.get("share_count", 0)) * 2
+        content_count += len(videos)
+    
+    # 
+    if xiaohongshu_data:
+        notes = xiaohongshu_data.get("notes", []) or xiaohongshu_data.get("top20", [])
+        for n in notes:
+            total_engagement += n.get("like_count", 0)
+            total_engagement += n.get("collect_count", 0) * 2
+        content_count += len(notes)
+    
+    avg_engagement = total_engagement / max(content_count, 1)
+    
+    # 
+    if content_count >= 20 and avg_engagement >= 500:
+        content_quality_score = 15
+    elif content_count >= 10 and avg_engagement >= 200:
+        content_quality_score = 12
+    elif content_count >= 5 and avg_engagement >= 100:
+        content_quality_score = 9
+    elif content_count >= 3 and avg_engagement >= 50:
+        content_quality_score = 6
+    elif content_count >= 1:
+        content_quality_score = 3
+    
+    scores["content_quality_score"] = content_quality_score
+    
+    # ========================================
+    # 4:  (10)
+    # ========================================
+    authority_score = 0
+    if web_search_data:
+        authority_sources = web_search_data.get("authority_sources", [])
+        brand_mentions = web_search_data.get("brand_mentions", 0)
+        
+        if len(authority_sources) >= 5:
+            authority_score = 10
+        elif len(authority_sources) >= 3:
+            authority_score = 7
+        elif len(authority_sources) >= 1:
+            authority_score = 4
+        elif brand_mentions >= 100:
+            authority_score = 10
+        elif brand_mentions >= 50:
+            authority_score = 7
+        elif brand_mentions >= 20:
+            authority_score = 4
+    
+    scores["authority_score"] = authority_score
+    
+    # ========================================
+    # 5:  (10) - AI
+    # ========================================
+    brand_ownership_score = 0
+    if ai_visibility_data:
+        engines_detected = ai_visibility_data.get("brand_detected_count", 0)
+        total_engines = ai_visibility_data.get("total_engines", 3)
+        
+        # AI
+        if engines_detected >= total_engines:
+            brand_ownership_score = 10  # AI
+        elif engines_detected >= 2:
+            brand_ownership_score = 7
+        elif engines_detected >= 1:
+            brand_ownership_score = 4
+    
+    scores["brand_ownership_score"] = brand_ownership_score
+    
+    # ========================================
+    # 6: AI (20) - GEO
+    # ========================================
+    ai_visibility_score = 0
+    if ai_visibility_data:
+        engines_detected = ai_visibility_data.get("brand_detected_count", 0)
+        total_engines = ai_visibility_data.get("total_engines", 3)
+        successful_engines = ai_visibility_data.get("successful_engines", total_engines)
+        total_mentions = ai_visibility_data.get("total_mentions", 0)
+        is_recommended = ai_visibility_data.get("recommendation_count", 0)
+        
+        #  (10)
+        coverage_rate = engines_detected / max(successful_engines, 1)
+        if coverage_rate >= 1.0:
+            ai_visibility_score += 10
+        elif coverage_rate >= 0.66:
+            ai_visibility_score += 7
+        elif coverage_rate >= 0.33:
+            ai_visibility_score += 4
+        elif engines_detected >= 1:
+            ai_visibility_score += 2
+        
+        #  (6)
+        if total_mentions >= 50:
+            ai_visibility_score += 6
+        elif total_mentions >= 20:
+            ai_visibility_score += 5
+        elif total_mentions >= 10:
+            ai_visibility_score += 4
+        elif total_mentions >= 5:
+            ai_visibility_score += 3
+        elif total_mentions >= 1:
+            ai_visibility_score += 2
+        
+        #  (4)
+        if is_recommended >= total_engines:
+            ai_visibility_score += 4
+        elif is_recommended >= 1:
+            ai_visibility_score += 2
+        
+        # 
+        results = ai_visibility_data.get("results", [])
+        total_negative = sum(r.get("negative_mentions", 0) for r in results)
+        total_positive = sum(r.get("positive_mentions", 0) for r in results)
+        
+        if total_negative > 0:
+            total_sentiment = total_positive + total_negative
+            if total_sentiment > 0:
+                negative_ratio = total_negative / total_sentiment
+                if negative_ratio > 0.5 and total_negative >= 3:
+                    ai_visibility_score = max(0, ai_visibility_score - 4)
+                elif negative_ratio > 0.3 and total_negative >= 2:
+                    ai_visibility_score = max(0, ai_visibility_score - 2)
+    
+    scores["ai_visibility_score"] = ai_visibility_score
+    
+    # ========================================
+    # 7: AI (10) - 
+    # ========================================
+    ai_citation_score = 0
+    # /
+    # TODO: /API
+    # 
+    if web_search_data and web_search_data.get("brand_mentions", 0) >= 20:
+        ai_citation_score = 5  # 
+        if content_quality_score >= 9:
+            ai_citation_score += 3  # 
+        if authority_score >= 7:
+            ai_citation_score += 2  # 
+    elif content_count >= 20:
+        ai_citation_score = 3  # 
+    
+    scores["ai_citation_score"] = min(10, ai_citation_score)
+    
+    # ========================================
+    # 8:  (5)
+    # ========================================
+    update_frequency_score = 0
+    # 
+    if douyin_active and xhs_active:
+        update_frequency_score = 5  # 
+    elif douyin_active or xhs_active:
+        update_frequency_score = 3  # 
+    elif content_count >= 5:
+        update_frequency_score = 2  # 
+    
+    scores["update_frequency_score"] = update_frequency_score
+    
+    # ========================================
+    # 
+    # ========================================
+    score_keys = list(SCORING_DIMENSIONS.keys())
+    total_score = sum(scores.get(k, 0) for k in score_keys)
+    level, description = get_coverage_level(total_score)
+    
+    result = {
+        "brand": brand_name,
+        "total_score": total_score,
+        "level": level,
+        "level_description": description,
+        "dimension_scores": scores,
+        "dimension_details": {
+            dim: {
+                "score": scores.get(dim, 0),
+                "max_score": config["weight"],
+                "description": config["desc"],
+                "full_description": config.get("full_desc", "")
+            }
+            for dim, config in SCORING_DIMENSIONS.items()
+        },
+        "recommendations": generate_recommendations_v2(scores, total_score)
+    }
+    
+    return ToolResponse(
+        content=[{"type": "text", "text": json.dumps(result, ensure_ascii=False)}]
+    )
+
+
+def generate_recommendations(scores: dict, total_score: float) -> list[str]:
+    """ (,)"""
+    recommendations = []
+    
+    if scores.get("platform_score", 0) < 8:
+        recommendations.append("")
+    
+    if scores.get("content_quality_score", 0) < 8:
+        recommendations.append(",")
+    
+    if scores.get("web_search_score", 0) < 8:
+        recommendations.append(",SEO")
+    
+    if scores.get("authority_score", 0) < 5:
+        recommendations.append(",")
+    
+    if scores.get("ai_visibility_score", 0) < 10:
+        recommendations.append("AI , GEO ")
+    
+    if total_score < 40:
+        recommendations.insert(0, " ,GEO")
+    
+    return recommendations
+
+
+def generate_recommendations_v2(scores: dict, total_score: float) -> dict:
+    """
+     8  (Coze )
+    
+    :
+    {
+        "high_priority": [...],   #  
+        "medium_priority": [...], # [中优先级] 
+        "ongoing": [...],         # [低优先级] 
+        "summary": "..."          # 
+    }
+    """
+    high = []     #  
+    medium = []   # [中优先级] 
+    ongoing = []  # [低优先级] 
+    
+    # ==========  ==========
+    # AI  GEO 
+    if scores.get("ai_visibility_score", 0) < 10:
+        high.append({
+            "issue": "AI",
+            "impact": " ",
+            "action": ",AI"
+        })
+    
+    # 
+    if scores.get("brand_ownership_score", 0) < 7:
+        high.append({
+            "issue": "AI",
+            "impact": " ",
+            "action": "/,AI"
+        })
+    
+    # AI 
+    if scores.get("ai_citation_score", 0) < 5:
+        high.append({
+            "issue": "AI",
+            "impact": " ",
+            "action": "FAQAI"
+        })
+    
+    # ==========  ==========
+    # 
+    if scores.get("web_search_score", 0) < 9:
+        medium.append({
+            "issue": "",
+            "action": ","
+        })
+    
+    # 
+    if scores.get("platform_score", 0) < 10:
+        medium.append({
+            "issue": "",
+            "action": "/,"
+        })
+    
+    # 
+    if scores.get("content_quality_score", 0) < 9:
+        medium.append({
+            "issue": "",
+            "action": ","
+        })
+    
+    # 
+    if scores.get("authority_score", 0) < 7:
+        medium.append({
+            "issue": "",
+            "action": "36/"
+        })
+    
+    # ==========  ==========
+    if scores.get("update_frequency_score", 0) < 4:
+        ongoing.append({
+            "issue": "",
+            "action": ","
+        })
+    
+    # ,
+    if total_score >= 70:
+        ongoing.append({
+            "issue": "",
+            "action": ",AI"
+        })
+    
+    # 
+    if total_score >= 80:
+        summary = "GEO,AI"
+    elif total_score >= 60:
+        summary = ",AI"
+    elif total_score >= 40:
+        summary = ",GEO"
+    else:
+        summary = "AI,GEO"
+    
+    return {
+        "high_priority": high,
+        "medium_priority": medium,
+        "ongoing": ongoing,
+        "summary": summary,
+        "total_issues": len(high) + len(medium) + len(ongoing)
+    }
+
+
+async def generate_geo_report(
+    brand_name: str,
+    industry: str,
+    geo_score_data: dict,
+    ai_visibility_data: dict = None,
+    platform_data: dict = None,
+    company_profile: str = "",
+    additional_info: str = ""
+) -> ToolResponse:
+    """
+     GEO  (Coze )
+    """
+    from datetime import datetime
+    
+    score = geo_score_data.get("total_score", 0)
+    level = geo_score_data.get("level", "")
+    dimensions = geo_score_data.get("dimension_details", {})
+    recommendations = geo_score_data.get("recommendations", {})
+    
+    # 
+    if score >= 80:
+        level_emoji = " "
+    elif score >= 60:
+        level_emoji = "[中优先级] "
+    elif score >= 40:
+        level_emoji = " "
+    elif score >= 20:
+        level_emoji = "🟠 "
+    else:
+        level_emoji = " "
+    
+    report = f"""#  {brand_name} GEO
+
+> ****:{datetime.now().strftime('%Y%m%d')}  
+> **GEO**:{score}/100 | ****:{level_emoji}  
+> ****:GEO (AgentScope)
+
+---
+
+>  ****
+>
+> **GEO**,AI:
+>
+> |  |  |  |
+> |------|----------|----------|
+> |  | TOP20 + TOP10 |  |
+> |  | TOP20 + TOP10 |  |
+> | AI | DeepSeek/Kimi/ |  |
+>
+> ****: →  → 
+
+---
+
+##  
+
+**{brand_name}** GEO **{score}/100**,{geo_score_data.get("level_description", "")}
+
+"""
+
+    #  recommendations 
+    if isinstance(recommendations, dict):
+        summary = recommendations.get("summary", "")
+        if summary:
+            report += f">  ****:{summary}\n\n"
+    
+    # 
+    report += """### 
+
+|  |  |
+|------|------|
+"""
+    # 
+    high_priority = recommendations.get("high_priority", []) if isinstance(recommendations, dict) else []
+    if high_priority:
+        report += f"|  **** | {high_priority[0].get('issue', 'AI')} |\n"
+    else:
+        report += "|  **** | AI |\n"
+    
+    medium_priority = recommendations.get("medium_priority", []) if isinstance(recommendations, dict) else []
+    if medium_priority:
+        report += f"| [中优先级] **** | {medium_priority[0].get('issue', '')}, |\n"
+    else:
+        report += "| [中优先级] **** | , |\n"
+    
+    report += "| [低优先级] **** | /,AI |\n\n"
+    
+    # 
+    if company_profile:
+        summary_text = company_profile[:300] + "..." if len(company_profile) > 300 else company_profile
+        report += f"### \n{summary_text}\n\n"
+    
+    if additional_info:
+        report += f">  ****:{additional_info}\n\n"
+    
+    # ==========  ==========
+    report += """---
+
+##  
+
+|  |  |
+|:------:|----------|
+"""
+    # 
+    if high_priority:
+        for item in high_priority[:3]:
+            issue = item.get("issue", "")
+            action = item.get("action", "")
+            report += f"|  | **{issue}**:{action[:80]}... |\n"
+    else:
+        report += "|  | **AI**:AI,AI |\n"
+    
+    if medium_priority:
+        for item in medium_priority[:2]:
+            issue = item.get("issue", "")
+            report += f"| [中优先级] | {issue} |\n"
+    
+    report += "\n"
+
+    # ========== GEO 8  ==========
+    report += """---
+
+##  GEO
+
+|  |  |  |  |  |
+|------|:----:|:----:|:----:|------|
+"""
+    
+    for dim_name, dim_data in dimensions.items():
+        dim_score = dim_data.get("score", 0)
+        max_score = dim_data.get("max_score", 10)
+        description = dim_data.get("description", dim_name)
+        full_desc = dim_data.get("full_description", "")
+        
+        # 
+        ratio = dim_score / max_score if max_score > 0 else 0
+        if ratio >= 0.8:
+            evaluation = " "
+        elif ratio >= 0.6:
+            evaluation = "[中优先级] "
+        elif ratio >= 0.3:
+            evaluation = " "
+        else:
+            evaluation = " "
+        
+        report += f"| {description} | {dim_score} | {max_score} | {evaluation} | {full_desc} |\n"
+
+    # ==========  ==========
+    report += """
+---
+
+##  
+
+"""
+    
+    if isinstance(recommendations, dict):
+        # 
+        high_priority = recommendations.get("high_priority", [])
+        if high_priority:
+            report += "###  \n\n"
+            report += "|  |  |  |\n"
+            report += "|------|:--------:|----------|\n"
+            for item in high_priority:
+                report += f"| {item.get('issue', '')} | {item.get('impact', '')} | {item.get('action', '')} |\n"
+            report += "\n"
+        
+        # 
+        medium_priority = recommendations.get("medium_priority", [])
+        if medium_priority:
+            report += "### [中优先级] \n\n"
+            for item in medium_priority:
+                report += f"- **{item.get('issue', '')}**:{item.get('action', '')}\n"
+            report += "\n"
+        
+        # 
+        ongoing = recommendations.get("ongoing", [])
+        if ongoing:
+            report += "### [低优先级] \n\n"
+            for item in ongoing:
+                report += f"- {item.get('action', '')}\n"
+            report += "\n"
+    else:
+        # 
+        for i, rec in enumerate(recommendations if isinstance(recommendations, list) else [], 1):
+            report += f"{i}. {rec}\n"
+
+    # ========== AI  ==========
+    if ai_visibility_data:
+        engines_detected = ai_visibility_data.get('brand_detected_count', 0)
+        total_engines = ai_visibility_data.get('total_engines', 3)
+        mention_rate = round(engines_detected / max(total_engines, 1) * 100)
+        
+        report += f"""---
+
+##  AI
+
+|  |  |  |
+|------|------|------|
+| AI | {engines_detected}/{total_engines} | {" " if engines_detected >= total_engines else " AI"} |
+|  | {mention_rate}% | {"" if mention_rate >= 50 else ""} |
+| AI | {ai_visibility_data.get('recommendation_count', 0)} | {"" if ai_visibility_data.get('recommendation_count', 0) > 0 else ""} |
+
+"""
+        # 
+        results = ai_visibility_data.get('results', [])
+        if results:
+            report += "### AI\n\n"
+            
+            for r in results:
+                engine = r.get('engine', 'Unknown')
+                if 'error' in r:
+                    report += f"#### {engine}  \n\n"
+                    report += f"> : {r.get('error', 'Unknown error')}\n\n"
+                else:
+                    detected = r.get('brand_detected', False)
+                    recommended = r.get('is_recommended', False)
+                    mentions = r.get('brand_mentioned_count', 0)
+                    sentiment = r.get('sentiment_label', 'unknown')
+                    
+                    status_icon = "" if detected else ""
+                    rec_text = "" if recommended else ""
+                    sentiment_emoji = "" if sentiment == 'positive' else ("" if sentiment == 'neutral' else "")
+                    
+                    report += f"#### {engine} {status_icon}\n\n"
+                    report += f"- ****: {'' if detected else ''} | ****: {mentions} | ****: {rec_text}\n"
+                    
+                    # 
+                    query = r.get('query', '')
+                    if query:
+                        query_short = query[:80] + "..." if len(query) > 80 else query
+                        report += f"- ****: {query_short}\n"
+                    
+                    # 
+                    response = r.get('response', '')
+                    if response:
+                        #  200 
+                        response_short = response[:200].replace('\n', ' ') + "..." if len(response) > 200 else response.replace('\n', ' ')
+                        report += f"- **AI**: {response_short}\n"
+                    
+                    # 
+                    if detected:
+                        report += f"- ****: {sentiment_emoji} {sentiment}\n"
+                    
+                    report += "\n"
+            
+            # ========== AI Agent==========
+            if ai_visibility_data:
+                #  AIVisibilityAgent
+                try:
+                    import sys
+                    import os
+                    sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
+                    from agents.ai_visibility_agent import AIVisibilityAgent
+                    
+                    visibility_agent = AIVisibilityAgent(brand_name)
+                    analysis_result = visibility_agent.analyze_visibility(ai_visibility_data)
+                    
+                    # 
+                    report += "\n###  AI \n\n"
+                    report += visibility_agent.format_comparison_table_markdown(analysis_result['comparison_table'])
+                    report += "\n\n**AI**:\n"
+                    report += analysis_result['visibility_interpretation']
+                    report += "\n"
+                    
+                    #  :
+                    if analysis_result['strategic_recommendations']:
+                        report += "\n###  AI\n"
+                        report += visibility_agent.format_strategy_markdown(analysis_result['strategic_recommendations'])
+                        report += "\n"
+                    
+                except Exception as e:
+                    # :
+                    print(f"   AIVisibilityAgent: {e},")
+                    
+                    detected_count = ai_visibility_data.get("detected_in", 0)
+                    total_engines = 3
+                    
+                    # 
+                    results = ai_visibility_data.get("results", [])
+                    total_tests = len(results)
+                    total_mentions = sum(r.get("brand_mentioned_count", 0) for r in results if not r.get("error"))
+                    mention_rate = (total_mentions / total_tests * 100) if total_tests > 0 else 0
+                    
+                    report += """
+###  AI 
+
+|  |  ({brand_name}) |  |  |
+|------|----------------------|------------|----------|
+| AI | {detected}/{total} | 3/3 | {coverage_gap} |
+|  | **{mention_rate:.0f}%** ({total_mentions}/{total_tests}) | ~60% |  **{mention_gap:.0f}%** |
+|  | **0%** | ~40% |  **40%** |
+
+**AI**:
+- {visibility_status}: AI{search_status}
+- ****: {opportunity_text}
+
+""".format(
+                        brand_name=brand_name,
+                        detected=detected_count,
+                        total=total_engines,
+                        coverage_gap=" " if detected_count == 3 else f" {3-detected_count} ",
+                        mention_rate=mention_rate,
+                        total_mentions=total_mentions,
+                        total_tests=total_tests,
+                        mention_gap=max(0, 60 - mention_rate),
+                        visibility_status="  > 20% ()" if mention_rate > 20 else "  < 20% ()",
+                        search_status="" if mention_rate > 20 else "",
+                        opportunity_text=",AI" if mention_rate > 20 else "AI,****"
+                    )
+
+
+    # ==========  ==========
+    if platform_data:
+        # :  douyin/xiaohongshu   data 
+        if "data" in platform_data and isinstance(platform_data.get("data"), dict):
+            # : platform_data.data.douyin
+            data_root = platform_data.get("data", {})
+        else:
+            # : 
+            data_root = platform_data
+        
+        douyin_data = data_root.get("douyin", {})
+        xhs_data = data_root.get("xiaohongshu", {})
+        
+        #  - : videos, top20, items
+        douyin_items = []
+        if isinstance(douyin_data, dict):
+            douyin_items = douyin_data.get("videos", douyin_data.get("top20", douyin_data.get("items", [])))
+        elif isinstance(douyin_data, list):
+            douyin_items = douyin_data
+        
+        #  - : notes, top20, items
+        xhs_items = []
+        if isinstance(xhs_data, dict):
+            xhs_items = xhs_data.get("notes", xhs_data.get("top20", xhs_data.get("items", [])))
+        elif isinstance(xhs_data, list):
+            xhs_items = xhs_data
+        
+        if douyin_items or xhs_items:
+            report += """---
+
+##  
+
+"""
+            # 
+            if douyin_items:
+                #  -  like_count  digg_count 
+                sorted_dy = sorted(
+                    douyin_items, 
+                    key=lambda x: x.get("like_count", x.get("digg_count", 0)) if isinstance(x, dict) else 0, 
+                    reverse=True
+                )[:5]
+                
+                report += """###  TOP5
+
+|  |  |  |  |  |  |
+|:----:|----------|------|-----:|-----:|----------|
+"""
+                
+                def analyze_content_type(title):
+                    """ - """
+                    if any(kw in title for kw in ["", "", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", "", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", ""]):
+                        return ""
+                    return ""
+                
+                for i, item in enumerate(sorted_dy, 1):
+                    desc = item.get("desc", item.get("title", ""))
+                    title = desc[:30] + "..." if len(desc) > 30 else desc
+                    
+                    #  - 
+                    author_data = item.get("author", {})
+                    if isinstance(author_data, dict):
+                        author = author_data.get("nickname", author_data.get("name", ""))
+                    else:
+                        author = item.get("author_nickname", str(author_data)[:10] if author_data else "")
+                    
+                    likes = item.get("like_count", item.get("digg_count", 0))
+                    shares = item.get("share_count", 0)
+                    
+                    # 
+                    content_type = analyze_content_type(desc)
+                    
+                    report += f"| {i} | {title} | {author[:10]} | {likes:,} | {shares:,} | {content_type} |\n"
+                
+                report += "\n"
+            
+            # 
+            if xhs_items:
+                # 
+                sorted_xhs = sorted(
+                    xhs_items, 
+                    key=lambda x: x.get("liked_count", x.get("like_count", 0)) if isinstance(x, dict) else 0, 
+                    reverse=True
+                )[:5]
+                
+                report += """###  TOP5
+
+|  |  |  |  |  |  |
+|:----:|----------|------|-----:|-----:|----------|
+"""
+                
+                def analyze_xhs_content_type(title):
+                    """"""
+                    if any(kw in title for kw in ["", "", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", ""]):
+                        return ""
+                    elif any(kw in title for kw in ["", "", ""]):
+                        return ""
+                    return ""
+                
+                for i, item in enumerate(sorted_xhs, 1):
+                    raw_title = item.get("title", item.get("display_title", item.get("desc", "")))
+                    title = raw_title[:25] + "..." if len(raw_title) > 25 else raw_title
+                    
+                    # 
+                    user_data = item.get("user", {})
+                    if isinstance(user_data, dict):
+                        author = user_data.get("nickname", user_data.get("name", ""))
+                    else:
+                        author = item.get("nickname", str(user_data)[:10] if user_data else "")
+                    
+                    likes = item.get("liked_count", item.get("like_count", 0))
+                    collects = item.get("collected_count", item.get("collect_count", 0))
+                    
+                    # 
+                    content_type = analyze_xhs_content_type(raw_title)
+                    
+                    report += f"| {i} | {title} | {author[:10]} | {likes:,} | {collects:,} | {content_type} |\n"
+                
+                report += "\n"
+            
+            # ==========  ==========
+            report += """
+>  ****
+
+"""
+            # 
+            if douyin_items and len(douyin_items) >= 3:
+                top_videos = sorted(douyin_items, key=lambda x: x.get("like_count", 0), reverse=True)[:3]
+                avg_engagement = sum(v.get("like_count", 0) + v.get("share_count", 0) * 2 for v in top_videos) / len(top_videos) if top_videos else 0
+                
+                report += f"""****:
+-  TOP3 :{avg_engagement:,.0f}
+-  :
+  - 
+  - 
+  - 
+
+"""
+            
+            #   
+            if xhs_items and len(xhs_items) >= 3:
+                zero_like_count = sum(1 for x in xhs_items if x.get("liked_count", 0) == 0)
+                zero_like_ratio = zero_like_count / len(xhs_items) * 100 if xhs_items else 0
+                
+                if zero_like_ratio > 30:
+                    report += f"""****:
+-   {zero_like_ratio:.1f}% 0,""
+-  :,
+-  :B2B,****
+
+"""
+                else:
+                    report += """****:
+-  
+-  :
+
+"""
+
+    # ==========  ==========
+    competitor_data = platform_data.get("competitor_analysis", {}) if platform_data else {}
+    competitors = competitor_data.get("competitors", [])
+    
+    if competitors:
+        report += """---
+
+##  
+
+"""
+        # 
+        report += """### 
+
+>  /,
+
+>  ****:
+> - ****:  = 
+> - ****:  =  + ×2 + ×3 |  =  + ×2
+
+|  |  |  |  |  |  |
+|:----:|----------|----------|------|:--------:|----------|
+"""
+        for i, comp in enumerate(competitors[:5], 1):
+            name = comp.get("name", comp.get("nickname", ""))
+            platform = comp.get("platform", "")
+            if platform == "douyin":
+                platform_display = ""
+                source = ""
+            elif platform == "xiaohongshu":
+                platform_display = ""
+                source = ""
+            else:
+                platform_display = platform
+                source = ""
+            
+            # 
+            engagement = comp.get("total_engagement", 0)
+            
+            # 
+            if isinstance(engagement, (int, float)):
+                if engagement >= 10000:
+                    engagement_str = f"{engagement / 10000:.1f}"
+                else:
+                    engagement_str = f"{int(engagement):,}"
+            else:
+                engagement_str = str(engagement)
+            
+            # 
+            content_type = ""
+            if engagement >= 30000:
+                content_type = "KOL"
+            elif engagement >= 10000:
+                content_type = ""
+            
+            report += f"| {i} | {name[:15]} | {source} | {platform_display} | {engagement_str} | {content_type} |\n"
+        
+        report += "\n"
+        
+        # 
+        benchmark = competitor_data.get("benchmark", {})
+        if benchmark:
+            gap_analysis = benchmark.get("gap_analysis", {})
+            if gap_analysis and isinstance(gap_analysis, dict):
+                status = gap_analysis.get("status", "neutral")
+                content_gap = gap_analysis.get("content_gap_percent", 0)
+                engagement_gap = gap_analysis.get("engagement_gap_percent", 0)
+                
+                report += """### 
+
+"""
+                # 
+                if content_gap != 0:
+                    icon = "" if content_gap > 0 else ""
+                    direction = "" if content_gap > 0 else ""
+                    report += f"- {icon} ****: {direction} {abs(content_gap):.1f}%\n"
+                
+                # 
+                if engagement_gap != 0:
+                    icon = "" if engagement_gap > 0 else ""
+                    direction = "" if engagement_gap > 0 else ""
+                    report += f"- {icon} ****: {direction} {abs(engagement_gap):.1f}%\n"
+                
+                # 
+                if status == "leading":
+                    report += "-  ****: \n"
+                elif status == "lagging":
+                    report += "-  ****: \n"
+                else:
+                    report += "-  ****: \n"
+                
+                report += "\n"
+        
+        # ========== ==========
+        if competitors and len(competitors) > 0:
+            # 
+            benchmark_competitor = competitors[0]
+            comp_name = benchmark_competitor.get("name", benchmark_competitor.get("nickname", ""))
+            comp_platform = benchmark_competitor.get("platform", "")
+            comp_engagement = benchmark_competitor.get("total_engagement", 0)
+            
+            report += f"""###  :{comp_name}
+
+- ****: {"" if comp_platform == "douyin" else "" if comp_platform == "xiaohongshu" else comp_platform}
+- ****: {comp_engagement / 10000:.1f}
+
+####  
+
+**1. **
+
+**""**.,."",:
+- :
+- :""
+- :
+
+**""**B2B.
+
+**2. **
+
+**""**:
+- /
+- "X""XX"
+- ****
+
+PPT.
+
+**3. **
+
+**"/"""**:
+- : > 
+- : > 
+- : > 
+
+"",.
+
+---
+
+####  
+
+**""**:
+
+**""**:
+- 30%,?
+- ,?
+- "",?
+
+****:
+```
+ +  +  = 
+```
+
+****:
+- ""
+- B2B
+- 
+
+            
+            # ========== ==========
+            new_emoji = "\U0001F195"  # 
+            check_emoji = "\u2705"  # 
+            star_emoji = "\u2B50"  # 
+            chart_emoji = "\U0001F4CA"  # 
+            
+            landscape_text = f"""### {chart_emoji} 
+
+****: "",,AI.
+
+|  |  |  |  |
+|----------|----------|----------|----------|
+|  |  |  |  |
+|  | 2 | 2-3 |  |
+|  |  |  |  |
+| {new_emoji} AI | 0% | ~5-10% | **** {star_emoji} |
+
+****:
+1. {check_emoji} **AI**: AI,
+2. {check_emoji} ****: ,
+3. {check_emoji} ****: AI,AI
+
+"""
+            report += landscape_text
+    
+    # ========== AI  ==========
+    if ai_visibility_data and isinstance(ai_visibility_data, dict):
+        detected_count = ai_visibility_data.get("detected_in", 0)
+        total_engines = 3
+        total_questions = ai_visibility_data.get("total_questions", 3)
+        
+        # 
+        mention_data = ai_visibility_data.get("mentions", {})
+        total_mentions = sum(mention_data.values()) if isinstance(mention_data, dict) else 0
+        total_tests = total_questions * total_engines  # 3 questions x 3 engines = 9 tests
+        mention_rate = (total_mentions / total_tests * 100) if total_tests > 0 else 0
+        
+        #  AI 
+        if "ai_visibility_score" in geo_score_data:
+            ai_score = geo_score_data.get("ai_visibility_score", 0)
+            
+            #  AI 
+            coverage_gap = "" if detected_count == 3 else f" {3-detected_count} "
+            mention_gap = max(0, 60-mention_rate)
+            status_text = " > 20% ()" if mention_rate > 20 else " < 20% ()"
+            search_status = "" if mention_rate > 20 else ""
+            opportunity = "" if mention_rate > 20 else "AI,"
+            
+            report += f"""
+### AI 
+
+|  |  () |  () |  |
+|------|-------------------|----------------------|----------|
+| AI | {detected_count}/{total_engines} | 3/3 | {coverage_gap} |
+|  | **{mention_rate:.0f}%** ({total_mentions}/{total_tests}) | ~60% |  **{mention_gap:.0f}%** |
+|  | **0%** | ~40% |  **40%** |
+
+**AI**:
+- {status_text}: AI{search_status}
+- ****: {opportunity}
+
+"""
+
+    # ==========  ==========
+    report += f"""---
+
+##  
+
+|  |  |
+|:----:|--------|
+| 1⃣ |  |
+| 2⃣ | / |
+| 3⃣ | AI |
+
+---
+
+*:{datetime.now().strftime('%Y%m%d %H:%M')}*  
+*© GEO (AgentScope)*
+"""
+    
+    return ToolResponse(
+        content=[{"type": "text", "text": report}]
+    )
+

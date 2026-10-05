@@ -1,0 +1,335 @@
+{
+    "version": "1.0",
+    "description": "GEO 7维度 × 媒体资源 知识库配置",
+    "dimensions": {
+        "ai_engine_score": {
+            "name": "AI引擎分",
+            "weight": 25,
+            "target": "被AI搜索引用",
+            "recommended_media": [
+                {
+                    "name": "搜狐号包收录",
+                    "price": 15,
+                    "priority": "high"
+                },
+                {
+                    "name": "新浪网资讯",
+                    "price": 35,
+                    "priority": "high"
+                },
+                {
+                    "name": "163网易新闻",
+                    "price": 30,
+                    "priority": "high"
+                },
+                {
+                    "name": "腾讯网",
+                    "price": 40,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "行业榜单类：《2026年XX行业TOP10公司推荐》",
+                "专业测评类：《XX服务哪家好？三家公司深度对比》",
+                "解决方案类：《XX问题怎么解决？专业方案全解析》"
+            ],
+            "avg_price": 25,
+            "posts_per_point": 3
+        },
+        "social_media_score": {
+            "name": "社媒分",
+            "weight": 20,
+            "target": "抖音/小红书声量",
+            "recommended_media": [
+                {
+                    "name": "抖音KOC视频",
+                    "price": 200,
+                    "priority": "high"
+                },
+                {
+                    "name": "小红书素人笔记",
+                    "price": 80,
+                    "priority": "high"
+                },
+                {
+                    "name": "抖音企业号内容",
+                    "price": 30,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "体验分享类：《亲测XX产品，真的太好用了》",
+                "攻略干货类：《XX避坑指南，这几点必看》",
+                "对比种草类：《用过5家XX，只推荐这一家》"
+            ],
+            "avg_price": 100,
+            "posts_per_point": 5
+        },
+        "web_content_score": {
+            "name": "网页内容分",
+            "weight": 18,
+            "target": "网页搜索覆盖",
+            "recommended_media": [
+                {
+                    "name": "百度新闻源",
+                    "price": 30,
+                    "priority": "high"
+                },
+                {
+                    "name": "行业垂直媒体",
+                    "price": 20,
+                    "priority": "high"
+                },
+                {
+                    "name": "地方新闻站",
+                    "price": 15,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "品牌介绍类：《XX公司怎么样？实力详解》",
+                "服务详解类：《XX服务流程和收费标准》",
+                "案例展示类：《XX成功案例分享》"
+            ],
+            "avg_price": 20,
+            "posts_per_point": 4
+        },
+        "authority_score": {
+            "name": "权威分",
+            "weight": 15,
+            "target": "权威背书",
+            "recommended_media": [
+                {
+                    "name": "人民网",
+                    "price": 800,
+                    "priority": "high"
+                },
+                {
+                    "name": "新华网",
+                    "price": 600,
+                    "priority": "high"
+                },
+                {
+                    "name": "央广网",
+                    "price": 300,
+                    "priority": "medium"
+                },
+                {
+                    "name": "中国网",
+                    "price": 200,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "获奖报道：《XX公司荣获行业XXX奖》",
+                "成果发布：《XX发布行业白皮书/研究报告》",
+                "公益活动：《XX企业助力XXX公益项目》"
+            ],
+            "avg_price": 400,
+            "posts_per_point": 1
+        },
+        "structured_content_score": {
+            "name": "结构化内容分",
+            "weight": 12,
+            "target": "百科/问答覆盖",
+            "recommended_media": [
+                {
+                    "name": "百度百科词条",
+                    "price": 1000,
+                    "priority": "high"
+                },
+                {
+                    "name": "知乎专业问答",
+                    "price": 50,
+                    "priority": "high"
+                },
+                {
+                    "name": "百度知道",
+                    "price": 15,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "百科词条：完善企业信息和行业专业术语",
+                "知乎回答：《XX行业哪家公司最靠谱？》",
+                "问答口碑：《XX公司/产品怎么样？》"
+            ],
+            "avg_price": 40,
+            "posts_per_point": 3
+        },
+        "content_quality_score": {
+            "name": "内容质量分",
+            "weight": 5,
+            "target": "专业内容输出",
+            "recommended_media": [
+                {
+                    "name": "36氪/虎嗅",
+                    "price": 200,
+                    "priority": "high"
+                },
+                {
+                    "name": "行业垂直论坛",
+                    "price": 30,
+                    "priority": "medium"
+                },
+                {
+                    "name": "微信公众号KOL",
+                    "price": 100,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "深度分析：《XX行业趋势解读》",
+                "技术干货：《XX技术原理和应用》",
+                "创始人专访：《对话XX创始人》"
+            ],
+            "avg_price": 100,
+            "posts_per_point": 2
+        },
+        "brand_foundation_score": {
+            "name": "品牌基础分",
+            "weight": 5,
+            "target": "官方渠道建设",
+            "recommended_media": [
+                {
+                    "name": "官网SEO优化",
+                    "price": 500,
+                    "priority": "high"
+                },
+                {
+                    "name": "微信公众号",
+                    "price": 0,
+                    "priority": "high"
+                },
+                {
+                    "name": "企业抖音号",
+                    "price": 0,
+                    "priority": "medium"
+                }
+            ],
+            "content_types": [
+                "官网内容更新",
+                "公众号定期推文",
+                "企业号认证和运营"
+            ],
+            "avg_price": 50,
+            "posts_per_point": 2
+        }
+    },
+    "industry_channel_mapping": {
+        "科技/SaaS": {
+            "primary": "IT科技",
+            "secondary": "财经商业",
+            "price_range": [
+                20,
+                50
+            ]
+        },
+        "装修/家居": {
+            "primary": "房产家居",
+            "secondary": "生活消费",
+            "price_range": [
+                15,
+                40
+            ]
+        },
+        "医疗/健康": {
+            "primary": "健康医疗",
+            "secondary": "新闻资讯",
+            "price_range": [
+                20,
+                60
+            ]
+        },
+        "金融/投资": {
+            "primary": "财经商业",
+            "secondary": "新闻资讯",
+            "price_range": [
+                25,
+                80
+            ]
+        },
+        "教育/培训": {
+            "primary": "教育培训",
+            "secondary": "亲子母婴",
+            "price_range": [
+                15,
+                40
+            ]
+        },
+        "旅游/酒店": {
+            "primary": "酒店旅游",
+            "secondary": "生活消费",
+            "price_range": [
+                15,
+                35
+            ]
+        },
+        "汽车/出行": {
+            "primary": "汽车网站",
+            "secondary": "新闻资讯",
+            "price_range": [
+                10,
+                30
+            ]
+        },
+        "餐饮/食品": {
+            "primary": "食品餐饮",
+            "secondary": "生活消费",
+            "price_range": [
+                10,
+                25
+            ]
+        }
+    },
+    "channel_stats": {
+        "新闻资讯": {
+            "count": 5756,
+            "min_price": 5,
+            "median_price": 25,
+            "max_price": 2000
+        },
+        "IT科技": {
+            "count": 1198,
+            "min_price": 5,
+            "median_price": 25,
+            "max_price": 500
+        },
+        "财经商业": {
+            "count": 1870,
+            "min_price": 5,
+            "median_price": 20,
+            "max_price": 800
+        },
+        "房产家居": {
+            "count": 550,
+            "min_price": 8,
+            "median_price": 22,
+            "max_price": 300
+        },
+        "健康医疗": {
+            "count": 812,
+            "min_price": 5,
+            "median_price": 18,
+            "max_price": 400
+        },
+        "教育培训": {
+            "count": 436,
+            "min_price": 8,
+            "median_price": 20,
+            "max_price": 300
+        },
+        "汽车网站": {
+            "count": 1948,
+            "min_price": 5,
+            "median_price": 15,
+            "max_price": 200
+        }
+    },
+    "pricing_formula": {
+        "description": "月报价 = (媒体成本 + 内容成本 + 运营成本) × 利润率",
+        "content_cost_per_post": 15,
+        "operation_cost_base": 300,
+        "profit_margin": 2.0
+    }
+}

@@ -1,0 +1,226 @@
+/**
+ * 密度令牌 · CTO-15.18 PM 干预 E.7 + CTO-15.23 Density System v1(2026-05-22)
+ *
+ * 老板红线(2026-04-28):
+ * - PC 默认 padding 16-20 / 间距 12-16 / 字号 14-15 / 行高 1.4-1.5
+ * - 移动端 fallback padding 12-16 / 字号 15-16
+ *
+ * 2026-05-22 扩展("文字密密麻麻"收口 · Codex 修正版):
+ * - 增 comfortable tier(行高 44-48 / 主 14-15 / 次 12-13 / 辅 11)
+ * - 增三层信息层级 token(--info-primary / secondary / tertiary)
+ * - 增 row density(comfortable / compact 二选一)
+ * - Badge 预算红线:每行常驻 ≤2 彩色 + 其余进 +N overflow(BadgeOverflowGroup)
+ *
+ * 命名约定:
+ * - --pc-* PC 紧凑(M3 sales 工作台用 · 信息容量优先)
+ * - --info-* 信息层级(主/次/辅 · 跨页通用)
+ * - --row-* 行高/间距(comfortable / compact 二选一)
+ * - --m-* 移动端阶梯
+ *
+ * 用法:
+ * - 阅读密集页(Publish/Quote/Brand/Diagnosis/Monitoring):用 comfortable + --info-* 阶梯
+ * - 工作台密集页(M3 sales):保留 PC 紧凑(--pc-*)
+ * - 移动端 < 1024 自动 fallback
+ *
+ * 关键:硬编码 text-[10px] / py-1 不会吃 token · 必须通过新组件(ReadableTable /
+ *      BadgeOverflowGroup / InfoLegendPopover / ExpandableMeta)取代 · 才有杠杆
+ */
+
+:root {
+  /* PC 默认(≥1024)· 紧凑 */
+  --pc-spacing-xs: 4px;
+  --pc-spacing-sm: 8px;
+  --pc-spacing-md: 12px;
+  --pc-spacing-lg: 16px;
+  --pc-spacing-xl: 20px;
+  --pc-spacing-2xl: 24px;
+
+  --pc-font-xs: 12px;
+  --pc-font-sm: 13px;
+  --pc-font-base: 14px;
+  --pc-font-md: 15px;
+  --pc-font-lg: 16px;
+
+  --pc-line-tight: 1.3;
+  --pc-line-snug: 1.4;
+  --pc-line-normal: 1.5;
+
+  /* 2026-05-19 Wave 2 T1 · 移动端 SSOT token · 全站统一 */
+  /* 触摸目标 · iOS HIG 44px / Material 48dp · 取 44 兼容 */
+  --touch-min: 44px;
+
+  /* 移动端字号阶梯 · 单独定义防 pc-* 误用 · 内容更易读 */
+  --m-text-xs: 12px;
+  --m-text-sm: 13px;
+  --m-text-base: 15px;     /* 比 pc-font-base 14 大 1px · 移动看更舒服 */
+  --m-text-lg: 17px;
+  --m-text-xl: 19px;
+
+  /* 移动端 spacing 阶梯 · 整体偏大一点 · 防"挤" */
+  --m-space-xs: 6px;
+  --m-space-sm: 10px;
+  --m-space-md: 14px;
+  --m-space-lg: 18px;
+  --m-space-xl: 24px;
+
+  /* safe-area 标准 inset(env 在不支持设备 fallback 0)*/
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* 移动端 fallback(<1024)· 字号略大 + padding 紧凑 */
+@media (max-width: 1023px) {
+  :root {
+    --pc-spacing-xs: 4px;
+    --pc-spacing-sm: 8px;
+    --pc-spacing-md: 12px;
+    --pc-spacing-lg: 14px;
+    --pc-spacing-xl: 16px;
+    --pc-spacing-2xl: 20px;
+
+    --pc-font-base: 15px;
+    --pc-font-md: 16px;
+    --pc-font-lg: 17px;
+  }
+}
+
+/* M3 layout 全局 padding token */
+.m3-layout {
+  --layout-padding: var(--pc-spacing-lg);
+}
+
+@media (min-width: 1024px) {
+  .m3-layout {
+    --layout-padding: var(--pc-spacing-xl);
+  }
+}
+
+/* M3 card 默认密度 · 桌面 16px / 移动 12px */
+.m3-card-density {
+  padding: var(--pc-spacing-md);
+  font-size: var(--pc-font-base);
+  line-height: var(--pc-line-normal);
+}
+
+@media (min-width: 1024px) {
+  .m3-card-density {
+    padding: var(--pc-spacing-lg);
+  }
+}
+
+/* PC 双栏 · grid-template 工具类 */
+.m3-pc-2col {
+  display: grid;
+  gap: var(--pc-spacing-lg);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .m3-pc-2col {
+    grid-template-columns: minmax(0, 65%) minmax(0, 35%);
+  }
+}
+
+/* 2xl 三栏(列表 + 详情 + 操作)*/
+@media (min-width: 1536px) {
+  .m3-pc-3col {
+    display: grid;
+    gap: var(--pc-spacing-lg);
+    grid-template-columns: 22% minmax(0, 1fr) 30%;
+  }
+}
+
+/* ========================================================================
+ * Density System v1(2026-05-22 · CTO-15.23)
+ *
+ * 给阅读密集页(Publish/Quote/Brand/Diagnosis/Monitoring)用
+ * M3 sales 工作台仍用 --pc-* 紧凑(信息容量优先)
+ * ======================================================================== */
+
+:root {
+  /* ---- 三层信息层级 · 全站通用 ---- */
+  /* L1 主要 · 用户马上要决策 · 字号大 + foreground · 标题/客户名/价格/状态 */
+  --info-primary-size: 15px;
+  --info-primary-weight: 600;
+  --info-primary-color: hsl(var(--foreground));
+  --info-primary-line: 1.4;
+
+  /* L2 次要 · 辅助判断 · 中字号 + 弱化 · 行业/城市/类型 */
+  --info-secondary-size: 13px;
+  --info-secondary-weight: 500;
+  --info-secondary-color: hsl(var(--foreground) / 0.78);
+  --info-secondary-line: 1.45;
+
+  /* L3 辅助 · 证据/规则/技术解释 · 小字 + muted · 备注/原因 */
+  --info-tertiary-size: 12px;
+  --info-tertiary-weight: 400;
+  --info-tertiary-color: hsl(var(--muted-foreground));
+  --info-tertiary-line: 1.5;
+
+  /* ---- comfortable 行密度 · 阅读密集页用 ---- */
+  --row-comfortable-h: 48px;
+  --row-comfortable-py: 12px;
+  --row-comfortable-px: 16px;
+  --row-comfortable-gap: 12px;
+
+  /* ---- compact 行密度 · 工作台/列表密集 用 ---- */
+  --row-compact-h: 36px;
+  --row-compact-py: 8px;
+  --row-compact-px: 12px;
+  --row-compact-gap: 8px;
+
+  /* ---- ReadableTable 列分级 ---- */
+  --table-primary-min: 200px;   /* 主信息列(名字)最小宽 */
+  --table-secondary-min: 100px; /* 次信息列(行业/价格)最小宽 */
+  --table-meta-min: 64px;       /* 辅助列(权重/数值)最小宽 */
+}
+
+/* 移动端 < 1024:字号略大 / 行间距略松 / 防挤 */
+@media (max-width: 1023px) {
+  :root {
+    --info-primary-size: 16px;
+    --info-secondary-size: 14px;
+    --info-tertiary-size: 13px;
+
+    --row-comfortable-h: 56px;
+    --row-comfortable-py: 14px;
+    --row-comfortable-px: 14px;
+  }
+}
+
+/* ---- 工具类 · 直接 className 用 ---- */
+.text-info-primary {
+  font-size: var(--info-primary-size);
+  font-weight: var(--info-primary-weight);
+  color: var(--info-primary-color);
+  line-height: var(--info-primary-line);
+}
+.text-info-secondary {
+  font-size: var(--info-secondary-size);
+  font-weight: var(--info-secondary-weight);
+  color: var(--info-secondary-color);
+  line-height: var(--info-secondary-line);
+}
+.text-info-tertiary {
+  font-size: var(--info-tertiary-size);
+  font-weight: var(--info-tertiary-weight);
+  color: var(--info-tertiary-color);
+  line-height: var(--info-tertiary-line);
+}
+
+.row-comfortable {
+  min-height: var(--row-comfortable-h);
+  padding-top: var(--row-comfortable-py);
+  padding-bottom: var(--row-comfortable-py);
+  padding-left: var(--row-comfortable-px);
+  padding-right: var(--row-comfortable-px);
+}
+.row-compact {
+  min-height: var(--row-compact-h);
+  padding-top: var(--row-compact-py);
+  padding-bottom: var(--row-compact-py);
+  padding-left: var(--row-compact-px);
+  padding-right: var(--row-compact-px);
+}

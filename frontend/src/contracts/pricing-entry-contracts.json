@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "contract_version": "geo-persisted-price-quote-v2",
+  "scope": "geo",
+  "entries": [
+    {
+      "entry_id": "customer-recharge",
+      "active_route": "/customer/recharge",
+      "catalog_endpoint": "/api/pricing/retail/catalog",
+      "quote_endpoints": {
+        "fixed": "/api/pricing/retail/quote",
+        "custom_amount": "/api/pricing/retail/custom-amount-quote"
+      },
+      "order_endpoint": "/api/wallet/recharge",
+      "order_method": "POST",
+      "quote_type": "retail",
+      "required_order_field": "price_quote_id"
+    },
+    {
+      "entry_id": "agent-inventory-purchase",
+      "active_route": "/agent/inventory",
+      "catalog_endpoint": "/api/pricing/procurement/catalog",
+      "quote_endpoints": {
+        "fixed": "/api/pricing/procurement/quote",
+        "custom_amount": "/api/agent/inventory/purchase-preview"
+      },
+      "order_endpoint": "/api/agent/inventory/purchase",
+      "order_method": "POST",
+      "quote_type": "procurement",
+      "required_order_field": "price_quote_id"
+    }
+  ]
+}

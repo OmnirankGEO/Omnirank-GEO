@@ -1,0 +1,273 @@
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "case_count": 8,
+  "pass_count": 7,
+  "results": [
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_01_single_tool_time",
+      "title": "single tool call",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 2853,
+      "tool_calls": [
+        {
+          "name": "time_now",
+          "arguments": {
+            "timezone": "Asia/Shanghai"
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 0,
+      "final_text_preview": "当前上海时间是：",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": false,
+      "reasons": [
+        "tool_call_count 1 < 2",
+        "missing required tool internal_memory_query"
+      ],
+      "case_id": "case_02_parallel_profile_memory",
+      "title": "parallel profile + memory calls",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 3212,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_identity",
+              "target_customer",
+              "offer_and_proof",
+              "voice_style",
+              "guardrails"
+            ]
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 0,
+      "final_text_preview": "好的，我先来查看 profile_62 的客户资料和记忆信息。",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_03_serial_research_then_industry",
+      "title": "serial research loop",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 9856,
+      "tool_calls": [
+        {
+          "name": "tikhub_search_topics",
+          "arguments": {
+            "industry": "教育咨询",
+            "platform": "抖音",
+            "market": "中国",
+            "language": "中文"
+          }
+        },
+        {
+          "name": "industry_knowledge_query",
+          "arguments": {
+            "industry": "教育咨询",
+            "question": "2025年升学政策有哪些热点变化？家长最关心的升学规划痛点是什么？",
+            "country": "中国"
+          }
+        }
+      ],
+      "tool_call_count": 2,
+      "stream_chunks": 0,
+      "final_text_preview": "找到了三个热门话题方向。现在我再查询行业知识库，补充行业判断。",
+      "errors": [],
+      "raw_round_count": 2
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_04_error_recovery_bad_args",
+      "title": "recover from tool error",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 7759,
+      "tool_calls": [
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "target_customer",
+            "query": "目标客户画像和特征"
+          }
+        },
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_identity",
+              "target_customer",
+              "offer_and_proof",
+              "voice_style"
+            ]
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "target_customer",
+            "query": "目标客户画像"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "business_identity",
+            "query": "业务身份和产品"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "offer_and_proof",
+            "query": "核心卖点和证据"
+          }
+        }
+      ],
+      "tool_call_count": 5,
+      "stream_chunks": 0,
+      "final_text_preview": "好的，基础资料已有一些信息，我再详细查询目标客户记忆。",
+      "errors": [],
+      "raw_round_count": 2
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_05_multi_round_final_answer",
+      "title": "tool call then final answer",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 11346,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_identity",
+              "voice_style",
+              "guardrails"
+            ]
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "business_identity",
+            "query": "完整的人设和业务身份"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "voice_style",
+            "query": "说话风格和语气要求"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "guardrails",
+            "query": "禁忌和注意事项"
+          }
+        }
+      ],
+      "tool_call_count": 4,
+      "stream_chunks": 0,
+      "final_text_preview": "## 📋 profile_62 人设与禁忌总结\n\n| 维度 | 内容 |\n|------|------|\n| **行业** | 跨境洗护用品 |\n| **目标客户** | 🇩🇪德国 / 🇺🇸美国 / 🇮🇩印尼 的 **B端采购经理** |\n| **品牌声音** | **务实、直接、避免夸大** |\n| **核心禁忌** | ❌ **禁止空泛低价承诺**、❌ 避免夸张表述 |\n\n---\n\n## ✅ 结论：脚本应该 **稳重**，而非夸张\n\n理由如下：\n\n1. **受众决定语调**——B端采购经理（尤其是德国和美国）看重专业性、数据和事实，夸张风格会丧失信任。\n2. **品牌声音明确要求**——\"",
+      "errors": [],
+      "raw_round_count": 2
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_06_stream_tool_calls",
+      "title": "streaming tool calls",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 4944,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_identity",
+              "target_customer",
+              "offer_and_proof",
+              "voice_style",
+              "guardrails"
+            ]
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 114,
+      "final_text_preview": "好的，开始流式测试，先查 profile_62 的资料 👇",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_07_chinese_args",
+      "title": "Chinese arguments",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 3936,
+      "tool_calls": [
+        {
+          "name": "tikhub_search_topics",
+          "arguments": {
+            "industry": "教育培训",
+            "platform": "小红书"
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 0,
+      "final_text_preview": "好的，我来帮你查找教育培训行业在小红书上的选题趋势！",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_08_clarify_before_assume",
+      "title": "clarify instead of unsafe assumption",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "latency_ms": 5073,
+      "tool_calls": [],
+      "tool_call_count": 0,
+      "stream_chunks": 0,
+      "final_text_preview": "您好！您说的“那个客户的东西”有点模糊，我想先跟您确认一下，避免搞错方向。请问您指的是以下哪种情况呢？\n\n**A. 查询/编辑客户资料** — 比如查看客户的企业信息、业务定位、目标客群等？\n**B. 查看客户的行业知识** — 比如该客户所在行业的热点、趋势、政策等？\n**C. 搜索短视频话题** — 为该客户查找某个平台/行业的短视频热门话题？\n**D. 其他需求** — 您可以再具体描述一下。\n\n另外，方便提供一下**客户的名称或ID**吗？这样我才能精准帮到您～",
+      "errors": [],
+      "raw_round_count": 1
+    }
+  ]
+}

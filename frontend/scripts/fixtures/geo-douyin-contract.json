@@ -1,0 +1,42 @@
+{
+  "_provenance": "由 scripts/fixtures/regen.mjs 从 services/geo_douyin/config.py(ASPECT_RATIOS/ASPECT_RATIO_DEFAULT) 与 card_templates.py(STYLE_PRESETS)抽取。判据 G0 每次跑都会重新比对,漂了就报红。 🔴 不要手改这个文件 —— 手改会让判据和截图验的是另一个世界的文案。",
+  "aspect_ratios": [
+    {
+      "key": "3:4",
+      "label": "竖版 3:4",
+      "hint": "抖音图文默认，信息密度高"
+    },
+    {
+      "key": "9:16",
+      "label": "全屏 9:16",
+      "hint": "竖屏满屏场景，沿用十母版那一族"
+    }
+  ],
+  "aspect_ratio_default": "3:4",
+  "styles": [
+    {
+      "key": "design_text",
+      "label": "设计文字卡",
+      "needs_photo": false,
+      "density": "mid"
+    },
+    {
+      "key": "table_review",
+      "label": "表格测评卡",
+      "needs_photo": false,
+      "density": "high"
+    },
+    {
+      "key": "memo",
+      "label": "备忘录体",
+      "needs_photo": false,
+      "density": "high"
+    },
+    {
+      "key": "photo_overlay",
+      "label": "实拍叠字",
+      "needs_photo": true,
+      "density": "low"
+    }
+  ]
+}

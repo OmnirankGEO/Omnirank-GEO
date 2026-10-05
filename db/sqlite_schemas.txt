@@ -1,0 +1,1278 @@
+-- TABLE: advisor_conversations (8 rows)
+CREATE TABLE advisor_conversations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        conversation_id TEXT UNIQUE NOT NULL,
+        advisor_id TEXT NOT NULL,
+        title TEXT,
+        message_count INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: advisor_documents (7 rows)
+CREATE TABLE advisor_documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        advisor_id TEXT NOT NULL,               -- 关联顾问
+        filename TEXT NOT NULL,                 -- 文件名
+        file_type TEXT,                         -- 文件类型 (pdf, txt, md)
+        chunk_count INTEGER,                    -- 分块数量
+        file_size INTEGER,                      -- 文件大小(字节)
+        uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (advisor_id) REFERENCES advisors(id)
+    )
+;
+
+-- TABLE: advisor_messages (24 rows)
+CREATE TABLE advisor_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        conversation_id TEXT NOT NULL,
+        role TEXT NOT NULL,
+        content TEXT NOT NULL,
+        context TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (conversation_id) REFERENCES advisor_conversations(conversation_id)
+    )
+;
+
+-- TABLE: advisors (4 rows)
+CREATE TABLE advisors (
+        id TEXT PRIMARY KEY,                    -- 顾问ID (如 'jobs')
+        name TEXT NOT NULL,                     -- 显示名称 (如 '乔布斯')
+        avatar TEXT DEFAULT '👤',               -- 头像
+        description TEXT,                       -- 简介
+        base_prompt TEXT NOT NULL,              -- 基础提示词
+        model_id TEXT DEFAULT 'qwen3-max',      -- 使用的模型
+        knowledge_path TEXT,                    -- RAG知识库路径
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    , api_provider TEXT DEFAULT 'dashscope', model_name TEXT DEFAULT 'qwen3-max', enable_web_search INTEGER DEFAULT 0, specialty TEXT, knowledge_base_path TEXT, last_kb_update TIMESTAMP)
+;
+
+-- TABLE: article_generations (43 rows)
+CREATE TABLE article_generations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        diagnosis_id INTEGER,           -- 关联诊断记录
+        task_id TEXT,                   -- 批次ID (如 gen_20260113_123456)
+        article_type TEXT,              -- ranking/case/qa
+        title TEXT,                     -- 文章标题
+        word_count INTEGER,             -- 字数
+        file_path TEXT,                 -- 文件路径
+        status TEXT DEFAULT 'success',  -- success/failed
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (diagnosis_id) REFERENCES diagnosis_records(id)
+    )
+;
+
+-- TABLE: articles (443 rows)
+CREATE TABLE articles (id INTEGER PRIMARY KEY AUTOINCREMENT, topic_id INTEGER NOT NULL, quote_id INTEGER, title TEXT, content TEXT, word_count INTEGER DEFAULT 0, style TEXT, version INTEGER DEFAULT 1, reference_article TEXT, revision_note TEXT, status TEXT DEFAULT draft, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)
+;
+
+-- TABLE: audit_logs (18 rows)
+CREATE TABLE audit_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        username TEXT,
+        action TEXT NOT NULL,
+        module TEXT,
+        entity_type TEXT,
+        entity_id INTEGER,
+        summary TEXT,
+        before_snapshot TEXT,
+        after_snapshot TEXT,
+        ip_address TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: benchmark_authors (5 rows)
+CREATE TABLE benchmark_authors (
+            id TEXT PRIMARY KEY,
+            profile_id TEXT NOT NULL,  -- 用户隔离：当前登录用户的profile_id
+            
+            -- 博主基础信息
+            platform TEXT DEFAULT 'douyin',
+            sec_user_id TEXT NOT NULL,
+            author_name TEXT,
+            author_avatar TEXT,
+            followers INTEGER DEFAULT 0,
+            following INTEGER DEFAULT 0,
+            total_favorited INTEGER DEFAULT 0,
+            aweme_count INTEGER DEFAULT 0,
+            signature TEXT,
+            
+            -- 博主拆解分析（JSON存储）
+            breakdown_positioning JSON,    -- 账号定位
+            breakdown_strategy JSON,       -- 内容策略
+            breakdown_hooks JSON,          -- 钩子模式
+            breakdown_replication JSON,    -- 仿写指南
+            breakdown_strengths JSON,      -- 优势
+            breakdown_improvements JSON,   -- 可改进点
+            
+            -- 关联的视频ID列表
+            video_ids JSON,  -- 拆解时分析的视频ID列表
+            
+            -- 元数据
+            tags TEXT,  -- 逗号分隔的标签
+            notes TEXT, -- 用户备注
+            videos_analyzed INTEGER DEFAULT 0,  -- 分析的视频数
+            knowledge_used INTEGER DEFAULT 0,   -- 使用的知识库条数
+            
+            -- 时间戳
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            is_deleted INTEGER DEFAULT 0
+        , full_breakdown JSON)
+;
+
+-- TABLE: benchmark_cards (4 rows)
+CREATE TABLE benchmark_cards (
+            id TEXT PRIMARY KEY,
+            profile_id TEXT,
+            
+            -- 源信息
+            source_url TEXT NOT NULL,
+            platform TEXT DEFAULT 'douyin',
+            video_id TEXT,
+            
+            -- 作者信息
+            author_name TEXT,
+            author_id TEXT,
+            author_followers INTEGER DEFAULT 0,
+            
+            -- 数据统计
+            stats_likes INTEGER DEFAULT 0,
+            stats_comments INTEGER DEFAULT 0,
+            stats_shares INTEGER DEFAULT 0,
+            stats_collects INTEGER DEFAULT 0,
+            stats_duration INTEGER DEFAULT 0,
+            
+            -- ASR转录
+            transcript TEXT,
+            
+            -- AI分析结果（JSON存储）
+            analysis_positioning JSON,     -- 内容定位
+            analysis_structure JSON,       -- 结构拆解
+            analysis_hook JSON,            -- 开篇钩子
+            analysis_copywriting JSON,     -- 文案技巧
+            analysis_rewrite_formulas JSON, -- 仿写公式
+            
+            -- 用户补充（可选）
+            user_visual JSON,              -- 视觉呈现（用户填写）
+            
+            -- 元数据
+            title TEXT,
+            tags TEXT,  -- 逗号分隔的标签
+            notes TEXT, -- 用户备注
+            
+            -- 时间戳
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            is_deleted INTEGER DEFAULT 0
+        )
+;
+
+-- TABLE: brand_aliases (893 rows)
+CREATE TABLE brand_aliases (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    canonical_name  TEXT NOT NULL,              -- 标准名称（如 "全域上榜"）
+    alias           TEXT NOT NULL,              -- 变体名称（如 "全域上榜科技有限公司"）
+    brand_id        INTEGER,                    -- 关联品牌 ID（可空）
+    source          TEXT DEFAULT 'manual'       -- manual / auto_discovered / llm_suggested
+                    CHECK(source IN ('manual', 'auto_discovered', 'llm_suggested')),
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    UNIQUE(canonical_name, alias)               -- 同一品牌不重复记录同一别名
+)
+;
+
+-- TABLE: brands (29 rows)
+CREATE TABLE brands (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT UNIQUE NOT NULL,        -- 品牌名（唯一）
+        company_name TEXT,                -- 公司名（可选，同一公司多品牌）
+        industry TEXT,                    -- 行业
+        industry_category TEXT,           -- 行业大类
+        contact TEXT,                     -- 联系人
+        notes TEXT,                       -- 备注
+        user_id INTEGER,                  -- 预留：用户ID（多租户）
+        diagnosis_count INTEGER DEFAULT 0, -- 诊断次数
+        latest_score INTEGER,             -- 最新评分
+        latest_diagnosis_id INTEGER,      -- 最新诊断ID
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    , cities TEXT, brand_code TEXT, brand_display_names TEXT)
+;
+
+-- TABLE: client_access_tokens (16 rows)
+CREATE TABLE client_access_tokens (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quote_id INTEGER NOT NULL,
+            brand_name TEXT,
+            token TEXT UNIQUE NOT NULL,
+            is_active BOOLEAN DEFAULT 1,
+            expires_at DATE,
+            last_access_at TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(quote_id) REFERENCES quotes(id)
+        )
+;
+
+-- TABLE: client_keywords (4 rows)
+CREATE TABLE client_keywords (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_id TEXT NOT NULL,
+            keyword TEXT NOT NULL,
+            target_brand TEXT NOT NULL,
+            difficulty TEXT DEFAULT '中等',
+            target_rate INTEGER DEFAULT 60,
+            platforms TEXT DEFAULT 'dashscope,deepseek,kimi,doubao',
+            note TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            status TEXT DEFAULT 'active', brand_id INTEGER,
+            UNIQUE(client_id, keyword)
+        )
+;
+
+-- TABLE: client_materials (49 rows)
+CREATE TABLE client_materials (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        diagnosis_id INTEGER,               -- 关联诊断记录
+        brand_id INTEGER,                   -- 关联品牌
+        
+        -- 公司介绍
+        company_intro TEXT,                 -- 公司简介（支持Markdown）
+        founding_year INTEGER,              -- 成立年份
+        team_size TEXT,                     -- 团队规模
+        service_area TEXT,                  -- 服务范围/地域
+        
+        -- 核心卖点（客户自己总结的）
+        core_selling_points TEXT,           -- JSON: [{"point": "卖点", "evidence": "证据"}]
+        unique_value TEXT,                  -- 一句话价值主张
+        methodology TEXT,                   -- 方法论/服务流程描述
+        
+        -- 成功案例（真实数据）
+        case_studies TEXT,                  -- JSON: [{"client": "客户", "industry": "行业", "result": "效果", "timeline": "周期"}]
+        
+        -- 服务报价
+        pricing_tiers TEXT,                 -- JSON: [{"name": "套餐名", "price": "X万/月", "includes": [...]}]
+        
+        -- 客户证言
+        testimonials TEXT,                  -- JSON: [{"name": "张总", "title": "职位", "company": "公司", "quote": "..."}]
+        
+        -- 荣誉资质
+        credentials TEXT,                   -- JSON: [{"type": "资质类型", "name": "证书名", "year": 2025}]
+        
+        -- 元信息
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        
+        FOREIGN KEY (diagnosis_id) REFERENCES diagnosis_records(id),
+        FOREIGN KEY (brand_id) REFERENCES brands(id)
+    )
+;
+
+-- TABLE: client_profiles (12 rows)
+CREATE TABLE client_profiles (
+            id TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            
+            -- 🏢 公司信息
+            industry TEXT,
+            business TEXT,
+            products TEXT,                         -- JSON数组
+            target_users TEXT,
+            pain_points TEXT,                      -- JSON数组
+            competitors TEXT,                      -- JSON数组
+            
+            -- 👤 IP人设
+            persona_positioning TEXT,
+            persona_tone TEXT,
+            persona_catchphrases TEXT,             -- JSON数组
+            persona_background TEXT,
+            persona_golden_quotes TEXT,            -- JSON数组
+            
+            -- 📊 数据反馈闭环
+            target_platforms TEXT,                 -- JSON数组 ["douyin", "xiaohongshu"]
+            successful_patterns TEXT,              -- JSON: 历史成功套路
+            negative_feedback TEXT,                -- JSON: 失败教训
+            brand_constraints TEXT,                -- 品牌禁忌
+            
+            -- 🗑️ 档案管理
+            is_deleted INTEGER DEFAULT 0,
+            deleted_at TIMESTAMP,
+            
+            -- 元数据
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        , company_intro TEXT, core_value TEXT, selling_points TEXT, success_cases TEXT, testimonials TEXT, brand_id INTEGER, story_type TEXT, differentiation TEXT, content_direction TEXT, business_summary TEXT, business_misunderstandings TEXT, knowledge_files TEXT, brand_display_names TEXT, visual_style TEXT DEFAULT '', content_pillars TEXT DEFAULT '[]')
+;
+
+-- TABLE: confirmed_keywords (1263 rows)
+CREATE TABLE confirmed_keywords (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        quote_id INTEGER,                   -- 关联报价单
+        keyword TEXT NOT NULL,              -- 关键词
+        category TEXT,                      -- 问答词/价格词/地区词/长尾词
+        tier TEXT,                          -- tier1-tier5
+        base_price REAL,                    -- 基础价格
+        city_premium REAL,                  -- 城市溢价系数
+        final_price REAL,                   -- 最终价格
+        competitor_count INTEGER,           -- 竞品数量
+        status TEXT DEFAULT 'pending',      -- pending/writing/published
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, selling_price REAL DEFAULT 0, required_articles INTEGER DEFAULT 1, recommended_platforms TEXT, brand_id INTEGER, intent TEXT DEFAULT 'informational', funnel_stage TEXT DEFAULT 'awareness',
+        FOREIGN KEY (quote_id) REFERENCES quotes(id)
+    )
+;
+
+-- TABLE: departments (4 rows)
+CREATE TABLE departments (
+        id TEXT PRIMARY KEY,                    -- 部门ID (如 'diagnosis')
+        name TEXT NOT NULL,                     -- 部门名称 (如 '诊断部')
+        icon TEXT DEFAULT '📁',                 -- 部门图标
+        description TEXT,                       -- 部门描述
+        sort_order INTEGER DEFAULT 0,           -- 排序
+        is_active BOOLEAN DEFAULT 1,            -- 是否启用
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: diagnosis_records (95 rows)
+CREATE TABLE diagnosis_records (
+        -- 基础信息
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT UNIQUE NOT NULL,
+        brand_name TEXT NOT NULL,
+        industry TEXT NOT NULL,
+        industry_category TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        keywords TEXT,
+        
+        -- 综合评分
+        total_score INTEGER,
+        level TEXT,
+        
+        -- 8维度分数
+        web_search_score INTEGER,
+        platform_score INTEGER,
+        content_quality_score INTEGER,
+        authority_score INTEGER,
+        brand_ownership_score INTEGER,
+        ai_visibility_score INTEGER,
+        ai_citation_score INTEGER,
+        update_frequency_score INTEGER,
+        
+        -- AI测试数据
+        ai_total_tests INTEGER,
+        ai_detected_count INTEGER,
+        ai_mention_rate REAL,
+        ai_engines_tested TEXT,
+        
+        -- 社媒数据
+        douyin_video_count INTEGER,
+        douyin_brand_count INTEGER,
+        xhs_note_count INTEGER,
+        xhs_brand_count INTEGER,
+        
+        -- 网页搜索数据
+        web_result_count INTEGER,
+        web_brand_direct_count INTEGER,
+        web_authority_count INTEGER,
+        scholar_count INTEGER,
+        
+        -- 品牌识别
+        has_brand_presence BOOLEAN,
+        brand_account_count INTEGER,
+        
+        -- 竞品数据
+        competitor_count INTEGER,
+        
+        -- 品牌知名度
+        brand_recognition_level TEXT,
+        data_anomaly BOOLEAN,
+        anomaly_reason TEXT,
+        
+        -- 报告文件
+        report_md_path TEXT,
+        report_json_path TEXT,
+        
+        -- 原始数据
+        raw_data_json TEXT
+    , brand_id INTEGER REFERENCES brands(id), distilled_data TEXT, diagnosis_type TEXT DEFAULT 'technical_full')
+;
+
+-- TABLE: employee_capabilities (15 rows)
+CREATE TABLE employee_capabilities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            employee_id TEXT NOT NULL,
+            capability_type TEXT NOT NULL,
+            target_id TEXT NOT NULL,
+            target_name TEXT,
+            enabled BOOLEAN DEFAULT 1,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(employee_id, capability_type, target_id)
+        )
+;
+
+-- TABLE: employee_configs (14 rows)
+CREATE TABLE employee_configs (
+        id TEXT PRIMARY KEY,                    -- 员工ID (如 'data_collector')
+        name TEXT NOT NULL,                     -- 员工名称 (如 '数据采集员')
+        department_id TEXT NOT NULL,            -- 所属部门ID
+        description TEXT,                       -- 员工描述
+        avatar TEXT DEFAULT '🤖',               -- 员工头像/图标
+        
+        -- 模型配置
+        model_id TEXT NOT NULL DEFAULT 'deepseek-v4-flash',  -- 2026-05-22 V3.2 → V4 全切
+        temperature REAL DEFAULT 0.7,
+        max_tokens INTEGER DEFAULT 4000,
+        
+        -- 系统提示词
+        system_prompt TEXT,
+        
+        -- 技能配置 (JSON数组)
+        skills TEXT DEFAULT '[]',
+        
+        -- MCP配置 (JSON对象)
+        mcp_config TEXT DEFAULT '{}',
+        
+        -- 记忆类型
+        memory_type TEXT DEFAULT 'temporary',   -- 'temporary' | 'persistent'
+        
+        -- 状态
+        is_active BOOLEAN DEFAULT 1,
+        sort_order INTEGER DEFAULT 0,
+        
+        -- 使用场景: 'all' | 'single' | 'meeting' | 'workflow'
+        usage_scope TEXT DEFAULT 'all',
+        
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        
+        FOREIGN KEY (department_id) REFERENCES departments(id)
+    )
+;
+
+-- TABLE: employee_meetings (5 rows)
+CREATE TABLE employee_meetings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        meeting_id TEXT UNIQUE NOT NULL,        -- 会议唯一ID
+        
+        -- 会议基本信息
+        topic TEXT NOT NULL,                    -- 会议议题
+        context TEXT,                           -- 背景资料
+        
+        -- 关联客户/品牌
+        brand_id INTEGER,                       -- 关联品牌ID（可选）
+        brand_name TEXT,                        -- 品牌名称
+        is_internal BOOLEAN DEFAULT 0,          -- 是否公司内部会议
+        
+        -- 参会人员
+        participants TEXT NOT NULL,             -- 参会员工 (JSON数组: ["员工名1", "员工名2"])
+        participant_ids TEXT,                   -- 参会员工ID (JSON数组: ["emp_id1", "emp_id2"])
+        moderator_id TEXT,                      -- 主持人ID
+        moderator_name TEXT,                    -- 主持人名称
+        
+        -- 会议内容
+        transcript TEXT,                        -- 讨论记录 (JSON数组)
+        conclusion TEXT,                        -- 会议结论/纪要
+        summary TEXT,                           -- 会议摘要（AI生成）
+        action_items TEXT,                      -- 行动项 (JSON数组)
+        
+        -- 附件
+        attachments TEXT,                       -- 附件信息 (JSON数组)
+        
+        -- 会议状态
+        status TEXT DEFAULT 'pending',          -- 'pending' | 'in_progress' | 'completed' | 'cancelled'
+        rounds INTEGER DEFAULT 2,               -- 讨论轮数
+        duration REAL,                          -- 会议时长（秒）
+        
+        -- 标签（用于搜索）
+        tags TEXT,                              -- 标签 (JSON数组: ["策略", "小红书"])
+        
+        -- 时间戳
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        started_at TIMESTAMP,                   -- 开始时间
+        completed_at TIMESTAMP,                 -- 完成时间
+        
+        FOREIGN KEY (brand_id) REFERENCES brands(id)
+    )
+;
+
+-- TABLE: employee_tasks (7 rows)
+CREATE TABLE employee_tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        employee_id TEXT NOT NULL,              -- 员工ID (如 'data_collector')
+        employee_name TEXT,                     -- 员工名称
+        task_type TEXT DEFAULT 'single',        -- 'single' | 'meeting'
+        task_content TEXT NOT NULL,             -- 任务内容
+        context TEXT,                           -- 背景信息 (JSON)
+        result TEXT,                            -- 执行结果
+        status TEXT DEFAULT 'pending',          -- 'pending' | 'running' | 'completed' | 'failed'
+        skills_used TEXT,                       -- 使用的技能 (JSON数组)
+        execution_time REAL,                    -- 执行时间(秒)
+        error_message TEXT,                     -- 错误信息
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        completed_at TIMESTAMP
+    )
+;
+
+-- TABLE: extra_keywords (1 rows)
+CREATE TABLE extra_keywords (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quote_id INTEGER,
+            client_id TEXT NOT NULL,
+            keyword TEXT NOT NULL,
+            target_brand TEXT NOT NULL,
+            difficulty TEXT DEFAULT '中等',
+            target_rate INTEGER DEFAULT 60,
+            platforms TEXT DEFAULT 'dashscope,deepseek,kimi,doubao',
+            note TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            status TEXT DEFAULT 'active', brand_id INTEGER,
+            UNIQUE(quote_id, keyword),
+            FOREIGN KEY(quote_id) REFERENCES quotes(id)
+        )
+;
+
+-- TABLE: geo_engine_stats (2519 rows)
+CREATE TABLE geo_engine_stats (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        industry TEXT NOT NULL,
+        engine TEXT NOT NULL,
+        platform TEXT NOT NULL,
+        citation_count INTEGER DEFAULT 0,
+        total_queries INTEGER DEFAULT 0,
+        citation_rate REAL DEFAULT 0,
+        avg_position REAL DEFAULT 0,
+        sample_queries INTEGER DEFAULT 0,
+        last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(industry, engine, platform)
+    )
+;
+
+-- TABLE: geo_engine_weights (0 rows)
+CREATE TABLE geo_engine_weights (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        engine TEXT NOT NULL UNIQUE,
+        weight REAL NOT NULL DEFAULT 0.25,
+        mau_millions REAL,
+        source TEXT,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: geo_research_batches (6 rows)
+CREATE TABLE geo_research_batches (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        batch_id TEXT UNIQUE NOT NULL,
+        industry TEXT NOT NULL,
+        engine TEXT,
+        query_count INTEGER DEFAULT 0,
+        researcher TEXT,
+        notes TEXT,
+        status TEXT DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        completed_at TIMESTAMP
+    )
+;
+
+-- TABLE: geo_research_raw (7557 rows)
+CREATE TABLE geo_research_raw (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        industry TEXT NOT NULL,
+        query TEXT NOT NULL,
+        engine TEXT NOT NULL,
+        cited_platform TEXT NOT NULL,
+        cite_position INTEGER DEFAULT 0,
+        cite_url TEXT,
+        batch_id TEXT,
+        researcher TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    , cite_title TEXT, cite_excerpt TEXT, answer_text TEXT)
+;
+
+-- TABLE: imitated_articles (10 rows)
+CREATE TABLE imitated_articles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        imitation_record_id INTEGER NOT NULL,
+        reference_id INTEGER NOT NULL,
+        quote_id INTEGER NOT NULL,
+        keyword TEXT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        word_count INTEGER,
+        status TEXT DEFAULT 'draft',
+        revision_notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (imitation_record_id) REFERENCES imitation_records(id),
+        FOREIGN KEY (reference_id) REFERENCES reference_articles(id),
+        FOREIGN KEY (quote_id) REFERENCES quotes(id)
+    )
+;
+
+-- TABLE: imitation_records (4 rows)
+CREATE TABLE imitation_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        reference_id INTEGER,
+        quote_id INTEGER,
+        generated_count INTEGER,
+        success_count INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (reference_id) REFERENCES reference_articles(id),
+        FOREIGN KEY (quote_id) REFERENCES quotes(id)
+    )
+;
+
+-- TABLE: keyword_insights (204 rows)
+CREATE TABLE keyword_insights (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    
+    -- 来源关联
+    task_id         INTEGER NOT NULL,           -- 监测任务 ID
+    brand_id        INTEGER,                    -- 客户品牌 ID
+    client_id       TEXT,                       -- 客户 ID（多客户隔离预留）
+    keyword         TEXT NOT NULL,              -- 监测关键词
+    
+    -- LLM 蒸馏结果（核心 JSON 字段）
+    platforms_analyzed  TEXT DEFAULT '[]',      -- JSON: ["doubao","kimi",...]
+    brands_found        TEXT DEFAULT '[]',      -- JSON: 归一化后的品牌列表
+    sources_cited       TEXT DEFAULT '[]',      -- JSON: 信源列表
+    response_patterns   TEXT DEFAULT '{}',      -- JSON: 回复结构/偏好
+    client_position     TEXT DEFAULT '{}',      -- JSON: 客户品牌表现
+    optimization_hints  TEXT DEFAULT '[]',      -- JSON: 优化建议
+    
+    -- 蒸馏元数据
+    llm_model           TEXT DEFAULT 'qwen3-max',
+    llm_tokens          INTEGER DEFAULT 0,
+    algorithm_version   TEXT DEFAULT 'v4.2',
+    
+    -- 用户反馈回路
+    quality_flag        TEXT DEFAULT 'auto'     -- auto / verified / rejected
+                        CHECK(quality_flag IN ('auto', 'verified', 'rejected', 'degraded')),
+    feedback_note       TEXT,                   -- 用户标注说明
+    
+    -- 时间戳
+    distilled_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- 约束
+    UNIQUE(task_id, keyword)                    -- 幂等：同一任务同一关键词只蒸馏一次
+)
+;
+
+-- TABLE: keyword_interaction_logs (841 rows)
+CREATE TABLE keyword_interaction_logs (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id  INTEGER NOT NULL,
+        phase       TEXT NOT NULL,
+
+        event_type  TEXT NOT NULL,
+        keyword_id  INTEGER,
+        keyword_text TEXT,
+        event_data  TEXT,
+
+        client_ip   TEXT,
+        user_agent  TEXT,
+        created_at  TEXT DEFAULT (datetime('now', 'localtime')),
+
+        FOREIGN KEY (session_id) REFERENCES keyword_selection_sessions(id)
+    )
+;
+
+-- TABLE: keyword_price_cache (237 rows)
+CREATE TABLE keyword_price_cache (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        brand_name TEXT NOT NULL,
+        keyword TEXT NOT NULL,
+        -- 三维评分数据（完整缓存，避免重新查API）
+        difficulty_score REAL,
+        value_score REAL,
+        competitor_count INTEGER,
+        cost_per_article REAL,
+        intent TEXT,
+        funnel_stage TEXT,
+        search_probability REAL,
+        search_volume INTEGER,
+        sem_price REAL,
+        bidword_company_count INTEGER,
+        content_count INTEGER,
+        source_authority_json TEXT,
+        recommended_platforms_json TEXT,
+        data_source TEXT,
+        markup_ratio REAL,
+        -- 三个套餐的计算结果
+        entry_price REAL,
+        entry_articles INTEGER,
+        standard_price REAL,
+        standard_articles INTEGER,
+        flagship_price REAL,
+        flagship_articles INTEGER,
+        -- 时间管理
+        cached_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMP,
+        UNIQUE(brand_name, keyword)
+    )
+;
+
+-- TABLE: keyword_selection_sessions (32 rows)
+CREATE TABLE keyword_selection_sessions (
+        id                INTEGER PRIMARY KEY AUTOINCREMENT,
+        token             TEXT UNIQUE NOT NULL,
+        quote_id          INTEGER UNIQUE NOT NULL,
+        brand_id          INTEGER NOT NULL,
+        created_by        INTEGER,
+
+        keywords_snapshot  TEXT NOT NULL,
+
+        status            TEXT DEFAULT 'selecting',
+        expires_at        TEXT NOT NULL,
+
+        selected_keyword_ids TEXT,
+        custom_keywords      TEXT,
+        keywords_submitted_at TEXT,
+
+        pricing_data         TEXT,
+        selected_tier        TEXT,
+        final_keyword_ids    TEXT,
+        confirmed_at         TEXT,
+        confirmed_total_price REAL,
+
+        pending_keywords     TEXT,
+
+        total_time_seconds   INTEGER,
+        visit_count          INTEGER DEFAULT 0,
+        hesitation_summary   TEXT,
+
+        created_at TEXT DEFAULT (datetime('now', 'localtime')),
+        updated_at TEXT DEFAULT (datetime('now', 'localtime')), final_price REAL, discount_info TEXT, gift_keywords TEXT, gift_articles INTEGER DEFAULT 0, sales_notes TEXT, sales_confirmed_at TEXT, payment_received_at TEXT, payment_overdue_notified_days TEXT DEFAULT '[]',
+
+        FOREIGN KEY (quote_id) REFERENCES quotes(id),
+        FOREIGN KEY (brand_id) REFERENCES brands(id)
+    )
+;
+
+-- TABLE: keyword_trend_stats (193 rows)
+CREATE TABLE keyword_trend_stats (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            keyword_id INTEGER,
+            keyword_source TEXT DEFAULT 'confirmed',
+            period_type TEXT NOT NULL,
+            period_date DATE NOT NULL,
+            test_count INTEGER DEFAULT 0,
+            detected_count INTEGER DEFAULT 0,
+            detection_rate REAL DEFAULT 0,
+            rate_change REAL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(keyword_id, keyword_source, period_type, period_date)
+        )
+;
+
+-- TABLE: media_analysis_log (0 rows)
+CREATE TABLE media_analysis_log (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        task_id TEXT UNIQUE NOT NULL,
+        file_name TEXT,
+        file_type TEXT,
+        status TEXT DEFAULT 'pending',
+        total_rows INTEGER DEFAULT 0,
+        processed_rows INTEGER DEFAULT 0,
+        chunk_count INTEGER DEFAULT 0,
+        new_outlets_count INTEGER DEFAULT 0,
+        updated_outlets_count INTEGER DEFAULT 0,
+        discoveries TEXT,
+        insights TEXT,
+        previous_log_id INTEGER,
+        delta_summary TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        completed_at TIMESTAMP,
+        error_message TEXT
+    )
+;
+
+-- TABLE: media_outlets (27004 rows)
+CREATE TABLE media_outlets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        media_type TEXT NOT NULL DEFAULT 'traditional',
+        platform TEXT,
+        sivp_price REAL,
+        min_price REAL,
+        max_price REAL,
+        ai_engines_covered TEXT DEFAULT '[]',
+        ai_coverage_count INTEGER DEFAULT 0,
+        geo_confirmed INTEGER DEFAULT 0,
+        geo_notes TEXT,
+        citation_count INTEGER DEFAULT 0,
+        category TEXT,
+        region TEXT,
+        baidu_news_source INTEGER DEFAULT 0,
+        suitable_industries TEXT DEFAULT '[]',
+        data_source TEXT,
+        source_url TEXT,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(name, platform, media_type)
+    )
+;
+
+-- TABLE: media_publications (0 rows)
+CREATE TABLE media_publications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quote_id INTEGER NOT NULL,
+            article_id INTEGER,
+            platform_name TEXT NOT NULL,
+            platform_url TEXT,
+            article_title TEXT,
+            publish_date DATE,
+            operator_id TEXT,
+            screenshot_path TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(quote_id) REFERENCES quotes(id)
+        )
+;
+
+-- TABLE: meeting_presets (0 rows)
+CREATE TABLE meeting_presets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            style TEXT,
+            rounds INTEGER DEFAULT 2,
+            co_moderator_id TEXT,
+            co_moderator_name TEXT,
+            weight_boost REAL DEFAULT 1.5,
+            auto_execute BOOLEAN DEFAULT 0,
+            description TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+;
+
+-- TABLE: monitoring_config (1 rows)
+CREATE TABLE monitoring_config (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_id TEXT UNIQUE,
+            default_concurrency INTEGER DEFAULT 10,
+            default_platforms TEXT DEFAULT 'dashscope,deepseek,kimi,doubao',
+            auto_monitor_enabled BOOLEAN DEFAULT 0,
+            auto_monitor_cron TEXT,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        , brand_id INTEGER)
+;
+
+-- TABLE: monitoring_reports (3 rows)
+CREATE TABLE monitoring_reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_id TEXT NOT NULL,
+            report_type TEXT NOT NULL,
+            period_start DATE,
+            period_end DATE,
+            summary_data TEXT,
+            excel_path TEXT,
+            pdf_path TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        , content TEXT, status TEXT DEFAULT 'draft', reviewed_by TEXT, reviewed_at TIMESTAMP, sent_at TIMESTAMP, brand_id INTEGER)
+;
+
+-- TABLE: monitoring_results (1495 rows)
+CREATE TABLE monitoring_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER,
+            keyword_id INTEGER,
+            confirmed_keyword_id INTEGER,
+            keyword TEXT NOT NULL,
+            platform TEXT NOT NULL,
+            round_number INTEGER DEFAULT 1,
+            is_detected BOOLEAN DEFAULT 0,
+            mention_type TEXT DEFAULT 'none',
+            response_snippet TEXT,
+            full_response TEXT,
+            tested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, response_char_count INTEGER DEFAULT 0, search_citations TEXT,
+            FOREIGN KEY(task_id) REFERENCES monitoring_tasks(id),
+            FOREIGN KEY(keyword_id) REFERENCES extra_keywords(id),
+            FOREIGN KEY(confirmed_keyword_id) REFERENCES confirmed_keywords(id)
+        )
+;
+
+-- TABLE: monitoring_tasks (67 rows)
+CREATE TABLE monitoring_tasks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quote_id INTEGER,
+            client_id TEXT NOT NULL,
+            task_name TEXT,
+            keyword_count INTEGER DEFAULT 0,
+            platform_count INTEGER DEFAULT 4,
+            total_tests INTEGER DEFAULT 0,
+            completed_tests INTEGER DEFAULT 0,
+            concurrency INTEGER DEFAULT 10,
+            test_rounds INTEGER DEFAULT 3,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            started_at TIMESTAMP,
+            completed_at TIMESTAMP,
+            result_summary TEXT, brand_id INTEGER,
+            FOREIGN KEY(quote_id) REFERENCES quotes(id)
+        )
+;
+
+-- TABLE: monitoring_token_usage (0 rows)
+CREATE TABLE monitoring_token_usage (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task_id INTEGER,
+            platform TEXT NOT NULL,
+            input_tokens INTEGER DEFAULT 0,
+            output_tokens INTEGER DEFAULT 0,
+            estimated_cost REAL DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY(task_id) REFERENCES monitoring_tasks(id)
+        )
+;
+
+-- TABLE: notifications (380 rows)
+CREATE TABLE notifications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            client_id INTEGER NOT NULL,
+            type TEXT NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT,
+            related_id INTEGER,
+            is_read INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, brand_id INTEGER,
+            FOREIGN KEY (client_id) REFERENCES monitoring_clients(id)
+        )
+;
+
+-- TABLE: operation_logs (28 rows)
+CREATE TABLE operation_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            operator_id TEXT NOT NULL,
+            action TEXT NOT NULL,
+            target_type TEXT,
+            target_id INTEGER,
+            details TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+;
+
+-- TABLE: placement_recommendations (110 rows)
+CREATE TABLE placement_recommendations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        quote_id INTEGER NOT NULL,
+        topic_id INTEGER,
+        article_id INTEGER,
+        recommended_outlets TEXT NOT NULL DEFAULT '[]',
+        total_estimated_cost REAL,
+        strategy_tier TEXT DEFAULT 'budget',
+        llm_analysis TEXT,
+        llm_model TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (quote_id) REFERENCES quotes(id)
+    )
+;
+
+-- TABLE: quotes (120 rows)
+CREATE TABLE quotes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        diagnosis_id INTEGER,               -- 关联诊断记录（可选）
+        brand_id INTEGER,                   -- 关联品牌（可选）
+        brand_name TEXT,                    -- 品牌名称
+        industry TEXT,                      -- 行业
+        city TEXT,                          -- 城市
+        tier TEXT,                          -- entry/standard/flagship
+        target_share REAL,                  -- 目标占比(三档)
+        total_keywords INTEGER,             -- 关键词总数
+        total_articles INTEGER,             -- 文章总数
+        monthly_price REAL,                 -- 月度价格
+        paid_amount REAL,                   -- 实收金额
+        status TEXT DEFAULT 'draft',        -- draft/sent/confirmed/paid
+        confirmed_at TIMESTAMP,
+        paid_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, markdown TEXT, writing_status TEXT DEFAULT 'pending', distilled_data TEXT, competitor_mode TEXT DEFAULT 'fictional', competitor_list TEXT DEFAULT '',
+        FOREIGN KEY (diagnosis_id) REFERENCES diagnosis_records(id),
+        FOREIGN KEY (brand_id) REFERENCES brands(id)
+    )
+;
+
+-- TABLE: reference_articles (1 rows)
+CREATE TABLE reference_articles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        source_url TEXT,
+        platform TEXT,
+        industry TEXT,
+        intent_type TEXT,
+        analysis TEXT,
+        success_proof TEXT,
+        use_count INTEGER DEFAULT 0,
+        success_rate REAL DEFAULT 0,
+        status TEXT DEFAULT 'active',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: result_types (8 rows)
+CREATE TABLE result_types (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            icon TEXT DEFAULT '📄',
+            color TEXT DEFAULT '#6366f1',
+            description TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+;
+
+-- TABLE: role_permissions (20 rows)
+CREATE TABLE role_permissions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        role_id INTEGER NOT NULL,
+        module TEXT NOT NULL,
+        level TEXT NOT NULL DEFAULT 'read',
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE,
+        UNIQUE(role_id, module, level)
+    )
+;
+
+-- TABLE: roles (4 rows)
+CREATE TABLE roles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        display_name TEXT NOT NULL,
+        description TEXT,
+        is_system INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+;
+
+-- TABLE: social_benchmarks (0 rows)
+CREATE TABLE social_benchmarks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            platform TEXT NOT NULL,            -- douyin/xiaohongshu/weixin
+            account_id TEXT NOT NULL,          -- 平台账号ID (sec_user_id等)
+            account_name TEXT,                 -- 账号昵称
+            follower_count INTEGER DEFAULT 0,
+            is_competitor INTEGER DEFAULT 0,   -- 是否竞品
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (project_id) REFERENCES social_projects(id)
+        )
+;
+
+-- TABLE: social_materials (0 rows)
+CREATE TABLE social_materials (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            platform TEXT NOT NULL,
+            video_id TEXT NOT NULL,
+            video_url TEXT,
+            title TEXT,
+            author_name TEXT,
+            author_id TEXT,
+            transcript TEXT,                   -- ASR转录
+            opening_type TEXT,                 -- 开篇类型
+            content_type TEXT,
+            structure_analysis TEXT,           -- 结构分析JSON
+            golden_phrases TEXT,               -- 金句JSON数组
+            stats_digg INTEGER DEFAULT 0,
+            stats_comment INTEGER DEFAULT 0,
+            stats_share INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, profile_id TEXT, advisor_id TEXT, update_source TEXT DEFAULT 'ai_generated', material_type TEXT DEFAULT 'video',
+            FOREIGN KEY (project_id) REFERENCES social_projects(id)
+        )
+;
+
+-- TABLE: social_personas (0 rows)
+CREATE TABLE social_personas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER UNIQUE,             -- 一个项目一个人设
+            one_liner TEXT,                        -- 一句话人设
+            visual_style TEXT,                     -- 视觉调性
+            speaking_style TEXT,                   -- 口播风格
+            target_audience TEXT,                  -- 目标人群描述
+            content_pillars TEXT,                  -- 内容支柱JSON
+            persona_details TEXT,                  -- 详细人设描述
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (project_id) REFERENCES social_projects(id)
+        )
+;
+
+-- TABLE: social_projects (2 rows)
+CREATE TABLE social_projects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,                -- 项目名称
+            industry TEXT,                     -- 行业
+            business TEXT,                     -- 主营业务
+            target_audience TEXT,              -- 目标客户
+            product_intro TEXT,                -- 产品服务介绍
+            advisor_style TEXT DEFAULT '小黄编导',  -- 绑定的顾问风格
+            status TEXT DEFAULT 'active',       -- 状态：active/archived
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        , brand_id INTEGER REFERENCES brands(id), profile_id TEXT REFERENCES client_profiles(id))
+;
+
+-- TABLE: social_script_versions (0 rows)
+CREATE TABLE social_script_versions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            script_id INTEGER NOT NULL,
+            version_num INTEGER DEFAULT 1,
+            content TEXT NOT NULL,
+            change_reason TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (script_id) REFERENCES social_scripts(id)
+        )
+;
+
+-- TABLE: social_scripts (31 rows)
+CREATE TABLE social_scripts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            topic_id INTEGER,                  -- 关联选题
+            title TEXT NOT NULL,
+            script_content TEXT NOT NULL,      -- 文案内容
+            opening_type TEXT,                 -- 开篇类型
+            content_type TEXT,
+            word_count INTEGER DEFAULT 0,
+            source TEXT,                       -- 来源：original/rewrite/ai_generated
+            source_video_url TEXT,             -- 来源视频链接
+            original_transcript TEXT,          -- 原视频转录（如果是仿写）
+            status TEXT DEFAULT 'draft',        -- 状态：draft/approved/published
+            publish_date DATE,
+            performance_data TEXT,              -- 发布后效果数据JSON
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, profile_id TEXT, advisor_id TEXT, update_source TEXT DEFAULT 'manual', is_filmed INTEGER DEFAULT 0,
+            FOREIGN KEY (project_id) REFERENCES social_projects(id),
+            FOREIGN KEY (topic_id) REFERENCES social_topics(id)
+        )
+;
+
+-- TABLE: social_topics (0 rows)
+CREATE TABLE social_topics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            project_id INTEGER NOT NULL,
+            title TEXT NOT NULL,               -- 选题标题
+            topic_type TEXT,                   -- 选题类型：流量型/人设型/变现型
+            content_type TEXT,                 -- 内容类型：教知识/讲观点/讲故事/晒过程
+            user_level TEXT,                   -- 目标用户层级：L1-L5
+            opening_type TEXT,                 -- 开篇类型
+            source TEXT,                       -- 来源：manual/ai_generated/benchmark
+            source_video_id TEXT,              -- 来源视频ID（如果是拆解得来）
+            status TEXT DEFAULT 'pending',      -- 状态：pending/used/archived
+            priority INTEGER DEFAULT 0,
+            notes TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            used_at TIMESTAMP, profile_id TEXT, advisor_id TEXT, update_source TEXT DEFAULT 'manual', title_hash TEXT, skipped_at TIMESTAMP, view_count INTEGER DEFAULT 0, last_shown_at TIMESTAMP,
+            FOREIGN KEY (project_id) REFERENCES social_projects(id)
+        )
+;
+
+-- TABLE: sqlite_sequence (46 rows)
+CREATE TABLE sqlite_sequence(name,seq)
+;
+
+-- TABLE: token_usage (84 rows)
+CREATE TABLE token_usage (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        task_id TEXT,                   -- 关联任务ID
+        diagnosis_id INTEGER,           -- 关联诊断记录(可选)
+        model_name TEXT,                -- qwen3-max / deepseek-v4-flash
+        input_tokens INTEGER,           -- 输入Token
+        output_tokens INTEGER,          -- 输出Token
+        total_tokens INTEGER,           -- 总Token
+        estimated_cost REAL,            -- 预估费用(元)
+        operation_type TEXT,            -- diagnosis/article/review
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (diagnosis_id) REFERENCES diagnosis_records(id)
+    )
+;
+
+-- TABLE: topic_embeddings (0 rows)
+CREATE TABLE topic_embeddings (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                topic_id INTEGER UNIQUE,
+                project_id INTEGER,
+                embedding TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (topic_id) REFERENCES social_topics(id)
+            )
+;
+
+-- TABLE: topics (870 rows)
+CREATE TABLE topics (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        keyword_id INTEGER,                 -- 关联确认关键词
+        quote_id INTEGER,                   -- 关联报价单
+        original_keyword TEXT,              -- 原始关键词
+        optimized_title TEXT,               -- 优化后标题
+        article_style TEXT,                 -- 文章风格
+        article_id INTEGER,                 -- 关联生成的文章
+        status TEXT DEFAULT 'draft',        -- draft/confirmed/writing/published
+        confirmed_at TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, regenerate_count INTEGER DEFAULT 0, completed_at TIMESTAMP, reviewed_at TIMESTAMP,
+        FOREIGN KEY (keyword_id) REFERENCES confirmed_keywords(id),
+        FOREIGN KEY (quote_id) REFERENCES quotes(id),
+        FOREIGN KEY (article_id) REFERENCES article_generations(id)
+    )
+;
+
+-- TABLE: user_clients (1 rows)
+CREATE TABLE user_clients (
+        user_id INTEGER NOT NULL,
+        brand_id INTEGER NOT NULL,
+        assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (user_id, brand_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )
+;
+
+-- TABLE: user_roles (3 rows)
+CREATE TABLE user_roles (
+        user_id INTEGER NOT NULL,
+        role_id INTEGER NOT NULL,
+        PRIMARY KEY (user_id, role_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE CASCADE
+    )
+;
+
+-- TABLE: users (3 rows)
+CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        display_name TEXT NOT NULL,
+        is_active INTEGER DEFAULT 1,
+        permission_version INTEGER DEFAULT 1,
+        must_change_password INTEGER DEFAULT 1,
+        avatar_url TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_login_at TIMESTAMP
+    )
+;
+
+-- TABLE: work_results (24 rows)
+CREATE TABLE work_results (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            result_type TEXT,
+            brand_id INTEGER,
+            brand_name TEXT,
+            meeting_id TEXT,
+            assignee_id TEXT,
+            assignee_name TEXT,
+            content TEXT,
+            attachments TEXT,
+            tags TEXT,
+            keywords TEXT,
+            status TEXT DEFAULT '待执行',
+            priority INTEGER DEFAULT 2,
+            due_date TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMP
+        )
+;
+

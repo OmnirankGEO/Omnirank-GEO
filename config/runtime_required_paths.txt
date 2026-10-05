@@ -1,0 +1,11 @@
+# 运行时必需的非 ASCII 仓内路径 —— 由 tests/runtime_nonascii_paths_2026_09_23/_enumerate.py 生成,勿手改
+# (WO_272)Deploy 镜像门在无挂载容器里逐条检查:文件 test -s(非空);目录(以 / 结尾)test -d 且非空
+# 重新生成:python -m tests.runtime_nonascii_paths_2026_09_23._enumerate --write
+docs/条款/
+docs/条款/代理合作协议_v2.0.md
+docs/条款/服务商申请协议_v2.3.md
+knowledge/2026年用户搜索意图与热门标题公式知识库.md
+knowledge/AI对话平台→内容平台映射（完整版）.md
+knowledge/geo_specific/GEO优化规则库（完整版）.md
+knowledge/案例库/
+knowledge/部分平台内容风格.md

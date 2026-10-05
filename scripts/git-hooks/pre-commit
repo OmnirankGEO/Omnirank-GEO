@@ -1,0 +1,60 @@
+#!/bin/sh
+# pre-commit hook · SQL 累犯防御 · CTO-15.23 2026-05-07
+# 拦 3 类历史 bug:
+#   累犯 #4:is_admin 直接读 users 表(应走 user_roles JOIN roles)
+#   累犯 #5:psycopg2 % operator 跟 %s placeholder 混用("not enough arguments for format string")
+#   累犯 #5b:psycopg2 % operator 把 INTERVAL 拼 SQL · 跟 cur.execute 第二参数混用
+#
+# 安装:bash scripts/install-hooks.sh
+# 跳过:git commit --no-verify(老板不允许 · 仅 emergency)
+
+set -e
+
+STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM | grep -E "\.py$" || true)
+[ -z "$STAGED_PY" ] && exit 0
+
+FAIL=0
+
+# 累犯 #4 · is_admin 直接读 users 表(应走 user_roles JOIN roles)
+# 拦截:SELECT 语句里出现 u.is_admin / users.is_admin / "is_admin"(列名)
+# 容错:Python 计算字段属性 user.is_admin 不拦
+ISADMIN=$(grep -nE "(SELECT|WHERE|AND|OR)[^']*\b(u\.|users\.)is_admin\b" $STAGED_PY 2>/dev/null || true)
+if [ -n "$ISADMIN" ]; then
+    echo "❌ pre-commit · 累犯 #4:is_admin 不是 users 表的列(是 Python 计算字段 via roles JOIN)"
+    echo "   修法:用 NOT EXISTS (SELECT 1 FROM user_roles ur JOIN roles r ON r.id = ur.role_id WHERE ur.user_id = u.id AND r.name = 'admin')"
+    echo "   命中行:"
+    echo "$ISADMIN" | sed 's/^/     /'
+    FAIL=1
+fi
+
+# 累犯 #5 · cur.execute(..., args) 同时用 % operator 拼 SQL(双层 %s 冲突)
+# 拦截:同一 cur.execute 上下文出现 "% int(" / "% str(" / "% var" 跟参数 placeholder %s
+# 简化:扫 .py 文件里 cur.execute 周围 5 行内的 `'%s'` 字符串后跟 `%` 拼接
+PERCENT_MIX=$(grep -nE "['\"]%s['\"]\s*%\s*[a-zA-Z_(]" $STAGED_PY 2>/dev/null | grep -v "test_\|tests/" || true)
+if [ -n "$PERCENT_MIX" ]; then
+    echo "❌ pre-commit · 累犯 #5:psycopg2 SQL 字符串里 '%s' % var 跟 cur.execute(sql, args) 混用"
+    echo "   会触发 'not enough arguments for format string' TypeError"
+    echo "   修法:全用 f-string 展开 int(变量)放 SQL · 用户输入用 cur.execute 第二参数 %s"
+    echo "   命中行:"
+    echo "$PERCENT_MIX" | sed 's/^/     /'
+    FAIL=1
+fi
+
+# 累犯 #5b · INTERVAL '%s' 字面量(必混用错误)· 应该是 INTERVAL '{int(days)} days'
+INTERVAL_MIX=$(grep -nE "INTERVAL\s*'%s" $STAGED_PY 2>/dev/null || true)
+if [ -n "$INTERVAL_MIX" ]; then
+    echo "❌ pre-commit · 累犯 #5b:INTERVAL '%s' 字面量必触发 % operator 混用"
+    echo "   修法:f\"INTERVAL '{int(days)} days'\" 直接展开(int 安全防注入)"
+    echo "   命中行:"
+    echo "$INTERVAL_MIX" | sed 's/^/     /'
+    FAIL=1
+fi
+
+if [ "$FAIL" = "1" ]; then
+    echo ""
+    echo "🛑 pre-commit 拦截 · 修复后再 git commit"
+    echo "   (确认是误报可加 --no-verify 跳过 · 老板要求紧急情况才允许)"
+    exit 1
+fi
+
+exit 0

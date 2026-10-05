@@ -1,0 +1,138 @@
+{
+  "fixture_version": "geo-observation-frontend-fixture-v1",
+  "contract_version": "geo-observation-contract-v1.4",
+  "copy_contract_version": "geo-observation-frontend-race-v1",
+  "purpose": "shared product DTO fixture for AI-3 API contract and blinded frontend race",
+  "production_fallback_allowed": false,
+  "privacy": {
+    "synthetic_only": true,
+    "forbidden_fields": [
+      "owner_user_id", "agent_user_id", "upstream_user_id", "service_account_code",
+      "channel_account_code", "cost_multiplier", "internal_cost", "provider_trace_id"
+    ]
+  },
+  "cases": {
+    "brand_summary": {
+      "status": 200,
+      "response": {
+        "brand": {"brand_id": 900001, "display_name": "华南智能制造技术服务示例品牌"},
+        "window": {"label": "最近 30 天", "start": "2026-06-18", "end": "2026-07-17"},
+        "data_updated_at": "2026-07-17T08:30:00Z",
+        "metric_version": "geo-observation-metrics-v1",
+        "summary": {
+          "valid_observations": 128,
+          "presence_rate_bps": 6875,
+          "explicit_recommendation_rate_bps": 3125,
+          "conditional_recommendation_rate_bps": 1797,
+          "stability_status": "shifted",
+          "stability_explanation": "7 月 15 日起部分平台模型升级，前后结果不宜直接比较。"
+        },
+        "comparison": {
+          "presence_change_bps": 420,
+          "recommendation_change_bps": -180,
+          "comparison_allowed": false,
+          "reason": "model_shift"
+        },
+        "outcomes": [
+          {"outcome": "recommended", "count": 40},
+          {"outcome": "conditionally_recommended", "count": 23},
+          {"outcome": "candidate_only", "count": 11},
+          {"outcome": "mentioned_only", "count": 14},
+          {"outcome": "criteria_only", "count": 10},
+          {"outcome": "refused_no_evidence", "count": 12},
+          {"outcome": "refused_risk", "count": 3},
+          {"outcome": "not_mentioned", "count": 15}
+        ],
+        "next_actions": [
+          {"action": "add_evidence", "title": "补充可核验的项目案例", "reason": "12 个问题因证据不足没有给出具体推荐", "requires_confirmation": true, "may_charge": false},
+          {"action": "keep_observing", "title": "继续观察模型升级后的结果", "reason": "当前变化可能来自模型升级，不宜立刻判断为效果下降", "requires_confirmation": false, "may_charge": false}
+        ]
+      }
+    },
+    "platforms": {
+      "status": 200,
+      "response": {
+        "items": [
+          {"platform_key": "doubao", "display_name": "豆包", "surface_note": null, "valid_observations": 34, "presence_rate_bps": 7647, "explicit_recommendation_rate_bps": 3824, "stability_status": "stable", "updated_at": "2026-07-17T08:30:00Z"},
+          {"platform_key": "qwen", "display_name": "千问", "surface_note": null, "valid_observations": 31, "presence_rate_bps": 6774, "explicit_recommendation_rate_bps": 3226, "stability_status": "stable", "updated_at": "2026-07-17T08:20:00Z"},
+          {"platform_key": "deepseek", "display_name": "DeepSeek", "surface_note": "部分结果由 DeepSeek 模型配合秘塔检索代理获得", "valid_observations": 30, "presence_rate_bps": 6000, "explicit_recommendation_rate_bps": 2667, "stability_status": "watch", "updated_at": "2026-07-17T08:10:00Z"},
+          {"platform_key": "yuanbao", "display_name": "元宝", "surface_note": null, "valid_observations": 33, "presence_rate_bps": 6970, "explicit_recommendation_rate_bps": 2727, "stability_status": "shifted", "updated_at": "2026-07-17T08:00:00Z"}
+        ],
+        "historical_platforms": [
+          {"platform_key": "kimi", "display_name": "Kimi", "status": "historical", "last_observed_at": "2026-06-30T08:00:00Z"}
+        ]
+      }
+    },
+    "questions": {
+      "status": 200,
+      "response": {
+        "page": 1,
+        "page_size": 20,
+        "total": 3,
+        "items": [
+          {"observation_id": "obs-demo-001", "question": "本地制造企业选择数字化服务商时，哪些项目证据最值得核验？", "outcome": "recommended", "matched_text": "华南智能制造技术服务示例品牌", "position": 2, "citations": 2, "changed": false, "evidence_available": true},
+          {"observation_id": "obs-demo-002", "question": "请推荐几家有复杂产线改造经验且能提供验收数据的服务商", "outcome": "refused_no_evidence", "matched_text": null, "position": null, "citations": 0, "changed": true, "evidence_available": true},
+          {"observation_id": "obs-demo-003", "question": "超长问题示例：在预算、行业经验、现场交付、售后响应、验收标准和数据安全要求同时存在时，应如何筛选一家长期合作的数字化服务商？", "outcome": "entity_ambiguous", "matched_text": "华南智能制造技术服务", "position": null, "citations": 1, "changed": false, "evidence_available": true}
+        ]
+      }
+    },
+    "evidence_detail": {
+      "status": 200,
+      "response": {
+        "observation_id": "obs-demo-002",
+        "question": "请推荐几家有复杂产线改造经验且能提供验收数据的服务商",
+        "outcome": "refused_no_evidence",
+        "answer_excerpt": "现有公开资料不足以核验具体项目的验收结果，因此暂不推荐具体品牌。",
+        "matched_text": null,
+        "citations": [],
+        "evidence_gap": ["可核验的项目案例", "项目验收数据", "客户授权的公开证明"],
+        "next_action": {"action": "add_evidence", "title": "补充项目证据", "may_charge": false},
+        "channel_disclosure": {"platform": "DeepSeek", "note": "本条结果由 DeepSeek 模型配合秘塔检索代理获得"}
+      }
+    },
+    "opportunities": {
+      "status": 200,
+      "response": {
+        "items": [
+          {"opportunity_id": "opp-demo-001", "priority": 1, "topic": "复杂产线改造案例", "recommended_content_type": "case_study", "recommended_evidence": ["改造前后指标", "验收记录", "客户授权证明"], "reason": "多个平台在推荐时都要求可核验的项目结果", "sample_size": 29, "stability": "stable", "auto_action_allowed": false},
+          {"opportunity_id": "opp-demo-002", "priority": 2, "topic": "服务商筛选方法", "recommended_content_type": "comparison_method", "recommended_evidence": ["筛选标准", "适用边界"], "reason": "部分回答只提供筛选标准，没有形成品牌推荐", "sample_size": 10, "stability": "watch", "auto_action_allowed": false}
+        ]
+      }
+    },
+    "semantic_insight_job": {
+      "create": {"status": 202, "response": {"job_id": "insight-demo-001", "state": "pending", "request_id": "req-demo-001"}},
+      "running": {"status": 200, "response": {"job_id": "insight-demo-001", "state": "running", "progress_percent": 55}},
+      "completed": {"status": 200, "response": {"job_id": "insight-demo-001", "state": "completed", "summary": "推荐率暂时下降，但模型升级造成的口径变化较大，建议先补充项目验收证据并继续观察。", "evidence_refs": ["obs-demo-002"], "allowed_actions": ["add_evidence", "keep_observing"]}},
+      "failed": {"status": 503, "response": {"code": "SEMANTIC_INSIGHT_UNAVAILABLE", "message": "AI 洞察暂不可用，图表和证据仍可正常查看。", "retryable": true}}
+    },
+    "admin_overview": {
+      "status": 200,
+      "response": {
+        "readiness": "attention_required",
+        "counts": {"pending_review": 7, "private_only": 12, "rejected": 3, "withdrawn": 2, "stuck_claims": 1},
+        "reconciler_delay_seconds": 96,
+        "aggregate_updated_at": "2026-07-17T08:30:00Z",
+        "policy_version": 18,
+        "platform_health": [
+          {"platform": "豆包", "enabled_by_policy": true, "runtime_health": "healthy"},
+          {"platform": "元宝", "enabled_by_policy": true, "runtime_health": "degraded"}
+        ]
+      }
+    },
+    "admin_review_queue": {
+      "status": 200,
+      "response": {
+        "items": [
+          {"event_id": "evt-demo-001", "review_state": "pending_review", "brand_label": "示例品牌甲", "reason": "品牌名称可能与另一家企业混淆", "evidence_summary": "命中文字相同，但行业和完整品牌名不一致", "expected_version": 3, "actions": ["approve_private", "reject", "request_more_evidence"]}
+        ]
+      }
+    }
+  },
+  "error_cases": {
+    "403": {"code": "FORBIDDEN", "message": "你没有查看这项数据的权限。"},
+    "409": {"code": "VERSION_CONFLICT", "message": "数据已被其他操作更新，请刷新后重试。"},
+    "423": {"code": "ENV_OVERRIDE_ACTIVE", "message": "当前设置由运行环境统一管理，不能在这里修改。"},
+    "503": {"code": "OBSERVATION_UNAVAILABLE", "message": "观测数据暂不可用，请稍后重试。"},
+    "insufficient_samples": {"code": "INSUFFICIENT_SAMPLES", "message": "样本不足，暂不下结论。"}
+  }
+}

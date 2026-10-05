@@ -1,0 +1,113 @@
+name: Quality Regression
+
+on:
+  pull_request:
+    paths:
+      - 'tools/keyword_expander.py'
+      - 'tools/batch_pricing.py'
+      - 'tools/industry_median.py'
+      - 'tools/scoring/**'
+      - 'tests/test_keyword_quality_regression.py'
+      - 'agents/brand_field_suggester.py'
+      - 'utils/brand_completeness.py'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/keyword_expander.py'
+      - 'tools/batch_pricing.py'
+      - 'tools/industry_median.py'
+      - 'tools/scoring/**'
+      - 'tests/test_keyword_quality_regression.py'
+      - 'agents/brand_field_suggester.py'
+      - 'utils/brand_completeness.py'
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    name: M1b 关键词质量 + 评分 SSOT 回归
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install minimal deps
+        run: |
+          python -m pip install --upgrade pip
+          # 只装回归测试需要的最小子集 · 不装全量(避免 LLM 客户端等重型依赖)
+          pip install pytest pytest-asyncio pydantic
+      - name: Run keyword quality regression
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          # 不调真 LLM · 跑规则版 13 测试 + 5 live skip
+          pytest tests/test_keyword_quality_regression.py -v --no-header -m "not live"
+      - name: Run scoring_levels SSOT sanity
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -c "
+          import sys
+          sys.stdout.reconfigure(encoding='utf-8')
+          from tools.scoring.scoring_levels import get_level, LEVEL_META, get_summary
+          # 6 档边界
+          assert get_level(95) == '领先'
+          assert get_level(70) == '成熟'
+          assert get_level(55) == '成长'
+          assert get_level(40) == '起步'
+          assert get_level(20) == '待提升'
+          assert get_level(10) == '空白'
+          assert len(LEVEL_META) == 6
+          assert '基础' in get_summary(60)
+          print('scoring_levels SSOT OK')
+          "
+      - name: Run industry_median sanity
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -c "
+          import sys
+          sys.stdout.reconfigure(encoding='utf-8')
+          from tools.industry_median import industry_median_check, get_industry_median
+          r1 = industry_median_check(3500, '装修')
+          assert r1['level'] == 'normal'
+          r2 = industry_median_check(12000, '装修', keyword_entries=[{'keyword':'罗平装修','price':2600}])
+          assert r2['level'] == 'danger'
+          assert len(r2['single_kw_outliers']) == 1
+          print('industry_median OK')
+          "
+      - name: Test brand_completeness SSOT
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          python -c "
+          import sys
+          sys.stdout.reconfigure(encoding='utf-8')
+          from utils.brand_completeness import compute_brand_completeness
+          r = compute_brand_completeness({'name':'测试','industry':'家装','company_name':'测试公司'})
+          assert r['groups']['identity'] == 30
+          assert r['industry_brief_state'] == 'idle'
+          print('brand_completeness OK')
+          "
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    name: Frontend tsc + vite build 必绿
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        run: npm ci --no-audit --no-fund --prefer-offline
+      - name: TypeScript check
+        run: npx tsc --noEmit -p tsconfig.app.json
+      - name: Vite build
+        run: npx vite build

@@ -1,0 +1,7 @@
+{
+  "llm_config": {
+    "provider": "dashscope",
+    "model": "deepseek-v4-flash"
+  },
+  "prompt_overrides": {}
+}

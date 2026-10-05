@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+  [写作质量总工单 2026-07-29 · D 组验收] 写作大厅「已完成」列表关键文字的
+  明/暗双模式对比度实测台。
+
+  这里用的是 `vite build` 真实产出的样式表(dist/assets/index-*.css),
+  也就是线上发的那一份 —— 类名由 Tailwind JIT 从真源码扫出来,
+  所以本页测到的颜色 = 生产渲染出来的颜色,不是手抄的十六进制。
+
+  用法(见 scripts/writing_hall_contrast_check.mjs):
+    node frontend/scripts/writing_hall_contrast_check.mjs
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>WritingHall 对比度实测台</title>
+  <!-- 样式表由 writing_hall_contrast_check.mjs 在运行时按 dist/assets/index-*.css 注入,
+       不写死 hash —— 写死过一次,build 后 hash 变了页面变成裸 HTML,
+       所有探针都读出 #000 on #fff 然后「全绿」。那是假绿。 -->
+  <style>
+    body { padding: 24px; }
+    .probe-card { padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+  </style>
+</head>
+<body class="bg-background text-foreground">
+  <div class="probe-card bg-card" id="stage">
+    <!-- 审核态徽章:REVIEW_STATUS_BADGES 的四个真实 className -->
+    <span data-probe="badge-approved"
+      class="bg-emerald-100 text-emerald-900 dark:bg-emerald-500/20 dark:text-emerald-200 text-xs">审核通过</span>
+    <span data-probe="badge-pending"
+      class="bg-amber-100 text-amber-900 dark:bg-amber-500/20 dark:text-amber-100 text-xs">待人工确认</span>
+    <span data-probe="badge-rewrite"
+      class="bg-orange-100 text-orange-900 dark:bg-orange-500/20 dark:text-orange-100 text-xs">建议重写</span>
+    <span data-probe="badge-blocked"
+      class="bg-red-100 text-red-900 dark:bg-red-500/20 dark:text-red-200 text-xs">发布前需修改</span>
+    <span data-probe="badge-legacy" class="bg-muted text-foreground text-xs">待审核</span>
+
+    <!-- GovernanceAlert 的三档 tone + 五问合同字段 -->
+    <div class="rounded-lg border px-4 py-3 text-sm border-amber-400/50 bg-amber-50/60 dark:bg-amber-500/10">
+      <p data-probe="alert-message" class="font-medium text-foreground">有一处需要你确认</p>
+      <p data-probe="alert-reason" class="mt-1 text-xs text-muted-foreground">这一处的说法目前没有可核验的来源支撑</p>
+      <p data-probe="alert-repair" class="mt-1 text-xs text-muted-foreground">原文这一处：「…片段…」</p>
+      <p data-probe="alert-ruleversion" class="mt-2 text-[10px] text-muted-foreground">规则版本 article-finding-v1</p>
+    </div>
+    <div class="rounded-lg border px-4 py-3 text-sm border-destructive/40 bg-destructive/5">
+      <p data-probe="alert-error-message" class="font-medium text-foreground">这里有一处绝对化表述需要确认</p>
+    </div>
+    <div class="rounded-lg border px-4 py-3 text-sm border-border bg-muted/40">
+      <p data-probe="alert-notice-message" class="font-medium text-foreground">状态说明</p>
+    </div>
+
+    <!-- 收敛后的 findings 折叠面板外壳 -->
+    <div data-probe="advisory-shell" class="rounded-lg border border-border bg-muted/40 px-2 py-1 text-xs text-foreground">
+      有 3 处需要你确认
+    </div>
+
+    <!-- codemod 覆盖到的典型旧配色对(抽样) -->
+    <div class="bg-amber-50 dark:bg-amber-500/10 px-2 py-1">
+      <span data-probe="legacy-amber" class="text-amber-800 dark:text-amber-200 text-xs">定位片段示例</span>
+    </div>
+    <div class="bg-red-50 dark:bg-red-500/10 px-2 py-1">
+      <span data-probe="legacy-red" class="text-red-700 dark:text-red-300 text-xs">失败提示示例</span>
+    </div>
+    <div class="bg-green-100 dark:bg-green-500/20 px-2 py-1">
+      <span data-probe="legacy-green" class="text-green-800 dark:text-green-200 text-xs">成功提示示例</span>
+    </div>
+    <div class="bg-blue-50 dark:bg-blue-500/10 px-2 py-1">
+      <span data-probe="legacy-blue" class="text-blue-700 dark:text-blue-300 text-xs">说明文字示例</span>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+{
+  "provider": "kimi",
+  "model": "kimi-k2.6",
+  "case_count": 8,
+  "pass_count": 7,
+  "results": [
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_01_single_tool_time",
+      "title": "single tool call",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 4896,
+      "tool_calls": [
+        {
+          "name": "time_now",
+          "arguments": {
+            "timezone": "Asia/Shanghai"
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 0,
+      "final_text_preview": "",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_02_parallel_profile_memory",
+      "title": "parallel profile + memory calls",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 8717,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "name",
+              "industry",
+              "country",
+              "language",
+              "product_category",
+              "brand_name",
+              "company_size"
+            ]
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "business_identity",
+            "query": "品牌定位 产品 行业 核心卖点"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "target_customer",
+            "query": "目标客户 受众画像 市场"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "offer_and_proof",
+            "query": "产品卖点 价格优势 证明 促销"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "voice_style",
+            "query": "内容风格 语气 调性 表达方式"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "guardrails",
+            "query": "禁忌 限制 合规要求"
+          }
+        }
+      ],
+      "tool_call_count": 6,
+      "stream_chunks": 0,
+      "final_text_preview": "我先查看 profile_62 的客户资料和记忆，然后再为您撰写内容。",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": false,
+      "reasons": [
+        "tool_call_count 0 < 2",
+        "missing required tool tikhub_search_topics",
+        "missing required tool industry_knowledge_query"
+      ],
+      "case_id": "case_03_serial_research_then_industry",
+      "title": "serial research loop",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 8161,
+      "tool_calls": [],
+      "tool_call_count": 0,
+      "stream_chunks": 0,
+      "final_text_preview": "我需要一些信息来帮您研究教育咨询的升学政策选题：\n\n1. **目标平台**：您希望在哪个短视频平台发布内容？（如抖音、快手、小红书、视频号等）\n\n2. **目标市场/地区**：主要面向哪个地区的学生和家长？（如中国大陆、香港、海外华人等）\n\n3. **语言**：内容使用什么语言？（如中文、英文等）\n\n4. **具体教育阶段**：是关注K12升学、高考、留学，还是考研等特定领域？\n\n请提供这些信息，我就可以先用TikHub搜索热门话题，再结合行业知识为您提供选题建议。",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_04_error_recovery_bad_args",
+      "title": "recover from tool error",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 11159,
+      "tool_calls": [
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "target_customer",
+            "query": "目标客户画像、受众特征、人群定位、拍摄方向建议"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "target_customer",
+            "query": "目标客户画像和拍摄方向"
+          }
+        }
+      ],
+      "tool_call_count": 2,
+      "stream_chunks": 0,
+      "final_text_preview": "",
+      "errors": [],
+      "raw_round_count": 2
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_05_multi_round_final_answer",
+      "title": "tool call then final answer",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 16673,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_identity",
+              "target_customer",
+              "offer_and_proof",
+              "voice_style",
+              "guardrails"
+            ]
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "voice_style",
+            "query": "品牌语气风格"
+          }
+        },
+        {
+          "name": "internal_memory_query",
+          "arguments": {
+            "profile_id": "profile_62",
+            "concept": "guardrails",
+            "query": "禁忌和限制"
+          }
+        }
+      ],
+      "tool_call_count": 3,
+      "stream_chunks": 0,
+      "final_text_preview": "基于 profile_62 的人设和禁忌，这条脚本应该**稳重**。\n\n**原因：**\n- 品牌基调是\"务实、直接、避免夸大\"\n- 面向 B 端采购经理（德国、美国、印尼），这类受众更看重专业度和可信度\n- 明确禁忌\"避免空泛低价承诺\"，夸张的脚本容易踩到这个红线",
+      "errors": [],
+      "raw_round_count": 3
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_06_stream_tool_calls",
+      "title": "streaming tool calls",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 6858,
+      "tool_calls": [
+        {
+          "name": "internal_profile_get",
+          "arguments": {
+            "profile_id": "profile_62",
+            "fields": [
+              "business_name",
+              "industry",
+              "target_market",
+              "language",
+              "timezone",
+              "created_at",
+              "description"
+            ]
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 36,
+      "final_text_preview": "",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_07_chinese_args",
+      "title": "Chinese arguments",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 3984,
+      "tool_calls": [
+        {
+          "name": "tikhub_search_topics",
+          "arguments": {
+            "industry": "教育培训",
+            "platform": "小红书"
+          }
+        }
+      ],
+      "tool_call_count": 1,
+      "stream_chunks": 0,
+      "final_text_preview": "我来帮您搜索教育培训行业在小红书上的热门选题。",
+      "errors": [],
+      "raw_round_count": 1
+    },
+    {
+      "ok": true,
+      "reasons": [],
+      "case_id": "case_08_clarify_before_assume",
+      "title": "clarify instead of unsafe assumption",
+      "provider": "kimi",
+      "model": "kimi-k2.6",
+      "latency_ms": 7408,
+      "tool_calls": [],
+      "tool_call_count": 0,
+      "stream_chunks": 0,
+      "final_text_preview": "您好！我需要先确认一下您的具体需求，才能帮您调用正确的客户资料或工具。\n\n请从以下选项中选择您想做的操作：\n\n**A.** 查看某个客户的档案信息（如公司介绍、目标客户、产品服务等）  \n**B.** 查询某个客户的记忆/知识库内容（如品牌调性、业务约束等）  \n**C.** 更新某个客户的档案或记忆信息  \n**D.** 其他（请具体说明）\n\n另外，请提供该客户的 **profile_id**（客户档案编号），以便我准确找到对应的资料。",
+      "errors": [],
+      "raw_round_count": 1
+    }
+  ]
+}

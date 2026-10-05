@@ -1,0 +1,112 @@
+/**
+ * print.css — 独立打印排版(@media print)
+ *
+ * 原则:
+ *  - 网页不是被裁成 1440×900 的截图;按 A4 自然分页
+ *  - 深墨摘要区转浅色,保证黑白可读(等级徽章等状态色保留真彩)
+ *  - 关键标题与对应图表不切断(break-inside avoid)
+ *  - Markdown 表格不跑出版心(字号收缩 + 允许断词)
+ *  - 交互控件(筛选/分页/按钮)不打印
+ */
+
+@page {
+    size: A4;
+    margin: 14mm 12mm;
+}
+
+@media print {
+    /* 全局:打印真彩(状态色/进度条/徽章保留) */
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    html,
+    body {
+        background: #ffffff !important;
+    }
+
+    /* 深墨摘要区 → 白底深字(状态徽章内联色不受影响) */
+    #overview {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        border-bottom: 2px solid #0f172a;
+    }
+    #overview .text-white,
+    #overview .text-slate-100,
+    #overview .text-slate-200 {
+        color: #0f172a !important;
+    }
+    #overview .text-slate-300,
+    #overview .text-slate-400,
+    #overview .text-slate-500 {
+        color: #475569 !important;
+    }
+    #overview .text-sky-400 {
+        color: #0369a1 !important;
+    }
+    #overview .text-amber-200 {
+        color: #92400e !important;
+    }
+    #overview .border-slate-800 {
+        border-color: #e2e8f0 !important;
+    }
+    #overview .bg-slate-800\/50 {
+        background-color: #f1f5f9 !important;
+    }
+    /* 分数环轨道在白纸上的可见性 */
+    #overview svg circle[stroke="#1e293b"] {
+        stroke: #e2e8f0;
+    }
+
+    /* 区块:标题跟随内容,不孤行;卡片/行不跨页撕裂 */
+    section > div:first-child {
+        break-after: avoid;
+    }
+    article,
+    li,
+    tr,
+    .prp-md-table-wrap {
+        break-inside: avoid;
+    }
+    h2,
+    h3 {
+        break-after: avoid;
+    }
+
+    /* Markdown 表格:收缩字号 + 断词,不跑出版心 */
+    .prp-md-table-wrap {
+        overflow-x: visible !important;
+    }
+    .prp-md-table-wrap table {
+        font-size: 9pt !important;
+        table-layout: fixed;
+        width: 100% !important;
+    }
+    .prp-md-table-wrap td,
+    .prp-md-table-wrap th {
+        word-break: break-word !important;
+        overflow-wrap: anywhere !important;
+        padding: 4px 6px !important;
+    }
+    .prp-markdown {
+        font-size: 10pt !important;
+        line-height: 1.6 !important;
+    }
+    .prp-markdown pre {
+        white-space: pre-wrap !important;
+        word-break: break-all !important;
+        background: #f1f5f9 !important;
+        color: #0f172a !important;
+    }
+
+    /* 表格容器去掉横向滚动的打印残影 */
+    .overflow-x-auto {
+        overflow-x: visible !important;
+    }
+
+    /* 阴影去除,节省碳粉 */
+    [class*="shadow"] {
+        box-shadow: none !important;
+    }
+}

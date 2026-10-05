@@ -1,0 +1,83 @@
+{
+  "version": "2026-07-22",
+  "note": "前后端渲染一致性 fixture：同一 markdown 输入，前端 SafeMarkdown(SSR) 与后端 render_safe_markdown 必须命中各自 contains / 共同命中 not_contains。后端跑 tests/test_safe_markdown_renderer.py::test_frontend_backend_parity_fixtures；前端跑 frontend/scripts/markdown-parity-check.mjs。",
+  "cases": [
+    {
+      "id": "gfm_table",
+      "markdown": "## AI 实测证据\n\n| 问题 | 判断 |\n| --- | --- |\n| 中文内容 | **部分命中** |\n",
+      "backend_contains": ["<table>", "safe-markdown-table", "<strong>部分命中</strong>"],
+      "frontend_contains": ["<table", "safe-markdown-table", "<strong>部分命中</strong>"],
+      "not_contains": ["| --- |"]
+    },
+    {
+      "id": "controlled_details_nested",
+      "markdown": "<details>\n<summary>外层证据</summary>\n\n正文 **粗体**\n\n<details>\n<summary>内层详情</summary>\n\n> 引用块\n\n</details>\n\n</details>",
+      "backend_contains": ["<details>", "<summary>外层证据</summary>", "<summary>内层详情</summary>", "<blockquote>"],
+      "frontend_contains": ["<details>", "外层证据", "内层详情", "<blockquote"],
+      "not_contains": ["<script"]
+    },
+    {
+      "id": "link_policy",
+      "markdown": "[可信](https://example.com/p?q=1) [带账号](https://user:pw@example.com/x) [危险](javascript:alert(1))",
+      "backend_contains": ["href=\"https://example.com/p?q=1\"", "target=\"_blank\"", "rel=\"noopener noreferrer\"", "可信</a>", "带账号", "危险"],
+      "frontend_contains": ["href=\"https://example.com/p?q=1\"", "target=\"_blank\"", "rel=\"noopener noreferrer\"", ">带账号</", ">危险</"],
+      "not_contains": ["user:pw@", "javascript:"]
+    },
+    {
+      "id": "xss_vectors",
+      "markdown": "安全正文 <script>alert(1)</script> <img src=x onerror=\"alert(1)\"> <iframe src=\"https://evil.example\"></iframe>",
+      "backend_contains": ["安全正文"],
+      "frontend_contains": ["安全正文"],
+      "not_contains": ["<script", "<iframe", "<img", "onerror=\""]
+    },
+    {
+      "id": "soft_breaks_and_strikethrough",
+      "markdown": "第一行\n第二行\n\n~~旧结论~~",
+      "backend_contains": ["第一行<br>", "<del>旧结论</del>"],
+      "frontend_contains": ["第一行", "<br", "<del>旧结论</del>"],
+      "not_contains": ["~~"]
+    },
+    {
+      "id": "long_chinese_no_truncation",
+      "markdown": "## 长文\n\n可验证内容。可验证内容。末尾核验标记",
+      "backend_contains": ["末尾核验标记"],
+      "frontend_contains": ["末尾核验标记"],
+      "not_contains": ["…"]
+    },
+    {
+      "id": "inline_code_details_stays_literal",
+      "markdown": "在文档中使用 `<details>` 标签来折叠证据。\n\n<details>\n<summary>真实证据</summary>\n\n正文 **保留**\n\n</details>",
+      "backend_contains": ["<code>&lt;details&gt;</code>", "<summary>真实证据</summary>", "<strong>保留</strong>"],
+      "frontend_contains": ["<code>&lt;details&gt;</code>", "真实证据", "<strong>保留</strong>"],
+      "not_contains": ["<script"]
+    },
+    {
+      "id": "multi_backtick_code_details_stays_literal",
+      "markdown": "多反引号写法 `` `<summary>` 成对出现 `` 也是代码。\n\n<details>\n<summary>外层</summary>\n\n内容\n\n</details>",
+      "backend_contains": ["<code>`&lt;summary&gt;", "成对出现"],
+      "frontend_contains": ["<code>`&lt;summary&gt;", "成对出现"],
+      "not_contains": ["<script"]
+    },
+    {
+      "id": "indented_code_block_details_stays_literal",
+      "markdown": "示例代码：\n\n    <details>\n    <summary>折叠</summary>\n\n段落结束。",
+      "backend_contains": ["<pre><code>&lt;details&gt;", "&lt;summary&gt;折叠&lt;/summary&gt;", "段落结束。"],
+      "frontend_contains": ["<pre", "&lt;details&gt;", "&lt;summary&gt;折叠&lt;/summary&gt;", "段落结束。"],
+      "not_contains": ["<details>", "<summary>"]
+    },
+    {
+      "id": "details_open_attribute_controlled",
+      "markdown": "<details open>\n<summary>默认展开的证据</summary>\n\n展开的正文\n\n</details>",
+      "backend_contains": ["<details>", "<summary>默认展开的证据</summary>", "展开的正文"],
+      "frontend_contains": ["<details open", "默认展开的证据", "展开的正文"],
+      "not_contains": ["<script"]
+    },
+    {
+      "id": "nested_unclosed_details_autoclose",
+      "markdown": "<details>\n<summary>外层证据</summary>\n\n<details>\n<summary>内层未闭合</summary>\n\n内层正文",
+      "backend_contains": ["<details>", "<summary>外层证据</summary>", "<summary>内层未闭合</summary>", "内层正文"],
+      "frontend_contains": ["<details>", "外层证据", "内层未闭合", "内层正文"],
+      "not_contains": ["<script"]
+    }
+  ]
+}

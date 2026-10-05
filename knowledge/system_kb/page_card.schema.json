@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AgentSystemKbPageCard",
+  "type": "object",
+  "required": ["route", "page_name", "visible_to", "purpose"],
+  "properties": {
+    "route": {"type": "string"},
+    "page_name": {"type": "string"},
+    "visible_to": {"enum": ["agent", "normal_user", "both"]},
+    "kb": {"enum": ["agent", "normal_user", "both"]},
+    "is_admin_only": {"type": "boolean", "default": false},
+    "purpose": {"type": "string"},
+    "fields": {"type": "array", "items": {"type": "object",
+      "required": ["name"], "properties": {
+        "name": {"type": "string"}, "label": {"type": "string"},
+        "required": {"type": "boolean"}, "placeholder": {"type": "string"},
+        "meaning": {"type": "string"}, "validation": {"type": "string"}}}},
+    "buttons": {"type": "array", "items": {"type": "object",
+      "required": ["label"], "properties": {
+        "label": {"type": "string"}, "action": {"type": "string"},
+        "disabled_when": {"type": "string"}}}},
+    "validation_errors": {"type": "array", "items": {"type": "object",
+      "properties": {"trigger": {"type": "string"}, "message": {"type": "string"}, "fix": {"type": "string"}}}},
+    "common_questions": {"type": "array", "items": {"type": "string"}},
+    "step_flow": {"type": "array", "items": {"type": "string"}},
+    "empty_state": {"type": "string"},
+    "loading_state": {"type": "string"},
+    "success_state": {"type": "string"},
+    "failure_state": {"type": "string"},
+    "related_routes": {"type": "array", "items": {"type": "string"}},
+    "screenshots": {"type": "array", "items": {"type": "string"}}
+  }
+}
