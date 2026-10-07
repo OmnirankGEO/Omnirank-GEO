@@ -161,7 +161,7 @@ with wave.open(os.path.join(OUT, 'audio.wav'), 'wb') as w:
 def ts(x):
     h = int(x // 3600); m = int(x % 3600 // 60); s = x % 60
     return f'{h:02d}:{m:02d}:{int(s):02d},{int(round((s - int(s)) * 1000)):03d}'
-with open(os.path.join(OUT, 'narration.srt'), 'w', encoding='utf-8') as f:
+with open(os.path.join(OUT, 'narration.srt' if not os.environ.get('STEMS') else 'timeline.srt'), 'w', encoding='utf-8') as f:  # 配音版的 SRT 由 dub.py 按真实配音时间生成
     for i, n in enumerate(meta['narr'], 1):
         f.write(f"{i}\n{ts(n['t0'])} --> {ts(n['t1'])}\n{n['text']}\n\n")
 print('ok', len(meta['sfx']), 'sfx,', len(meta['narr']), 'lines, peak', round(float(peak), 3))
