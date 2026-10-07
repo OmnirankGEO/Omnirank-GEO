@@ -130,6 +130,7 @@ def main():
     ap.add_argument('--fake', action='store_true')
     ap.add_argument('--geo', default='GEO', help='配音输入里 GEO 的写法(试听后原文读得最好,需要时可改成 "G E O")')
     ap.add_argument('--out', default=None)
+    ap.add_argument('--skip-render', action='store_true', help='画面已渲染过时只重做音频和封装')
     ap.add_argument('--preview', default=None, help='只渲染这些视频秒数的截图,逗号分隔')
     a = ap.parse_args()
     page_dir = os.path.join(ROOT, a.page)
@@ -176,7 +177,7 @@ def main():
         return knots[-1][0]
 
     subs = [{'v0': round(v, 3), 'v1': round(v + ln['speech'] + 0.15, 3), 'text': ln['text']} for v, ln in place] if cfg['subtitles'] else None
-    mp = {'duration': round(total, 3), 'knots': knots, 'subs': subs, 'variants': ['subs', 'nosubs'] if cfg['subtitles'] else ['main']}
+    mp = {'duration': round(total, 3), 'knots': knots, 'subs': subs, 'variants': cfg.get('variants') or (['subs', 'nosubs'] if cfg['subtitles'] else ['main'])}
     json.dump(mp, open(os.path.join(out, 'map.json'), 'w'), ensure_ascii=False)
     # SRT(按真实配音时间)
     def ts(x):
@@ -190,7 +191,9 @@ def main():
         sh(render + ['--preview', a.preview]); return
 
     # 4 画面
-    sh(render)
+    variants_done = all(os.path.exists(os.path.join(out, f'video_{v}.mp4')) for v in mp['variants'])
+    if not (a.skip_render and variants_done):
+        sh(render)
     meta = json.load(open(os.path.join(out, 'meta.json')))
     n = int((total + 0.5) * SR)
 

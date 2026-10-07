@@ -1,7 +1,7 @@
 {
  "page": "explainer",
  "duration": 230.5,
- "subtitles": false,
+ "subtitles": true,
  "segments": [
   {
    "id": "hook",
@@ -216,5 +216,8 @@
     }
    ]
   }
+ ],
+ "variants": [
+  "main"
  ]
 }

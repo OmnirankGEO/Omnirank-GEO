@@ -11,6 +11,7 @@ function scene(id, start, end) {
   tl.set(id, { autoAlpha: 0 }, end);
 }
 function cap(html, at, dur) {
+  if (window.SUBS_OVERRIDE_INIT) return;   // 配音版:字幕改由配音时间驱动
   tl.call(() => { $('#capt').innerHTML = html; }, null, at);
   tl.fromTo('#capt', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.35, immediateRender: false }, at);
   tl.to('#capt', { opacity: 0, duration: 0.3 }, at + dur - 0.3);
@@ -319,5 +320,7 @@ pop('#s11e', 221.8);
 tl.fromTo('#progress', { width: 0 }, { width: 1920, duration: 230.5, ease: 'none' }, 0);
 
 window.DURATION = 230.5;
+// 配音版:渲染脚本逐帧设置字幕(与旁白逐句一致)
+window.setSub = (text) => { const el = $('#capt'); if (el.textContent !== (text || '')) el.textContent = text || ''; el.style.opacity = text ? 1 : 0; el.style.transform = 'none'; };
 window.seekTo = (t) => { tl.seek(t, false); };
 window.ready = document.fonts.ready.then(() => true);

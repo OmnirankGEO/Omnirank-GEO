@@ -42,7 +42,7 @@ def make(dur, seed=5):
             j = i0 + int(k * beat * SR); tt = np.arange(int(beat * 0.9 * SR)) / SR
             f = _hz(ch[0] - 24)
             x = (np.sin(2 * np.pi * f * tt) + 0.25 * np.sin(4 * np.pi * f * tt)) * np.exp(-tt * 3) * 0.16
-            e = min(n, j + len(x)); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
         # 拨弦琶音:8 分音符,左右轻微交替
         arp = [ch[0] + 12, ch[1] + 12, ch[2] + 12, ch[3] + 12, ch[2] + 12, ch[1] + 12, ch[3] + 12, ch[2] + 24]
         for k in range(8):
@@ -50,7 +50,7 @@ def make(dur, seed=5):
             f = _hz(arp[k])
             x = (np.sin(2 * np.pi * f * tt) + 0.3 * np.sin(4 * np.pi * f * tt)) * np.exp(-tt * 7) * 0.06
             pan = 0.35 if k % 2 else -0.35
-            e = min(n, j + len(x))
+            e = max(j, min(n, j + len(x)))
             L[j:e] += x[:e - j] * (1 - pan); R[j:e] += x[:e - j] * (1 + pan)
         # 鼓:kick 1/3 拍,clap 2/4 拍,shaker 16 分
         for k in range(4):
@@ -62,12 +62,12 @@ def make(dur, seed=5):
             else:
                 tt = np.arange(int(0.18 * SR)) / SR
                 x = _lp(rng.uniform(-1, 1, len(tt)), 3500) * np.exp(-tt * 25) * 0.16
-            e = min(n, j + len(x)); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
         for k in range(16):
             j = i0 + int(k * beat / 4 * SR); tt = np.arange(int(0.05 * SR)) / SR
             x = rng.uniform(-1, 1, len(tt)) * np.exp(-tt * 90) * (0.035 if k % 2 else 0.05)
             x = x - _lp(x, 5000)
-            e = min(n, j + len(x)); L[j:e] += x[:e - j] * 0.8; R[j:e] += x[:e - j] * 1.2
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j] * 0.8; R[j:e] += x[:e - j] * 1.2
     fi, fo = int(1.5 * SR), int(4 * SR)
     g = np.ones(n); g[:fi] = np.linspace(0, 1, fi); g[-fo:] = np.linspace(1, 0, fo)
     return np.stack([L * g, R * g], axis=1)

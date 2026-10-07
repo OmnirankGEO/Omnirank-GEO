@@ -19,7 +19,7 @@ const FPS = 30;
   const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
   p.on('pageerror', (e) => console.log('PAGEERR', e.message));
-  await p.goto('file://' + path.resolve(pageDir, 'index.html'));
+  await p.goto('file://' + path.resolve(pageDir, 'index.html') + (mapFile ? '?dub=1' : ''));
   await p.evaluate(() => window.ready);
   await p.waitForTimeout(800);
   const meta = await p.evaluate(() => ({ narr: window.NARR || [], sfx: window.SFX || [], dur: window.DURATION }));
