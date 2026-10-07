@@ -239,7 +239,7 @@ def main():
     for v, ln in place:
         i = int(v * SR); c = ln['audio']; e = min(n, i + len(c)); voice[i:e] += c[:e - i]
     rms = np.sqrt(np.mean(voice[np.abs(voice) > 0.01] ** 2)) if np.any(np.abs(voice) > 0.01) else 1
-    voice *= 10 ** (-17 / 20) / rms        # 人声约 -17 dBFS RMS
+    voice *= 10 ** (-15 / 20) / rms        # 人声约 -15 dBFS RMS
 
     # BGM / 音效
     if a.page == 'pixel':
@@ -251,20 +251,37 @@ def main():
             sh(['ffmpeg', '-v', 'error', '-y', '-i', p, '-ar', str(SR), '-ac', '1', p + '.48k.wav'])
             y = read_wav(p + '.48k.wav'); return np.pad(y, (0, max(0, n - len(y))))[:n]
         bgm = load(os.path.join(out, 'bgm.wav')); sfx = load(os.path.join(out, 'sfx.wav'))
-        bgm_db, sfx_gain = -26, 0.8
+        bgm_db, sfx_db = -25, -24
     else:
         import bgm_soft
         bgm = bgm_soft.make(n / SR).mean(axis=1)[:n]; sfx = np.zeros(n)
-        bgm_db, sfx_gain = -25, 0.0
-    bgm *= 10 ** (bgm_db / 20) / (np.sqrt(np.mean(bgm ** 2)) + 1e-9)
+        bgm_db, sfx_db = -25, None
+    # BGM 拉平:按 2 秒窗口的音量做慢速自动增益,整首一样响(原曲开头结尾更响,中段会被压没)
+    w = int(2 * SR)
+    loud = np.sqrt(np.convolve(bgm ** 2, np.ones(w) / w, mode='same')) + 1e-6
+    target = 10 ** (bgm_db / 20)
+    agc = np.clip(target / loud, 0.2, 6.0)
+    agc = np.convolve(agc, np.ones(w) / w, mode='same')
+    bgm = bgm * agc
+    # 音效:按统一电平归一,再软限幅,峰值不超过人声
+    if sfx_db is not None and np.any(sfx):
+        act = np.abs(sfx) > 1e-4
+        srms = np.sqrt(np.mean(sfx[act] ** 2)) if np.any(act) else 1
+        sfx = sfx * (10 ** (sfx_db / 20) / srms)
+        lim = 10 ** (-12 / 20)
+        sfx = lim * np.tanh(sfx / lim)
 
     # 人声出现时把 BGM 压低约 8 dB(平滑的侧链)
     env = np.abs(voice); k = int(0.25 * SR)
     env = np.convolve(env, np.ones(k) / k, mode='same')
-    duck = 1 - 0.6 * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)
+    depth = cfg.get('duck', 0.45)            # 0.45 ≈ 人声时音乐压低约 5 dB
+    duck = 1 - depth * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)
     k2 = int(0.3 * SR); duck = np.convolve(duck, np.ones(k2) / k2, mode='same')
-    mix = voice + bgm * duck + sfx * sfx_gain
+    sduck = 1 - 0.35 * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)   # 人声时音效也让一点
+    mix = voice + bgm * duck + sfx * sduck
     write_wav(os.path.join(out, 'mix_raw.wav'), mix / max(1.0, np.max(np.abs(mix)) / 0.95))
+    for name, arr in (('voice', voice), ('bgm', bgm * duck), ('sfx', sfx * sduck)):
+        write_wav(os.path.join(out, f'stem_{name}.wav'), arr)   # 分轨,方便检查音量
 
     # 5 统一响度并封装
     for v in mp['variants']:
