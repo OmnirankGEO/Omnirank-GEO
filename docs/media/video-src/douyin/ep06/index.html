@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 6 集 · 想做 GEO 服务商？</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 漫画分镜风:半调网点 + 粗黑边分格 + 拟声字 */
+:root{--bg:#fff6e0;--acc:#e8261c;--y:#ffd21f;--c:#2bb8e8;--ink:#111}
+body,#stage{color:var(--ink)}
+#paper{position:absolute;inset:0;background:radial-gradient(rgba(232,38,28,.16) 3px,transparent 3.4px) 0 0/22px 22px,var(--bg)}
+#badge b{color:var(--ink)}
+#grain{opacity:.15}
+.k{font-weight:900;letter-spacing:-1px;line-height:1.1}
+.pn{position:absolute;border:9px solid var(--ink);background:#fff;overflow:hidden;box-shadow:12px 12px 0 var(--ink)}
+.rays{position:absolute;inset:-50%;background:repeating-conic-gradient(var(--y) 0 8deg,#ffb000 8deg 16deg)}
+.bub{position:absolute;background:#fff;border:7px solid var(--ink);border-radius:60px;padding:24px 40px;font-weight:900;font-size:56px;line-height:1.25}
+.bub::after{content:"";position:absolute;width:56px;height:56px;background:#fff;border-right:7px solid var(--ink);border-bottom:7px solid var(--ink);bottom:-34px;left:var(--tx,80px);transform:rotate(45deg) skew(10deg,10deg)}
+.fx{position:absolute;font-weight:900;color:var(--y);-webkit-text-stroke:8px var(--ink);paint-order:stroke fill;letter-spacing:-4px;line-height:1}
+.stk{position:absolute}
+.lab{position:absolute;background:var(--ink);color:#fff;font-weight:900;font-size:50px;padding:10px 28px}
+.qrow{display:flex;justify-content:space-between;font-size:46px;font-weight:900;padding:18px 0;border-bottom:5px dashed #ccc}
+.chip{position:absolute;background:var(--c);color:#fff;border:6px solid var(--ink);font-size:52px;font-weight:900;padding:10px 30px;box-shadow:8px 8px 0 var(--ink)}
+.note{position:absolute;left:90px;right:150px;font-size:28px;font-weight:700;color:#555}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="paper"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <!-- S0 钩子:放射线 + 老板 -->
+  <div class="scene" id="s0">
+    <div class="pn" id="p0" style="left:50px;top:200px;width:880px;height:1140px"><div class="rays" id="rays"></div>
+      <img class="stk" id="boss" src="../assets/ep06_boss.webp" style="left:150px;top:420px;width:720px">
+    </div>
+    <div class="bub" id="b0" style="left:80px;top:250px;font-size:84px;--tx:420px">想做 <span style="color:var(--acc)">GEO</span><br>服务商？</div>
+    <div class="fx" id="f0" style="left:610px;top:560px;font-size:180px;transform:rotate(12deg)">砰！</div>
+  </div>
+
+  <!-- S1 客户上门 + 诊断报告 -->
+  <div class="scene" id="s1">
+    <div class="pn" id="p1a" style="left:50px;top:210px;width:880px;height:540px;transform:rotate(-1.5deg)">
+      <img class="stk" src="../assets/ep06_client.webp" style="left:-20px;top:20px;width:520px">
+    </div>
+    <div class="bub" id="b1" style="left:400px;top:260px;font-size:44px;--tx:60px">AI 上怎么<br>搜不到我？</div>
+    <div class="pn" id="p1b" style="left:70px;top:790px;width:860px;height:520px;transform:rotate(1.5deg);background:var(--c)">
+      <img class="stk" src="../assets/ep06_report.webp" style="left:300px;top:-10px;width:540px">
+    </div>
+    <div class="lab" id="l1" style="left:110px;top:1180px">诊断报告 · 问题摆眼前</div>
+    <div class="fx" id="f1" style="left:110px;top:840px;font-size:150px;transform:rotate(-10deg)">叮！</div>
+  </div>
+
+  <!-- S2 一键报价 -->
+  <div class="scene" id="s2">
+    <div class="pn" id="p2" style="left:90px;top:300px;width:820px;height:860px;padding:50px 56px;transform:rotate(-1deg)">
+      <div class="k" style="font-size:80px;border-bottom:9px solid var(--ink);padding-bottom:20px">报 价 单</div>
+      <div class="qrow" id="q1"><span>做哪些问题</span><span style="color:var(--c)">✓ 列清楚</span></div>
+      <div class="qrow" id="q2"><span>写多少篇</span><span style="color:var(--c)">✓ 列清楚</span></div>
+      <div class="qrow" id="q3"><span>监测多久</span><span style="color:var(--c)">✓ 列清楚</span></div>
+      <div class="qrow" id="q4" style="border:none"><span>花多少钱</span><span style="color:var(--acc)">明码标价</span></div>
+    </div>
+    <div class="fx" id="f2" style="left:600px;top:200px;font-size:170px;transform:rotate(10deg)">唰！</div>
+  </div>
+
+  <!-- S3 白标 -->
+  <div class="scene" id="s3">
+    <div class="pn" id="p3" style="left:90px;top:300px;width:820px;height:760px;padding:50px">
+      <div style="display:flex;align-items:center;gap:30px">
+        <div id="lg" style="width:200px;height:200px;border:7px dashed var(--ink);display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;text-align:center;line-height:1.2;position:relative">
+          <span id="lg0" style="position:absolute;color:#999">LOGO</span><span id="lg1" style="position:absolute;opacity:0;background:var(--acc);color:#fff;inset:0;display:flex;align-items:center;justify-content:center">你的<br>LOGO</span></div>
+        <div class="k" style="font-size:64px"><span id="nm0">你的公司名</span></div>
+      </div>
+      <div style="margin-top:60px;font-size:50px;font-weight:900;line-height:1.7">· 诊断报告<br>· 报价页<br>· PDF 导出</div>
+    </div>
+    <div class="fx" id="f3" style="left:560px;top:880px;font-size:150px;transform:rotate(-8deg);color:var(--c)">换！</div>
+    <div class="note" id="n3" style="top:1150px">*开源版需保留「基于 OmniRank」署名</div>
+  </div>
+
+  <!-- S4 流水线 -->
+  <div class="scene" id="s4">
+    <div class="pn" style="left:50px;top:300px;width:880px;height:620px;background:var(--y)" id="p4">
+      <img class="stk" id="cv" src="../assets/ep06_conveyor.webp" style="left:120px;top:0;width:640px">
+    </div>
+    <div class="chip" id="k1" style="left:80px;top:980px">写文章</div>
+    <div class="chip" id="k2" style="left:390px;top:980px;background:var(--acc)">发布</div>
+    <div class="chip" id="k3" style="left:640px;top:980px;background:#1aa35a">监测</div>
+    <div class="lab" id="l4" style="left:90px;top:1140px">一条线跑完</div>
+  </div>
+
+  <!-- S5 客户看板 -->
+  <div class="scene" id="s5">
+    <div class="pn" id="p5" style="left:60px;top:420px;width:880px;height:700px;background:var(--c)">
+      <img class="stk" id="lap" src="../assets/ep06_laptop.webp" style="left:130px;top:40px;width:620px">
+    </div>
+    <div class="bub" id="b5" style="left:90px;top:230px;font-size:52px;--tx:500px">客户专属看板<br><span style="color:var(--acc)">不用注册</span>就能看</div>
+  </div>
+
+  <!-- S6 账本 + 结尾 -->
+  <div class="scene" id="s6">
+    <div class="pn" id="p6" style="left:60px;top:220px;width:880px;height:560px;background:var(--y)">
+      <img class="stk" src="../assets/ep06_coins.webp" style="left:170px;top:-30px;width:560px">
+    </div>
+    <div class="lab" id="l6a" style="left:90px;top:830px">进货价</div>
+    <div class="lab" id="l6b" style="left:360px;top:830px">零售价</div>
+    <div class="lab" id="l6c" style="left:630px;top:830px;background:var(--acc)">利润</div>
+    <div class="a k" id="l6d" style="left:90px;top:960px;font-size:80px">笔笔有账</div>
+    <div class="bub" id="b6" style="left:90px;top:1090px;font-size:58px;--tx:120px;background:var(--y)">GitHub 搜 OmniRank</div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

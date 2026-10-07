@@ -1,0 +1,26 @@
+{
+ "page": "douyin/ep06",
+ "duration": 27,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "soft",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "想做 GEO 服务商？看看这套系统能帮你干多少活！"}
+  ]},
+  {"id": "a", "lines": [
+   {"t": 2.8, "text": "客户上门，先出一份诊断报告，问题摆在眼前。"},
+   {"t": 6.5, "text": "再一键报价：做哪些词、多少钱，明明白白。"},
+   {"t": 10.3, "text": "报告和报价页，能换上你自己的公司名和 Logo。"}
+  ]},
+  {"id": "b", "lines": [
+   {"t": 13.7, "text": "写文章、发布、监测，后面的活儿一条线跑完。"},
+   {"t": 17.3, "text": "客户还有专属看板，不用注册就能看数据。"},
+   {"t": 20.7, "text": "进货价、零售价、利润，笔笔有账。GitHub 搜 OmniRank。"}
+  ]}
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "page": "douyin/ep05",
+ "duration": 24,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "tech",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "花钱做了 GEO，AI 到底推荐你没有？"},
+   {"t": 2.7, "text": "大多数人，只能靠猜。"}
+  ]},
+  {"id": "ask", "lines": [
+   {"t": 4.3, "text": "OmniRank 每天替你去问一遍：通义千问、DeepSeek、豆包、Kimi。"},
+   {"t": 8.7, "text": "就像看比分直播：你排第几，同行排第几，一目了然。"}
+  ]},
+  {"id": "trace", "lines": [
+   {"t": 13.1, "text": "哪篇文章被 AI 引用了，能追到具体那一篇。"},
+   {"t": 16.7, "text": "出现率掉了，马上提醒你。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 19.3, "text": "效果好不好，不靠嘴说，看数据。GitHub 搜 OmniRank。"}
+  ]}
+ ]
+}

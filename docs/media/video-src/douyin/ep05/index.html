@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 5 集 · AI 到底推荐你没有</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 体育比分直播风:球场夜景 + 斜切字幕条 + 黄色高亮 */
+:root{--bg:#06112a;--acc:#ffd400;--navy:#0a1a3f;--red:#e10600}
+.k{font-weight:900;letter-spacing:-2px;line-height:1.05}
+.bar{position:absolute;display:flex;align-items:center;font-weight:900;clip-path:polygon(4% 0,100% 0,96% 100%,0 100%);padding:0 70px}
+.y{background:var(--acc);color:#0a0a0a}.n{background:var(--navy);color:#fff}.w{background:#fff;color:#0a0a0a}.rd{background:var(--red);color:#fff}
+.live{position:absolute;left:90px;top:220px;display:flex;gap:0;font-weight:900;font-size:40px}
+.live b{background:var(--red);color:#fff;padding:6px 20px}.live span{background:#fff;color:#000;padding:6px 20px}
+.live i{display:inline-block;width:16px;height:16px;border-radius:50%;background:#fff;margin-right:10px;vertical-align:middle}
+.plate{position:absolute;left:90px;width:800px;height:130px;font-size:60px;justify-content:space-between}
+.plate em{font-style:normal;font-size:38px;background:var(--acc);color:#000;padding:6px 18px}
+.row{position:absolute;left:90px;width:800px;height:120px;display:flex;align-items:center;font-size:54px;font-weight:900;background:rgba(10,26,63,.92);color:#fff;border-left:14px solid #3a4f80}
+.row .r i{font-style:normal;position:absolute;left:0;right:0}.row .r .v{opacity:0}
+.row .r{position:relative;height:72px;line-height:72px;width:120px;text-align:center;font-size:60px;color:var(--acc)}
+.row.me{background:var(--acc);color:#000;border-left-color:var(--red)}.row.me .r{color:var(--red)}
+.foot{position:absolute;left:90px;font-size:30px;font-weight:700;color:rgba(255,255,255,.7)}
+.card{position:absolute;left:110px;width:780px;background:#fff;color:#111;padding:40px 44px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.card h4{font-size:52px;font-weight:900;line-height:1.25}
+.card p{font-size:32px;color:#666;margin-top:16px;font-weight:700}
+.stamp{position:absolute;font-weight:900;font-size:56px;color:var(--red);border:8px solid var(--red);padding:6px 26px;background:rgba(255,255,255,.92)}
+#badge span{background:var(--red)}
+svg.ch path{fill:none;stroke-width:12;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="bgs"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <div class="scene" id="s0">
+    <div class="live" id="lv"><b><i></i>LIVE</b><span>AI 推荐榜</span></div>
+    <div class="a k" id="h0a" style="left:90px;top:340px;font-size:110px;color:#fff">花钱做了 GEO</div>
+    <div class="bar y" id="h0b" style="left:60px;top:500px;height:200px;font-size:124px">AI 推荐你了吗</div>
+    <div class="a k" id="h0q" style="left:640px;top:690px;font-size:520px;color:var(--acc);line-height:1">?</div>
+  </div>
+
+  <div class="scene" id="s1">
+    <div class="a k" id="s1a" style="left:0;right:0;top:520px;text-align:center;font-size:260px;color:#fff">靠猜？</div>
+    <div class="stamp" id="s1x" style="left:300px;top:860px;font-size:110px;transform:rotate(-8deg)">不靠谱</div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="bar n" id="s2t" style="left:60px;top:240px;height:120px;font-size:58px">每天巡检 · <span style="color:var(--acc);margin-left:14px">4 个 AI</span></div>
+    <div class="bar w plate" id="p1" style="top:420px">通义千问<em>✓ 已问</em></div>
+    <div class="bar w plate" id="p2" style="top:580px">DeepSeek<em>✓ 已问</em></div>
+    <div class="bar w plate" id="p3" style="top:740px">豆包<em>✓ 已问</em></div>
+    <div class="bar w plate" id="p4" style="top:900px">Kimi<em>✓ 已问</em></div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="bar y" id="s3t" style="left:60px;top:240px;height:120px;font-size:58px">AI 推荐排名</div>
+    <div class="row" id="r1" style="top:420px"><span class="r" id="r1n"><i class="o">1</i><i class="v">2</i></span>同行 A</div>
+    <div class="row" id="r2" style="top:560px"><span class="r" id="r2n"><i class="o">2</i><i class="v">3</i></span>同行 B</div>
+    <div class="row" id="r3" style="top:700px"><span class="r" id="r3n"><i class="o">3</i><i class="v">4</i></span>同行 C</div>
+    <div class="row me" id="r4" style="top:840px"><span class="r" id="r4n"><i class="o">4</i><i class="v">1</i></span>你的品牌<span id="up" style="margin-left:auto;margin-right:40px;color:var(--red)">↑3</span></div>
+    <div class="foot" id="s3f" style="top:1010px">*演示数据</div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="bar n" id="s4t" style="left:60px;top:240px;height:120px;font-size:58px">追到<span style="color:var(--acc);margin-left:10px">具体哪一篇</span></div>
+    <div class="card" id="art" style="top:430px"><h4>深圳商务用车怎么选？<br>5 个避坑要点</h4><p>发布于 · 某行业媒体</p></div>
+    <div class="stamp" id="s4s" style="left:330px;top:760px;transform:rotate(-6deg)">被 DeepSeek 引用 ✓</div>
+    <div class="foot" id="s4f" style="top:1010px">*演示数据</div>
+  </div>
+
+  <div class="scene" id="s5">
+    <div class="bar rd" id="s5t" style="left:60px;top:240px;height:120px;font-size:58px">出现率掉了？马上提醒</div>
+    <svg class="ch a" id="chart" width="880" height="520" style="left:100px;top:430px" viewBox="0 0 880 520">
+      <path d="M20 500 H860" stroke="rgba(255,255,255,.3)"/>
+      <path id="ln" d="M30 160 L180 130 L330 150 L480 110 L630 140 L780 380" stroke="#ffd400"/>
+    </svg>
+    <div class="stamp" id="s5s" style="left:520px;top:900px;font-size:48px;transform:rotate(-4deg)">⚠ 已发提醒</div>
+    <div class="foot" id="s5f" style="top:1010px">*演示数据</div>
+  </div>
+
+  <div class="scene" id="s6">
+    <div class="a k" id="e1" style="left:90px;top:380px;font-size:120px;color:#fff">不靠嘴说</div>
+    <div class="bar y" id="e2" style="left:60px;top:530px;height:200px;font-size:130px">看数据</div>
+    <div class="bar n" id="e3" style="left:60px;top:800px;height:130px;font-size:64px">GitHub 搜 <span style="color:var(--acc);margin-left:14px">OmniRank</span></div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
