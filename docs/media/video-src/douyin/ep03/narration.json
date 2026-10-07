@@ -1,0 +1,32 @@
+{
+ "page": "douyin/ep03",
+ "duration": 28,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "tech",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.2,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "一年几万块的 GEO 系统，我们直接开源了！"}
+  ]},
+  {"id": "price", "lines": [
+   {"t": 2.6, "text": "先看行情：按关键词收费的，十个词一年三千多；"},
+   {"t": 6.2, "text": "全能版一年两万；企业级监测，一年十几万起。"}
+  ]},
+  {"id": "part", "lines": [
+   {"t": 9.9, "text": "关键是，很多只卖你一个零件：要么只查排名，要么只会写文章。"},
+   {"t": 13.8, "text": "花大钱，只买回来一个轮子。"}
+  ]},
+  {"id": "car", "lines": [
+   {"t": 16.3, "text": "OmniRank 给你的是整辆车："},
+   {"t": 17.8, "text": "诊断、报价、写作、发布、监测、学习、分销、计费，"},
+   {"t": 21.6, "text": "从接单到交付，一条线全打通。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 24.1, "text": "免费开源，可以商用。GitHub 搜 OmniRank。"}
+  ]}
+ ]
+}

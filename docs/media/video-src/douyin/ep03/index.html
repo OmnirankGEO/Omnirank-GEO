@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 3 集 · 别人卖轮子,我们开源整辆车</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 大促海报风:明黄 + 纯黑 + 警示红 */
+:root{--bg:#ffe100;--acc:#ff2d2d;--ink:#0d0d0d}
+body,#stage{color:var(--ink)}
+#ybg{position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(0,0,0,.045) 0 28px,transparent 28px 56px),var(--bg)}
+#badge b{color:var(--ink)}
+#grain{opacity:.18}
+.k{font-weight:900;letter-spacing:-3px;line-height:1.02}
+.stamp{display:inline-block;background:var(--acc);color:#fff;border:8px solid var(--ink);padding:10px 40px 22px;box-shadow:14px 14px 0 var(--ink)}
+.blk{display:inline-block;background:var(--ink);color:var(--bg);padding:4px 26px 12px}
+.ptag{position:absolute;left:110px;width:720px;height:200px;background:var(--ink);color:#fff;border-radius:28px 100px 100px 28px;display:flex;align-items:center;padding-left:56px;gap:30px;box-shadow:12px 12px 0 rgba(0,0,0,.25)}
+.ptag::after{content:"";position:absolute;right:56px;top:84px;width:32px;height:32px;border-radius:50%;background:var(--bg)}
+.ptag .n{font-size:40px;font-weight:700;width:230px;color:#ddd}
+.ptag .p{font-size:84px;font-weight:900;color:var(--bg);letter-spacing:-2px}
+.ptag .p small{font-size:36px;color:#fff;margin-left:6px}
+.note{position:absolute;left:110px;right:150px;font-size:28px;font-weight:700;color:rgba(0,0,0,.55)}
+.no{position:absolute;display:flex;align-items:center;gap:20px;font-size:62px;font-weight:900;background:#fff;border:6px solid var(--ink);padding:16px 34px;box-shadow:10px 10px 0 var(--ink)}
+.no b{color:var(--acc);font-size:70px}
+.stk{position:absolute;filter:drop-shadow(0 24px 24px rgba(0,0,0,.25))}
+.chip{position:absolute;width:190px;height:110px;display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--bg);font-size:52px;font-weight:900;border-radius:22px}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="ybg"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <div class="scene" id="s0">
+    <div class="a k" id="h0a" style="left:90px;top:330px;font-size:110px">一年几万块的</div>
+    <div class="a k" id="h0b" style="left:80px;top:470px;font-size:250px;letter-spacing:-10px">GEO系统</div>
+    <div class="a" id="h0c" style="left:120px;top:800px"><span class="stamp k" style="font-size:190px">开源了！</span></div>
+  </div>
+
+  <div class="scene" id="s1">
+    <div class="a k" id="s1t" style="left:110px;top:250px;font-size:96px">先看<span class="blk">行情</span></div>
+    <div class="ptag" id="t1" style="top:430px"><span class="n">10 个关键词</span><span class="p">¥3280<small>/年</small></span></div>
+    <div class="ptag" id="t2" style="top:680px"><span class="n">全能版</span><span class="p">¥19980<small>/年</small></span></div>
+    <div class="ptag" id="t3" style="top:930px;background:var(--acc)"><span class="n" style="color:#fff">企业级监测</span><span class="p" style="color:#fff">¥<span id="t3v">0</span>万+<small>/年</small></span></div>
+    <div class="note" id="s1n" style="top:1170px">*市面常见公开报价，整理自 2026 年公开报道</div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="a k" id="s2t" style="left:110px;top:250px;font-size:88px">很多只卖你<br><span class="blk">一个零件</span></div>
+    <div class="no" id="x1" style="left:110px;top:560px"><b>✕</b>只查排名</div>
+    <div class="no" id="x2" style="left:430px;top:700px"><b>✕</b>只会写文章</div>
+    <img class="stk" id="wh" src="../assets/ep03_wheel.webp" style="left:300px;top:820px;width:480px">
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="a k" id="s3t" style="left:110px;top:240px;font-size:88px">OmniRank<br>给你<span class="stamp" style="font-size:88px;padding:2px 26px 12px;box-shadow:8px 8px 0 var(--ink);border-width:6px">整辆车</span></div>
+    <img class="stk" id="car" src="../assets/ep03_car.webp" style="left:220px;top:440px;width:640px">
+    <div class="chip" id="c1" style="left:90px;top:1000px">诊断</div>
+    <div class="chip" id="c2" style="left:300px;top:1000px">报价</div>
+    <div class="chip" id="c3" style="left:510px;top:1000px">写作</div>
+    <div class="chip" id="c4" style="left:720px;top:1000px">发布</div>
+    <div class="chip" id="c5" style="left:90px;top:1130px">监测</div>
+    <div class="chip" id="c6" style="left:300px;top:1130px">学习</div>
+    <div class="chip" id="c7" style="left:510px;top:1130px">分销</div>
+    <div class="chip" id="c8" style="left:720px;top:1130px">计费</div>
+    <div class="a k" id="s3l" style="left:110px;top:1270px;font-size:52px">接单 → 交付，<span style="color:var(--acc)">一条线打通</span></div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="a k" id="e0" style="left:110px;top:360px;font-size:150px">免费</div>
+    <div class="a k" id="e1" style="left:110px;top:530px;font-size:150px">开源</div>
+    <div class="a k" id="e2" style="left:110px;top:700px;font-size:150px">可商用</div>
+    <div class="a" id="e3" style="left:110px;top:920px"><span class="blk k" style="font-size:80px;padding:14px 34px 22px">GitHub 搜 OmniRank</span></div>
+    <div class="note" id="e4" style="top:1090px">*Apache 2.0 + 保留 OmniRank 署名</div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

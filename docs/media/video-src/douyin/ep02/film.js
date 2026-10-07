@@ -1,5 +1,5 @@
 /* 第 2 集 · 贴纸风科普:GEO 到底从哪来 */
-const D = 50;
+const D = 47.5;
 seriesBadge(2, 0.2, D);
 const wob = (sel, t0, t1, a = 3) => tl.to(sel, { rotation: `+=${a}`, duration: (t1 - t0) / 4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, t0);
 

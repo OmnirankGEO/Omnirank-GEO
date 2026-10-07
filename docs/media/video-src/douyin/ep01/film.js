@@ -1,7 +1,7 @@
 /* 第 1 集 · 黑白纪实 + 粗黑体巨字:我们把一整套 GEO 系统开源了 */
 const A = '../assets/';
 particles(40, '#ffffff');
-seriesBadge(1, 0.2, 38.5);
+seriesBadge(1, 0.2, 35.5);
 
 // 背景:黑白纪实照片,硬切 + 缓推
 bg(A + 'ep01_crowd.jpg', 0, 3.4, { s0: 1.35, s1: 1.15, alpha: 0.35, fade: 0.2 });
@@ -73,11 +73,11 @@ sfx('ding', 28.2);
   tl.fromTo('#stage-inner', { y: 0 }, { keyframes: [{ y: 12, duration: 0.04 }, { y: -6, duration: 0.05 }, { y: 0, duration: 0.08 }], immediateRender: false }, t + 0.3);
 });
 
-// S5 结尾 31–38.5(不放下集预告)
-scene('#s5', 31, 38.5, { zoomTo: 1.0 });
+// S5 结尾 31–35.5(不放下集预告)
+scene('#s5', 31, 35.5, { zoomTo: 1.0 });
 impact('#e1', 31.2);
 kinetic('#e2', 31.9, { st: 0.06, rx: 0, y: 50 });
 tl.fromTo('#e2l', { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: 'expo.out', immediateRender: true }, 32.3);
 rise('#e3', 32.8, { y: 60, rx: 0, s: 1, sfx: 'ding' });
 
-finish(38.5);
+finish(35.5);

@@ -1,6 +1,6 @@
 {
  "page": "douyin/ep01",
- "duration": 38.5,
+ "duration": 35.5,
  "subtitles": true,
  "variants": [
   "main"
@@ -83,5 +83,7 @@
     }
    ]
   }
- ]
+ ],
+ "end_hold": 1.2,
+ "upload_mb": 28.5
 }

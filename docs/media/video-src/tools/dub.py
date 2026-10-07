@@ -202,7 +202,7 @@ def main():
         gap = a.gap_scene if ln['last_in_seg'] else a.gap
         need = ln['speech'] + gap
         if i + 1 == len(lines_all):
-            need = max(need, ln['speech'] + a.end_hold)   # 结尾卡(GitHub 地址)留足时间
+            need = max(need, ln['speech'] + cfg.get('end_hold', a.end_hold))   # 结尾卡(GitHub 地址)留足时间
         h = min(1.6, tlen * 0.4)          # 这一拍开头的入场动画保持原速
         r = min(0.6, (tlen - h) * 0.5)    # 结尾(转场)保持原速
         mid_t = max(0.0, tlen - h - r)
@@ -311,6 +311,14 @@ def main():
             '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
             '-shortest', '-movflags', '+faststart', dst])
         print('输出', dst)
+        if cfg.get('upload_mb'):
+            # 发送/上传用的小体积版本:两遍编码,控制在指定 MB 以内
+            up = dst[:-4] + '-upload.mp4'; plog = os.path.join(out, 'x264pass')
+            vb = int(cfg['upload_mb'] * 8192 / total - 140)
+            common = ['ffmpeg', '-v', 'error', '-y', '-i', dst, '-c:v', 'libx264', '-preset', 'slow', '-b:v', f'{vb}k', '-passlogfile', plog]
+            sh(common + ['-pass', '1', '-an', '-f', 'null', '/dev/null'])
+            sh(common + ['-pass', '2', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '128k', '-movflags', '+faststart', up])
+            print('输出', up)
 
 
 if __name__ == '__main__':

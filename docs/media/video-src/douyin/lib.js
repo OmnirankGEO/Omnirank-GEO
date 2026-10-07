@@ -13,7 +13,8 @@ let _seed = 17; const rnd = () => ((_seed = (_seed * 16807) % 2147483647) / 2147
 /** 场景:淡入 + 整体缓推镜头 + 淡出 */
 function scene(id, t0, t1, opts = {}) {
   tl.set(id, { autoAlpha: 1 }, t0);
-  tl.fromTo(id, { opacity: 0, scale: opts.zoomFrom ?? 1.06 }, { opacity: 1, scale: 1, duration: 0.7, ease: EASE, immediateRender: false }, t0);
+  if (opts.cut) tl.set(id, { opacity: 1, scale: 1 }, t0);   // 硬切:第一帧就满画面
+  else tl.fromTo(id, { opacity: 0, scale: opts.zoomFrom ?? 1.06 }, { opacity: 1, scale: 1, duration: 0.7, ease: EASE, immediateRender: false }, t0);
   tl.to(id, { scale: opts.zoomTo ?? 0.97, duration: t1 - t0 - 0.7, ease: 'none' }, t0 + 0.7);
   tl.to(id, { opacity: 0, scale: '-=0.03', duration: 0.4, ease: 'power2.in' }, t1 - 0.4);
   tl.set(id, { autoAlpha: 0 }, t1);

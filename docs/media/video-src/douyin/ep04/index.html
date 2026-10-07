@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 4 集 · 8 个比喻看懂 GEO 系统</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 粘土 3D + 整屏色块:每个功能一种颜色,圆形擦除转场 */
+:root{--bg:#111;--acc:#111;--ink:#111}
+#badge b{color:#111;background:#fff;padding:2px 14px}
+#badge span{color:#fff}
+#grain{opacity:.15}
+.k{font-weight:900;letter-spacing:-3px;line-height:1.05}
+.scene{color:#111}
+#s0{background:#fff3c4}
+.fl{position:absolute;left:290px;top:420px;width:500px;visibility:hidden}
+.card{background:var(--c)}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,rgba(255,255,255,.45),transparent 60%)}
+.num{position:absolute;left:90px;top:230px;font-size:120px;font-weight:900;line-height:1;letter-spacing:-4px}
+.num small{font-size:50px;opacity:.55}
+.feat{position:absolute;left:90px;top:370px;font-size:150px;font-weight:900;letter-spacing:-5px;line-height:1}
+.eq{position:absolute;left:90px;top:545px;font-size:64px;font-weight:700}
+.eq b{font-weight:900;background:#111;color:#fff;padding:2px 22px 8px;margin-left:8px;display:inline-block}
+.ic{position:absolute;left:250px;top:660px;width:580px;filter:drop-shadow(0 30px 30px rgba(0,0,0,.25))}
+.say{position:absolute;left:90px;right:150px;top:1250px;font-size:50px;font-weight:900;text-align:center}
+#end{background:#111;color:#fff}
+.blk{display:inline-block;background:#ffc93c;color:#111;padding:6px 30px 16px}
+.mini{position:absolute;width:150px;filter:drop-shadow(0 10px 10px rgba(0,0,0,.4))}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <div class="scene" id="s0">
+    <img class="fl" id="fl1" src="../assets/ep04_checkup.webp"><img class="fl" id="fl2" src="../assets/ep04_menu.webp"><img class="fl" id="fl3" src="../assets/ep04_writer.webp"><img class="fl" id="fl4" src="../assets/ep04_wall.webp"><img class="fl" id="fl5" src="../assets/ep04_spy.webp"><img class="fl" id="fl6" src="../assets/ep04_master.webp"><img class="fl" id="fl7" src="../assets/ep04_shop.webp"><img class="fl" id="fl8" src="../assets/ep04_meter.webp">
+    <div class="a k" id="h0a" style="left:90px;top:260px;font-size:96px">做 GEO 要几样东西？</div>
+    <div class="a k" id="h0b" style="left:90px;top:940px;font-size:140px"><span style="background:#111;color:#fff3c4;padding:0 26px 14px">8 个比喻</span></div>
+    <div class="a k" id="h0c" style="left:90px;top:1190px;font-size:84px">一口气讲明白</div>
+  </div>
+  
+  <div class="card scene" id="k1" style="--c:#ff6b4a">
+    <div class="num">1<small>/8</small></div>
+    <div class="feat">诊断报告</div>
+    <div class="eq">像 <b>体检单</b></div>
+    <img class="ic" src="../assets/ep04_checkup.webp">
+    <div class="say">先查清 AI 怎么说你</div>
+  </div>
+  <div class="card scene" id="k2" style="--c:#ffc93c">
+    <div class="num">2<small>/8</small></div>
+    <div class="feat">报价</div>
+    <div class="eq">像 <b>饭店菜单</b></div>
+    <img class="ic" src="../assets/ep04_menu.webp">
+    <div class="say">做什么、多少钱，明码标价</div>
+  </div>
+  <div class="card scene" id="k3" style="--c:#4fc3f7">
+    <div class="num">3<small>/8</small></div>
+    <div class="feat">创作中心</div>
+    <div class="eq">像 <b>较真的写手</b></div>
+    <img class="ic" src="../assets/ep04_writer.webp">
+    <div class="say">句句有出处，不吹牛</div>
+  </div>
+  <div class="card scene" id="k4" style="--c:#7bd389">
+    <div class="num">4<small>/8</small></div>
+    <div class="feat">发布</div>
+    <div class="eq">像 <b>AI 路过的广告墙</b></div>
+    <img class="ic" src="../assets/ep04_wall.webp">
+    <div class="say">贴在 AI 天天看的地方</div>
+  </div>
+  <div class="card scene" id="k5" style="--c:#b39ddb">
+    <div class="num">5<small>/8</small></div>
+    <div class="feat">监测</div>
+    <div class="eq">像 <b>神秘顾客</b></div>
+    <img class="ic" src="../assets/ep04_spy.webp">
+    <div class="say">天天去问 AI 推荐了谁</div>
+  </div>
+  <div class="card scene" id="k6" style="--c:#ff9f68">
+    <div class="num">6<small>/8</small></div>
+    <div class="feat">飞轮</div>
+    <div class="eq">像 <b>老师傅</b></div>
+    <img class="ic" src="../assets/ep04_master.webp">
+    <div class="say">越干越熟，你来拍板</div>
+  </div>
+  <div class="card scene" id="k7" style="--c:#f48fb1">
+    <div class="num">7<small>/8</small></div>
+    <div class="feat">分销</div>
+    <div class="eq">像 <b>加盟店</b></div>
+    <img class="ic" src="../assets/ep04_shop.webp">
+    <div class="say">换上你的招牌就能接单</div>
+  </div>
+  <div class="card scene" id="k8" style="--c:#81d4fa">
+    <div class="num">8<small>/8</small></div>
+    <div class="feat">计价</div>
+    <div class="eq">像 <b>电表</b></div>
+    <img class="ic" src="../assets/ep04_meter.webp">
+    <div class="say">用多少算多少，笔笔有账</div>
+  </div>
+  <div class="scene" id="end">
+    <div class="a k" id="e1" style="left:90px;top:300px;font-size:110px">8 样东西</div>
+    <div class="a k" id="e2" style="left:90px;top:430px;font-size:110px">全在<span class="blk">一套系统</span>里</div>
+    <img class="mini" id="m1" src="../assets/ep04_checkup.webp" style="left:90px;top:640px"><img class="mini" id="m2" src="../assets/ep04_menu.webp" style="left:300px;top:640px"><img class="mini" id="m3" src="../assets/ep04_writer.webp" style="left:510px;top:640px"><img class="mini" id="m4" src="../assets/ep04_wall.webp" style="left:720px;top:640px"><img class="mini" id="m5" src="../assets/ep04_spy.webp" style="left:90px;top:830px"><img class="mini" id="m6" src="../assets/ep04_master.webp" style="left:300px;top:830px"><img class="mini" id="m7" src="../assets/ep04_shop.webp" style="left:510px;top:830px"><img class="mini" id="m8" src="../assets/ep04_meter.webp" style="left:720px;top:830px">
+    <div class="a k" id="e3" style="left:90px;top:1050px;font-size:80px;line-height:1.25">免费开源<br>GitHub 搜 <span style="color:#ffc93c">OmniRank</span></div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
