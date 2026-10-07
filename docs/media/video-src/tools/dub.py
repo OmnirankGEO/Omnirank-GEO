@@ -254,8 +254,9 @@ def main():
         bgm_db, sfx_db = -25, -24
     else:
         import bgm_soft
-        bgm = bgm_soft.make(n / SR).mean(axis=1)[:n]; sfx = np.zeros(n)
-        bgm_db, sfx_db = -25, None
+        bgm = bgm_soft.make(n / SR).mean(axis=1)[:n]
+        sfx = bgm_soft.soft_sfx([{'t': to_video(e['t']), 'name': e['name']} for e in meta['sfx']], n)
+        bgm_db, sfx_db = -25, -27
     # BGM 拉平:按 2 秒窗口的音量做慢速自动增益,整首一样响(原曲开头结尾更响,中段会被压没)
     w = int(2 * SR)
     loud = np.sqrt(np.convolve(bgm ** 2, np.ones(w) / w, mode='same')) + 1e-6
