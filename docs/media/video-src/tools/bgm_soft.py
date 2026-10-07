@@ -94,9 +94,9 @@ def soft_sfx(events, n):
     lib = {
         'whoosh': noise(0.45, 300, 4000, 0.35, attack=0.12),
         'pop': tone(500, 900, 0.09, 40, 0.30),
-        'ding': tone(1320, 1320, 0.6, 7, 0.22, harm=0.3) + tone(1980, 1980, 0.5, 9, 0.08),
+        'ding': tone(1320, 1320, 0.6, 7, 0.22, harm=0.3) + np.pad(tone(1980, 1980, 0.5, 9, 0.08), (0, int(0.1 * SR))),
         'tick': tone(2200, 2200, 0.03, 120, 0.12),
-        'stamp': tone(120, 60, 0.25, 18, 0.55) + noise(0.12, 200, 2500, 0.4, attack=0.002),
+        'stamp': tone(120, 60, 0.25, 18, 0.55) + np.pad(noise(0.12, 200, 2500, 0.4, attack=0.002), (0, int(0.25 * SR) - int(0.12 * SR))),
         'rise': tone(300, 900, 0.5, 3, 0.12),
     }
     for ev in events:
