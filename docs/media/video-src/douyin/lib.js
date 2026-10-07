@@ -145,7 +145,22 @@ function finish(duration) {
   window.seekTo = (t) => { tl.seek(t, false); drawCanvas(t); };
   window.setSub = (text) => { const e = $('#capt'); if (e.textContent !== (text || '')) e.textContent = text || ''; e.parentNode.style.opacity = text ? 1 : 0; };
   const imgs = BG_IMGS.map((src) => new Promise((ok) => { const i = new Image(); i.onload = i.onerror = () => (i.decode ? i.decode().catch(() => 0) : 0).then(ok); i.src = src; }));
-  window.ready = document.fonts.ready.then(() => Promise.all([...imgs,
+  const tags = $$('img').map((i) => (i.complete ? Promise.resolve() : new Promise((ok) => { i.onload = i.onerror = ok; }))).map((p) => p.then(() => 0));
+  window.ready = document.fonts.ready.then(() => Promise.all([...imgs, ...tags,
     document.fonts.load('900 80px "Noto Sans SC"', '开源推荐'),
   ])).then(() => true);
 }
+/** 贴纸拍上来:从小到大带回弹,停在指定角度 */
+function slap(sel, t, opts = {}) {
+  const r = opts.rot ?? 0;
+  tl.fromTo(sel, { autoAlpha: 0, scale: 0.2, rotation: r - 25 }, { autoAlpha: 1, scale: 1, rotation: r, duration: opts.d ?? 0.55, ease: 'back.out(2.2)', immediateRender: true }, t);
+  if (opts.sfx !== false) sfx(opts.sfx || 'pop', t);
+}
+/** 手绘线条:SVG path 按描边长度画出来 */
+function draw(sel, t, d = 0.6) {
+  $$(sel).forEach((p) => { const L = p.getTotalLength(); p.style.strokeDasharray = L; tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: d, ease: 'power2.inOut', immediateRender: true }, t); });
+}
+/** 荧光笔:元素按 X 方向展开 */
+function mark(sel, t, d = 0.45) { tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: d, ease: 'power3.out', immediateRender: true }, t); }
+/** 轻微悬浮晃动,让贴纸“活着” */
+function bob(sel, t0, t1, amp = 10) { tl.to(sel, { y: `-=${amp}`, duration: (t1 - t0) / 4, ease: 'sine.inOut', yoyo: true, repeat: 3 }, t0); }

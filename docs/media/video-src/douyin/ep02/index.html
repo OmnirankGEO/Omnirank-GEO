@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 2 集 · GEO 到底从哪来</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 贴纸风科普:米色纸面 + 黑描边贴纸 + 番茄红/薄荷绿 */
+:root{--bg:#f3ead8;--acc:#ff4a2e;--mint:#3ccf8e;--ink:#141414}
+body,#stage{color:var(--ink)}
+#paper{position:absolute;inset:0;background:radial-gradient(rgba(20,20,20,.13) 2.2px,transparent 2.6px) 0 0/44px 44px,var(--bg)}
+#badge b{color:var(--ink)}
+#badge span{border:3px solid var(--ink)}
+#grain{opacity:.22}
+.k{font-weight:900;letter-spacing:-1px;line-height:1.1}
+.stk{position:absolute;filter:drop-shadow(0 14px 18px rgba(0,0,0,.18))}
+.tag{position:absolute;background:#fff;border:5px solid var(--ink);border-radius:22px;padding:14px 30px;font-weight:900;font-size:50px;box-shadow:9px 9px 0 var(--ink);white-space:nowrap}
+.tag.r{background:var(--acc);color:#fff}.tag.g{background:var(--mint)}
+.hl{position:relative;display:inline-block;z-index:0}
+.hl i{position:absolute;left:-8px;right:-8px;bottom:6px;height:42%;background:var(--mint);z-index:-1;transform-origin:0 50%;border-radius:6px}
+.hl.r i{background:#ffb4a6}
+svg.ink path{fill:none;stroke:var(--ink);stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.x{position:absolute;font-weight:900;color:var(--acc);font-size:260px;line-height:1}
+.chk{position:absolute;left:110px;right:150px;display:flex;align-items:center;gap:22px;font-size:52px;font-weight:900}
+.chk b{flex:none;width:76px;height:76px;border-radius:50%;background:var(--mint);border:5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:44px}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="paper"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <!-- S0 钩子 -->
+  <div class="scene" id="s0">
+    <div class="a k" id="h0a" style="left:90px;top:300px;font-size:150px">GEO 这个词</div>
+    <div class="a k" id="h0b" style="left:90px;top:490px;font-size:110px">不是<span class="hl r"><i id="h0m"></i>营销号</span>编的</div>
+    <img class="stk" id="h0p" src="../assets/ep02_paper.webp" style="left:300px;top:700px;width:560px">
+    <div class="tag r" id="h0t" style="left:150px;top:1120px;font-size:76px">有论文的！</div>
+  </div>
+
+  <!-- S1 搜索 vs AI -->
+  <div class="scene" id="s1">
+    <div class="a k" id="s1t" style="left:0;right:0;top:250px;text-align:center;font-size:96px">规则<span class="hl"><i id="s1m"></i>变了</span></div>
+    <img class="stk" id="s1a" src="../assets/ep02_search.webp" style="left:40px;top:470px;width:470px">
+    <img class="stk" id="s1b" src="../assets/ep02_robot.webp" style="left:520px;top:470px;width:440px">
+    <div class="tag" id="s1at" style="left:70px;top:960px">10 条链接</div>
+    <div class="tag g" id="s1bt" style="left:560px;top:960px">1 个答案</div>
+    <svg class="ink a" id="s1arr" width="200" height="120" style="left:430px;top:820px" viewBox="0 0 200 120"><path d="M10 80 Q100 10 180 70"/><path d="M150 40 L182 72 L140 92"/></svg>
+    <div class="a k" id="s1q" style="left:90px;right:150px;top:1140px;font-size:66px;text-align:center">AI 凭什么推荐<span style="color:var(--acc)">这家</span>？</div>
+  </div>
+
+  <!-- S2 论文 -->
+  <div class="scene" id="s2">
+    <img class="stk" id="s2p" src="../assets/ep02_paper.webp" style="left:220px;top:330px;width:640px">
+    <div class="tag r" id="s2d" style="left:80px;top:300px;font-size:60px">2023.11</div>
+    <div class="tag" id="s2u" style="left:470px;top:880px;font-size:44px">普林斯顿大学等机构</div>
+    <div class="tag g" id="s2n" style="left:80px;top:1010px;font-size:38px">GEO：Generative Engine Optimization</div>
+    <div class="a k" id="s2c" style="left:90px;right:150px;top:1160px;font-size:60px">生成式引擎优化 · <span class="hl"><i id="s2m"></i>KDD 2024</span></div>
+  </div>
+
+  <!-- S3 实验结论 -->
+  <div class="scene" id="s3">
+    <div class="a k" id="s3t" style="left:90px;right:150px;top:240px;font-size:64px">同一篇内容，换着法子改<br>看 AI <span class="hl"><i id="s3m"></i>更爱引用</span>哪版</div>
+    <img class="stk" id="s3a" src="../assets/ep02_source.webp" style="left:50px;top:520px;width:300px">
+    <img class="stk" id="s3b" src="../assets/ep02_stats.webp" style="left:375px;top:520px;width:300px">
+    <img class="stk" id="s3c" src="../assets/ep02_quote.webp" style="left:690px;top:520px;width:300px">
+    <div class="tag" id="s3at" style="left:90px;top:830px;font-size:44px">加来源</div>
+    <div class="tag" id="s3bt" style="left:415px;top:830px;font-size:44px">加数据</div>
+    <div class="tag" id="s3ct" style="left:730px;top:830px;font-size:44px">加引述</div>
+    <img class="stk" id="s3w" src="../assets/ep02_trophy.webp" style="left:90px;top:960px;width:330px">
+    <div class="a k" id="s3n" style="left:440px;top:990px;font-size:210px;color:var(--acc)">+<span id="s3v">0</span>%</div>
+    <div class="a" id="s3s" style="left:450px;top:1225px;font-size:38px;font-weight:700;color:#555">AI 可见度 · 最多约提升</div>
+  </div>
+
+  <!-- S4 堆关键词没用 -->
+  <div class="scene" id="s4">
+    <img class="stk" id="s4m" src="../assets/ep02_megaphone.webp" style="left:240px;top:280px;width:560px">
+    <div class="x" id="s4x" style="left:420px;top:380px">✕</div>
+    <div class="tag r" id="s4t" style="left:230px;top:820px;font-size:64px">堆关键词？几乎没用</div>
+    <div class="chk" id="s4c1" style="top:1010px"><b>✓</b>说得清</div>
+    <div class="chk" id="s4c2" style="top:1130px"><b>✓</b>查得到</div>
+  </div>
+
+  <!-- S5 OmniRank 怎么用这个结论 -->
+  <div class="scene" id="s5">
+    <img class="stk" id="s5r" src="../assets/ep02_robot.webp" style="left:600px;top:230px;width:360px">
+    <div class="a k" id="s5t" style="left:90px;top:280px;font-size:84px">OmniRank<br><span class="hl"><i id="s5m"></i>创作中心</span><br>就按这个写</div>
+    <div class="chk" id="c1" style="top:700px"><b>✓</b>先找证据，再动笔</div>
+    <div class="chk" id="c2" style="top:830px"><b>✓</b>数字要有出处</div>
+    <div class="chk" id="c3" style="top:960px"><b style="background:var(--acc);color:#fff">✕</b>“行业第一”会被挑出来</div>
+  </div>
+
+  <!-- S6 结尾 -->
+  <div class="scene" id="s6">
+    <div class="a k" id="e1" style="left:0;right:0;top:480px;text-align:center;font-size:150px;letter-spacing:-4px">OmniRank</div>
+    <div class="a k" id="e2" style="left:0;right:0;top:690px;text-align:center;font-size:84px">全域上榜</div>
+    <div class="tag g" id="e3" style="left:200px;top:880px;font-size:62px">GitHub 搜 OmniRank</div>
+    <div class="tag" id="e4" style="left:330px;top:1060px;font-size:46px">代码全部开源</div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
