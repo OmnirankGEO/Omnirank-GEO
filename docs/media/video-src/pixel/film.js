@@ -14,8 +14,8 @@ const put = (sel, html) => { $(sel).innerHTML = html; };
 const sfx = (name, t) => window.SFX.push({ t: +t.toFixed(3), name });
 function nar(text, t0, t1) {
   window.NARR.push({ t0, t1, text });
-  tl.call(() => { $('#subsT').textContent = text; $('#subs').style.opacity = 1; }, null, t0);
-  tl.call(() => { $('#subs').style.opacity = 0; }, null, t1);
+  tl.call(() => { if (window.SUBS_OVERRIDE) return; $('#subsT').textContent = text; $('#subs').style.opacity = 1; }, null, t0);
+  tl.call(() => { if (window.SUBS_OVERRIDE) return; $('#subs').style.opacity = 0; }, null, t1);
 }
 const hide = (sel) => gsap.set(sel, { autoAlpha: 0 });
 const show = (sel, t) => tl.set(sel, { autoAlpha: 1 }, t);
@@ -419,5 +419,7 @@ nar('这套让 AI 推荐你的 GEO 系统，现在开源了。', 182.3, 186.8);
 nar('去 GitHub 搜 OmniRank，部署一套试试。', 187.1, 191.6);
 
 window.DURATION = 194;
+// 配音版:字幕按真实配音时间由渲染脚本逐帧设置
+window.setSub = (text) => { $('#subsT').textContent = text || ''; $('#subs').style.opacity = text ? 1 : 0; };
 window.seekTo = (t) => { tl.seek(Math.round(t * 15) / 15, false); };  // 15fps 像素顿挫
 window.ready = document.fonts.ready.then(() => document.fonts.load('48px "Fusion Pixel 12px Proportional Simplified Chinese"', '王老板开源')).then(() => true);
