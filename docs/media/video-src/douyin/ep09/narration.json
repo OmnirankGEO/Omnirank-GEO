@@ -1,0 +1,28 @@
+{
+ "page": "douyin/ep09",
+ "duration": 25,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "tech",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "装一套 GEO 系统要几步？一句话就够。"}
+  ]},
+  {"id": "do", "lines": [
+   {"t": 2.6, "text": "把仓库克隆下来，对你的 AI 编程助手说：帮我把它部署好。"},
+   {"t": 6.7, "text": "仓库里的 AGENTS.md 写清了每一步，AI 照着做："},
+   {"t": 9.8, "text": "检查环境、生成密钥、建数据库、构建、启动、验收登录。"}
+  ]},
+  {"id": "safe", "lines": [
+   {"t": 14.6, "text": "端口只绑在本机，密钥不打印、不上传。"},
+   {"t": 18.1, "text": "跑完打开浏览器，就能登录。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 20.7, "text": "GitHub 搜 Omnirank-GEO，自己试试。"}
+  ]}
+ ]
+}

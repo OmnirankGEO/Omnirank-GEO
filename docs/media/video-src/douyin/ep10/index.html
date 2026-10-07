@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 10 集 · 30 秒通关 GEO 系统</title>
+<link rel="stylesheet" href="../../node_modules/@vp-tw/cjk-web-fonts-fusion-pixel-font/dist/12px/proportional/zh_hans/Fusion-Pixel-12px-Proportional-Simplified-Chinese.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 像素游戏风:地图上一路闯关 */
+:root{--bg:#1b1f3b;--acc:#ffcc00;--px:"Fusion Pixel 12px Proportional Simplified Chinese"}
+#badge b{font-family:var(--px);font-weight:400;background:#1b1f3b;padding:2px 14px}
+#badge span{color:#1b1f3b;font-family:var(--px);font-weight:400}
+#grain{opacity:.1}
+#cam{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0}
+#cam img{width:1080px;height:1920px;display:block}
+.px{font-family:var(--px);font-weight:400}
+.pbox{position:absolute;background:#1b1f3b;color:#fff;border:8px solid #fff;box-shadow:0 0 0 8px #1b1f3b,14px 14px 0 8px rgba(0,0,0,.35);font-family:var(--px)}
+.lv{position:absolute;left:70px;top:240px;width:820px;padding:30px 40px;background:#1b1f3b;color:#fff;border:8px solid #fff;box-shadow:0 0 0 8px #1b1f3b,14px 14px 0 8px rgba(0,0,0,.35);font-family:var(--px);visibility:hidden}
+.lt{font-size:48px;color:var(--acc)}
+.ln{font-size:108px;line-height:1.15}
+.ld{font-size:48px;color:#cfd3ff;margin-top:6px}
+.hp{display:flex;gap:10px;margin-top:22px}
+.hp i{width:60px;height:24px;background:#3a3f6b;display:block}
+.hp i.on{background:#3ddc84}
+.clr{position:absolute;right:30px;bottom:-30px;font-size:60px;color:#ff4d4d;border:8px solid #ff4d4d;padding:0 16px;transform:rotate(-10deg);background:#fff;visibility:hidden}
+.pix{position:absolute;image-rendering:pixelated;filter:drop-shadow(0 12px 0 rgba(0,0,0,.25))}
+.blink{position:absolute;font-family:var(--px);color:#fff;font-size:60px;text-shadow:6px 6px 0 #1b1f3b}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="cam"><img src="../assets/ep10_map.jpg"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+  <img class="pix" id="hero" src="../assets/ep10_hero.webp" style="left:400px;top:1000px;width:280px;z-index:4">
+
+  <div class="scene" id="s0">
+    <div class="pbox" id="t0" style="left:70px;top:250px;width:820px;padding:30px 40px">
+      <div style="font-size:48px;color:var(--acc)">最终关</div>
+      <div style="font-size:120px;line-height:1.1">30 秒通关<br>GEO 系统</div>
+    </div>
+    <div class="blink" id="ps" style="left:260px;top:760px">▶ PRESS START</div>
+  </div>
+  
+  <div class="lv" id="v1"><div class="lt">LEVEL 1</div><div class="ln">诊断</div><div class="ld">看清 AI 怎么说你</div><div class="hp"><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="clr" id="c1">CLEAR!</div></div>
+  <div class="lv" id="v2"><div class="lt">LEVEL 2</div><div class="ln">报价</div><div class="ld">做什么、花多少，说清楚</div><div class="hp"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div><div class="clr" id="c2">CLEAR!</div></div>
+  <div class="lv" id="v3"><div class="lt">LEVEL 3</div><div class="ln">写作</div><div class="ld">句句有出处</div><div class="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div><div class="clr" id="c3">CLEAR!</div></div>
+  <div class="lv" id="v4"><div class="lt">LEVEL 4</div><div class="ln">发布</div><div class="ld">发到 AI 会看的地方</div><div class="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i></div><div class="clr" id="c4">CLEAR!</div></div>
+  <div class="lv" id="v5"><div class="lt">LEVEL 5</div><div class="ln">监测</div><div class="ld">天天问 AI 推荐了没有</div><div class="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div><div class="clr" id="c5">CLEAR!</div></div>
+  <div class="lv" id="v6"><div class="lt">LEVEL 6</div><div class="ln">飞轮</div><div class="ld">越用越准，人来拍板</div><div class="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div><div class="clr" id="c6">CLEAR!</div></div>
+  <div class="lv" id="v7"><div class="lt">LEVEL 7-8</div><div class="ln">分销 + 计费</div><div class="ld">服务商也能接单，笔笔有账</div><div class="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div><div class="clr" id="c7">CLEAR!</div></div>
+  <div class="scene" id="s9">
+    <img class="pix" id="chest" src="../assets/ep10_chest.webp" style="left:300px;top:620px;width:480px">
+    <div class="pbox" id="e1" style="left:70px;top:240px;width:820px;padding:24px 40px;text-align:center"><div style="font-size:144px;color:var(--acc)">通关！</div><div style="font-size:48px">全部免费开源</div></div>
+    <div class="pbox" id="e2" style="left:70px;top:1130px;width:820px;padding:20px 30px;text-align:center;font-size:60px">GitHub 搜 <span style="color:var(--acc)">Omnirank-GEO</span></div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

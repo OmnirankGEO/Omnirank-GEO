@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 9 集 · 一句话把系统装好</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 浅色终端风:米灰桌面 + 白色窗口 + 打字机 */
+:root{--bg:#e7e3da;--acc:#ff5a1f;--ink:#1d1d1f;--ok:#14a44d}
+body,#stage{color:var(--ink)}
+#desk{position:absolute;inset:0;background:linear-gradient(rgba(0,0,0,.05) 2px,transparent 2px) 0 0/60px 60px,linear-gradient(90deg,rgba(0,0,0,.05) 2px,transparent 2px) 0 0/60px 60px,var(--bg)}
+#badge b{color:var(--ink)}
+#grain{opacity:.12}
+.k{font-weight:900;letter-spacing:-2px;line-height:1.08}
+.win{position:absolute;background:#fff;border-radius:28px;box-shadow:0 40px 90px rgba(0,0,0,.22),0 0 0 2px rgba(0,0,0,.06);overflow:hidden}
+.win .tb{height:64px;background:#f3f1ec;border-bottom:2px solid #e2ded5;display:flex;align-items:center;gap:14px;padding-left:28px;font-size:28px;font-weight:700;color:#888}
+.win .tb i{width:20px;height:20px;border-radius:50%;display:block}
+.mono{font-family:"DejaVu Sans Mono","Noto Sans SC",monospace}
+.term{padding:34px 40px;font-size:44px;line-height:1.7;white-space:pre-wrap;font-weight:700}
+.ln{opacity:0}
+.ok{color:var(--ok);font-weight:700}
+.cur{display:inline-block;width:18px;height:38px;background:var(--acc);vertical-align:middle;margin-left:4px}
+.say{position:absolute;background:var(--ink);color:#fff;border-radius:30px;padding:26px 36px;font-size:46px;font-weight:900;line-height:1.35}
+.pill{position:absolute;background:var(--acc);color:#fff;font-weight:900;font-size:46px;padding:12px 30px;border-radius:999px}
+.big{position:absolute;font-weight:900;letter-spacing:-4px;line-height:1}
+.bar{height:22px;background:#eee;border-radius:11px;overflow:hidden;margin:20px 36px 30px}
+.bar b{display:block;height:100%;width:100%;background:var(--ok);transform-origin:0 50%;transform:scaleX(0)}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="desk"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <div class="scene" id="s0">
+    <div class="a k" id="h0a" style="left:80px;top:300px;font-size:96px">装一套 GEO 系统</div>
+    <div class="a k" id="h0b" style="left:80px;top:430px;font-size:96px">要几步？</div>
+    <div class="big" id="h0n" style="left:80px;top:620px;font-size:420px;color:var(--acc)">1</div>
+    <div class="a k" id="h0c" style="left:400px;top:820px;font-size:150px">句话</div>
+  </div>
+
+  <div class="scene" id="s1">
+    <div class="win" id="w1" style="left:70px;top:260px;width:860px;height:300px;font-size:38px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>终端</div>
+      <div class="term mono" style="font-size:36px"><span style="color:#999">$</span> <span id="c1"></span><span class="cur" id="cu1"></span></div>
+    </div>
+    <div class="win" id="w2" style="left:70px;top:620px;width:860px;height:560px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>AI 编程助手</div>
+    </div>
+    <div class="say" id="sy" style="left:200px;top:740px">帮我把这个仓库<br>部署好 🙏</div>
+    <div class="pill" id="pl" style="left:110px;top:1000px">AI 读取 AGENTS.md</div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="win" id="w3" style="left:70px;top:240px;width:860px;height:1000px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>AI 正在部署…</div>
+      <div class="term"><div class="ln" id="l1"><span class="ok">✓</span> 检查 Docker 环境</div><div class="ln" id="l2"><span class="ok">✓</span> 随机生成数据库口令、密钥</div><div class="ln" id="l3"><span class="ok">✓</span> 启动数据库、Redis</div><div class="ln" id="l4"><span class="ok">✓</span> 构建应用镜像</div><div class="ln" id="l5"><span class="ok">✓</span> 建表、迁移</div><div class="ln" id="l6"><span class="ok">✓</span> 启动网站和定时任务</div><div class="ln" id="l7"><span class="ok">✓</span> 验收：管理员登录成功</div></div>
+      <div class="bar"><b id="pb"></b></div>
+    </div>
+    <div class="pill" id="done" style="left:520px;top:1120px;font-size:72px;padding:14px 40px;transform:rotate(-6deg);background:var(--ok)">7/7 完成</div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="a k" id="s3t" style="left:80px;top:260px;font-size:80px">只在<span style="color:var(--acc)">本机</span>运行</div>
+    <div class="win" id="w4" style="left:70px;top:420px;width:860px;height:470px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>安全</div>
+      <div class="term"><div><span class="ok">✓</span> 端口只绑 127.0.0.1</div><div><span class="ok">✓</span> 密钥不打印、不上传</div><div><span class="ok">✓</span> 不动你电脑上别的项目</div></div>
+    </div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="a k" id="s4t" style="left:80px;top:250px;font-size:80px">打开浏览器，<span style="color:var(--acc)">登录</span></div>
+    <div class="win" id="w5" style="left:40px;top:400px;width:920px;height:820px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span class="mono">127.0.0.1:8001</span></div>
+      <img id="app" src="../assets/ep09_app.jpg" style="width:1300px;display:block;transform-origin:0 0">
+    </div>
+  </div>
+
+  <div class="scene" id="s5">
+    <div class="a k" id="e1" style="left:80px;top:360px;font-size:120px">自己试试</div>
+    <div class="win" id="e2" style="left:70px;top:560px;width:860px;height:200px">
+      <div class="tb"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i>GitHub</div>
+      <div class="term" style="font-size:46px;font-weight:900">搜 <span style="color:var(--acc)">Omnirank-GEO</span></div>
+    </div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

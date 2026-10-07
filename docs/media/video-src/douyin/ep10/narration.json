@@ -1,0 +1,30 @@
+{
+ "page": "douyin/ep10",
+ "duration": 27,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "tech",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "最后一集：三十秒，带你通关一整套 GEO 系统！"}
+  ]},
+  {"id": "lv", "lines": [
+   {"t": 3.1, "text": "第一关诊断：看清 AI 怎么说你。"},
+   {"t": 5.7, "text": "第二关报价：做什么、花多少，说清楚。"},
+   {"t": 8.3, "text": "第三关写作：句句有出处。"},
+   {"t": 10.5, "text": "第四关发布：发到 AI 会看的地方。"}
+  ]},
+  {"id": "lv2", "lines": [
+   {"t": 12.9, "text": "第五关监测：天天问 AI，推荐了没有。"},
+   {"t": 15.5, "text": "第六关飞轮：越用越准，人来拍板。"},
+   {"t": 18.1, "text": "再加上分销和计费，服务商也能接单。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 21.1, "text": "全部免费开源。GitHub 搜 Omnirank-GEO，开始你的游戏。"}
+  ]}
+ ]
+}
