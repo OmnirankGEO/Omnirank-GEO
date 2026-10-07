@@ -29,6 +29,7 @@ import { useIsCEndContext } from '@/hooks/useIsCEndContext';
 import { BridgeBanner } from '@/components/workbench/BridgeBanner';
 import { isSandboxActive } from '@/sandbox/sandboxState';
 import { setTutorialStage } from '@/sandbox/tutorialStage';
+import { useScreenshotMode } from '@/sandbox/screenshotMode';
 import { useMarkStepCompleted } from '@/hooks/useMarkStepCompleted';
 import { HelpHint } from '@/components/onboarding/HelpHint';
 import { copyAsyncText } from '@/lib/copyUtils';
@@ -126,6 +127,8 @@ export function DiagnosisReport() {
     const [showStep2Bridge, setShowStep2Bridge] = useState(false);
     const [step1Triggered, setStep1Triggered] = useState(false);
     const sandboxStep1DoneRef = useRef(false);
+    // 截图模式要藏掉沙盒的全部视觉提示(见 sandbox/screenshotMode.ts),过场话术窗也不弹
+    const screenshotMode = useScreenshotMode();
     // (1) 落地报告页 · 标记第一步完成 + 触发后续
     useEffect(() => {
         if (!isSandboxActive() || sandboxStep1DoneRef.current) return;
@@ -135,10 +138,10 @@ export function DiagnosisReport() {
     }, [markStep]);
     // (2) 庆祝先播 ~2.6s, 再弹过场话术窗(依赖 state · StrictMode 双跑也能正确重设定时器)
     useEffect(() => {
-        if (!step1Triggered) return;
+        if (!step1Triggered || screenshotMode) return;
         const t = window.setTimeout(() => setShowStep2Bridge(true), 2600);
         return () => window.clearTimeout(t);
-    }, [step1Triggered]);
+    }, [step1Triggered, screenshotMode]);
 
     const loadReport = useCallback(async () => {
         if (!id) return;
@@ -587,7 +590,8 @@ export function DiagnosisReport() {
                 />
             )}
 
-            {report.detail?.brand_id ? (
+            {/* 沙盒没有观测数据合同,渲染出来只会是「尚未接入教程」错误卡 */}
+            {report.detail?.brand_id && !isSandboxActive() ? (
                 <Suspense fallback={<div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>}>
                     <DiagnosisRecommendationBehavior
                         brandId={report.detail.brand_id}

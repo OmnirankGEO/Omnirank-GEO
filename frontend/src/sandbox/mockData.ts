@@ -454,7 +454,8 @@ export function getSandboxDiagnosisDetail() {
 
 export function getSandboxDiagnosisContent() {
     return {
-        content: demoReportMd,
+        // 首尾的 [SYNTHETIC-DEMO] 注释留给校验脚本,渲染器会把它当正文显示,交给页面前剥掉
+        content: demoReportMd.replace(/<!--[\s\S]*?-->/g, '').trim(),
         version: 'v2',
         audience: 'client',
         data_completeness_score: 85,
