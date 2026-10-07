@@ -22,7 +22,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#05070b;color:#f
 #badge b{font-weight:900;font-size:40px;color:#fff;letter-spacing:2px}
 #badge span{padding:4px 16px;background:var(--acc,#2fd47a);color:#fff;font-weight:900}
 #cap{position:absolute;left:60px;right:150px;top:1385px;display:flex;justify-content:center;z-index:12;opacity:0;pointer-events:none}
-#cap span{background:rgba(5,7,11,.72);padding:16px 30px;border-radius:20px;font-size:46px;font-weight:700;line-height:1.35;text-align:center;letter-spacing:1px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+#cap span{color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.6);background:rgba(10,10,10,.82);padding:16px 30px;border-radius:20px;font-size:46px;font-weight:700;line-height:1.35;text-align:center;letter-spacing:1px;box-shadow:0 10px 40px rgba(0,0,0,.4)}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:11;pointer-events:none}
 #progress{position:absolute;left:0;top:0;height:6px;background:var(--acc,#2fd47a);width:0;z-index:13}
 #grain{position:absolute;inset:0;width:1080px;height:1920px;pointer-events:none;z-index:9;mix-blend-mode:overlay;opacity:.5}
