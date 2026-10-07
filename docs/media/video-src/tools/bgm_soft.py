@@ -99,7 +99,7 @@ def soft_sfx(events, n):
         'stamp': tone(120, 60, 0.25, 18, 0.55) + np.pad(noise(0.12, 200, 2500, 0.4, attack=0.002), (0, int(0.25 * SR) - int(0.12 * SR))),
         'rise': tone(300, 900, 0.5, 3, 0.12),
         'boom': tone(90, 38, 0.9, 5, 0.6) + np.pad(noise(0.35, 80, 1800, 0.5, attack=0.003), (0, int(0.9 * SR) - int(0.35 * SR))),
-        'sparkle': sum(np.pad(tone(f, f, 0.35, 14, 0.07), (int(k * 0.045 * SR), int((5 - k) * 0.045 * SR)))
+        'sparkle': sum(np.pad(tone(f, f, 0.35, 14, 0.07), (k * int(0.045 * SR), (5 - k) * int(0.045 * SR)))
                        for k, f in enumerate((2093, 2637, 3136, 3951, 4186, 5274))),
     }
     for ev in events:

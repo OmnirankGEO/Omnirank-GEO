@@ -292,8 +292,8 @@ def main():
     sduck = 1 - 0.35 * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)   # 人声时音效也让一点
     mix = voice + bgm * duck + sfx * sduck
     write_wav(os.path.join(out, 'mix_raw.wav'), mix / max(1.0, np.max(np.abs(mix)) / 0.95))
-    for name, arr in (('voice', voice), ('bgm', bgm * duck), ('sfx', sfx * sduck)):
-        write_wav(os.path.join(out, f'stem_{name}.wav'), arr)   # 分轨,方便检查音量
+    for stem, arr in (('voice', voice), ('bgm', bgm * duck), ('sfx', sfx * sduck)):
+        write_wav(os.path.join(out, f'stem_{stem}.wav'), arr)   # 分轨,方便检查音量
 
     # 5 统一响度并封装
     for v in mp['variants']:
