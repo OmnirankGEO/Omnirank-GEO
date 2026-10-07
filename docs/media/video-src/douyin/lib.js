@@ -120,6 +120,18 @@ function drawCanvas(t) {
     ctx.globalAlpha = Math.max(0, 1 - dt / 1.4); ctx.fillStyle = b.c; ctx.beginPath(); ctx.arc(x, y, b.r, 0, 6.28); ctx.fill();
   }
   ctx.globalAlpha = 1;
+  drawGrain(t);
+}
+/** 胶片颗粒:预生成 4 张噪点图,按帧轮换(只要页面有 #grain) */
+let _grain = null;
+function drawGrain(t) {
+  const cv = $('#grain'); if (!cv) return;
+  if (!_grain) {
+    _grain = [0, 1, 2, 3].map(() => { const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'); const d = g.createImageData(256, 256);
+      for (let i = 0; i < d.data.length; i += 4) { const v = rnd() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; } g.putImageData(d, 0, 0); return c; });
+  }
+  const ctx = cv.getContext('2d'); const img = _grain[Math.floor(t * 24) % 4];
+  ctx.fillStyle = ctx.createPattern(img, 'repeat'); ctx.fillRect(0, 0, 1080, 1920);
 }
 /** 系列角标:《AI 会推荐你吗?》第 N 集 */
 function seriesBadge(ep, t0, t1) {
@@ -135,6 +147,5 @@ function finish(duration) {
   const imgs = BG_IMGS.map((src) => new Promise((ok) => { const i = new Image(); i.onload = i.onerror = () => (i.decode ? i.decode().catch(() => 0) : 0).then(ok); i.src = src; }));
   window.ready = document.fonts.ready.then(() => Promise.all([...imgs,
     document.fonts.load('900 80px "Noto Sans SC"', '开源推荐'),
-    document.fonts.load('80px "ZCOOL QingKe HuangYou"', '开源推荐'),
   ])).then(() => true);
 }
