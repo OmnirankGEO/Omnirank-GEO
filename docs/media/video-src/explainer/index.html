@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>OmniRank 讲解片</title>
+<link rel="stylesheet" href="../node_modules/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/noto-sans-sc/500.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/noto-sans-sc/900.css">
+<style>
+:root{
+  --bg:#0d1014; --panel:#161b22; --panel2:#1d232c; --line:#2a313c;
+  --text:#e8edf3; --muted:#8b95a3; --green:#2fd47a; --green2:#1f9d58;
+  --amber:#f5b041; --red:#ef5b5b; --blue:#5aa9ff; --violet:#a78bfa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);
+  font-family:"Noto Sans SC","WenQuanYi Zen Hei",sans-serif}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;
+  background:radial-gradient(1200px 700px at 80% -10%,rgba(47,212,122,.10),transparent 60%),
+             radial-gradient(900px 600px at -10% 110%,rgba(90,169,255,.08),transparent 60%),var(--bg)}
+.scene{position:absolute;inset:0;opacity:0;visibility:hidden}
+.abs{position:absolute}
+.flex{display:flex}
+.center{display:flex;align-items:center;justify-content:center}
+/* chrome */
+#tag{position:absolute;left:80px;top:56px;display:flex;align-items:center;gap:18px;opacity:0;z-index:5}
+#tag .num{width:56px;height:56px;border-radius:16px;background:var(--green);color:#06210f;font-weight:900;font-size:30px;display:flex;align-items:center;justify-content:center}
+#tag .t{font-size:40px;font-weight:900;letter-spacing:2px}
+#tag .s{font-size:24px;color:var(--muted);margin-left:6px}
+#brand{position:absolute;right:80px;top:66px;font-size:22px;color:var(--muted);letter-spacing:1px;z-index:5;opacity:0}
+#brand b{color:var(--green)}
+#cap{position:absolute;left:0;right:0;bottom:54px;display:flex;justify-content:center;z-index:6;pointer-events:none}
+#cap span{background:rgba(8,10,13,.82);border:1px solid var(--line);padding:16px 34px;border-radius:14px;font-size:34px;font-weight:500;letter-spacing:1px;opacity:0;max-width:1640px;text-align:center}
+#cap b{color:var(--green);font-weight:700}
+#progress{position:absolute;left:0;bottom:0;height:6px;background:var(--green);width:0;z-index:7}
+/* generic */
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;font-size:22px;border:1px solid var(--line);background:var(--panel2)}
+.big{font-size:84px;font-weight:900;letter-spacing:2px}
+.muted{color:var(--muted)}
+.green{color:var(--green)} .red{color:var(--red)} .amber{color:var(--amber)}
+.shot{position:absolute;border-radius:18px;overflow:hidden;border:1px solid #3a4250;box-shadow:0 40px 120px rgba(0,0,0,.6);background:#111}
+.shot .bar{height:40px;background:#1a1f27;display:flex;align-items:center;gap:9px;padding-left:18px;border-bottom:1px solid #2a313c}
+.shot .bar i{width:13px;height:13px;border-radius:50%;background:#3a4250;display:block}
+.shot .bar em{font-style:normal;margin-left:18px;font-size:17px;color:var(--muted)}
+.shot img{display:block;width:100%}
+.shotlabel{position:absolute;padding:8px 18px;border-radius:10px;background:var(--green);color:#06210f;font-weight:700;font-size:22px;z-index:3}
+.arrow{color:var(--muted);font-size:40px}
+/* chat */
+.bubble{position:absolute;padding:24px 32px;border-radius:26px;font-size:36px;line-height:1.55}
+.user{right:330px;top:250px;background:var(--green2);color:#fff;border-bottom-right-radius:8px}
+.ai{left:330px;top:400px;width:1040px;background:var(--panel);border:1px solid var(--line);border-bottom-left-radius:8px}
+.ai .who{font-size:22px;color:var(--muted);margin-bottom:10px}
+/* grid diag */
+.gcell{width:150px;height:62px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
+.ghead{width:150px;text-align:center;font-size:24px;color:var(--muted)}
+.qrow{height:62px;display:flex;align-items:center;font-size:26px;width:470px}
+.barwrap{height:30px;background:var(--panel2);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.barfill{height:100%;width:0;border-radius:10px}
+/* nodes */
+.node{position:absolute;width:210px;height:210px;border-radius:50%;background:var(--panel);border:3px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.node .n{font-size:22px;color:var(--muted)} .node .l{font-size:38px;font-weight:900}
+.step{position:absolute;padding:22px 26px;border-radius:18px;background:var(--panel);border:2px solid var(--line);font-size:28px;font-weight:700;text-align:center;line-height:1.35}
+.step small{display:block;font-size:20px;color:var(--muted);font-weight:400;margin-top:6px}
+.chk{font-size:22px;padding:6px 14px;border-radius:8px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="tag"><div class="num">1</div><div class="t">诊断报告</div><div class="s"></div></div>
+  <div id="brand"><b>OmniRank</b> 全域上榜</div>
+
+  <!-- S1 hook -->
+  <div class="scene" id="s1">
+    <div class="abs muted" style="left:330px;top:150px;font-size:28px" id="s1hint">某天，一位客户打开了 AI 助手……</div>
+    <div class="bubble user" id="s1u"><span id="s1ut"></span></div>
+    <div class="bubble ai" id="s1a"><div class="who">AI 助手</div>
+      <div id="s1a1">为你推荐深圳口碑较好的几家：</div>
+      <div id="s1a2">① 星驰商务用车　② 恒远豪华专车　③ 云途企业出行</div>
+    </div>
+    <div class="abs center" id="s1miss" style="left:1400px;top:420px;width:400px;height:200px;flex-direction:column;gap:10px">
+      <div style="font-size:30px" class="muted">你的品牌</div>
+      <div style="font-size:54px;font-weight:900" class="red">没被提到</div>
+    </div>
+    <div class="abs center" id="s1big" style="left:0;right:0;top:760px;font-size:56px;font-weight:900">没被 AI 提到，在这次提问里就<span class="red">&nbsp;等于不存在</span></div>
+  </div>
+
+  <!-- S2 title -->
+  <div class="scene" id="s2">
+    <div class="abs center" style="left:0;right:0;top:300px;flex-direction:column;gap:30px">
+      <div id="s2a" style="font-size:132px;font-weight:900;letter-spacing:6px">OmniRank <span class="green">全域上榜</span></div>
+      <div id="s2b" style="font-size:54px;font-weight:700">让 AI 准确地推荐你的品牌，并且看得到推荐了没有</div>
+      <div id="s2c" class="flex" style="gap:22px;margin-top:20px">
+        <span class="pill">开源</span><span class="pill">可自部署</span><span class="pill">可商用</span><span class="pill">中文 AI 平台</span>
+      </div>
+      <div id="s2d" class="muted" style="font-size:30px;margin-top:40px">这件事叫 <b class="green">GEO</b>（生成式引擎优化）—— 可以理解成「AI 时代的 SEO」</div>
+    </div>
+  </div>
+
+  <!-- S3 overview -->
+  <div class="scene" id="s3">
+    <div id="s3ring" class="abs" style="left:0;top:0;width:1920px;height:1080px"></div>
+    <div class="abs center" id="s3mid" style="left:810px;top:350px;width:300px;height:160px;flex-direction:column;font-size:30px;text-align:center;line-height:1.5"><b style="font-size:40px">一条线</b><span class="muted">走到底，再越做越准</span></div>
+    <div class="abs flex" id="s3base" style="left:430px;top:850px;gap:40px">
+      <div class="card center" style="width:500px;height:86px;font-size:30px;font-weight:700;gap:14px">🤝 分销系统 <span class="muted" style="font-size:22px;font-weight:400">服务商用它做生意</span></div>
+      <div class="card center" style="width:500px;height:86px;font-size:30px;font-weight:700;gap:14px">💰 计价系统 <span class="muted" style="font-size:22px;font-weight:400">每一步怎么收、怎么退</span></div>
+    </div>
+  </div>
+
+  <!-- S4 diagnosis -->
+  <div class="scene" id="s4">
+    <div class="card abs" id="s4in" style="left:80px;top:170px;width:560px;padding:34px">
+      <div class="muted" style="font-size:22px">① 填基本信息</div>
+      <div style="font-size:30px;margin-top:18px">品牌：<b>一路顺风出行服务</b></div>
+      <div style="font-size:30px;margin-top:10px">行业：高端商务用车</div>
+      <div style="font-size:30px;margin-top:10px">城市：深圳</div>
+      <div class="muted" style="font-size:22px;margin-top:34px">② AI 站在用户角度出题</div>
+      <div id="s4qs" style="margin-top:12px;font-size:25px;line-height:1.9">
+        <div>“深圳豪车配司机哪家好？”</div>
+        <div>“深圳租埃尔法配司机的公司”</div>
+        <div>“企业长租商务车怎么选？”</div>
+        <div>“一路顺风出行服务靠谱吗？”</div>
+      </div>
+    </div>
+    <div class="abs" id="s4grid" style="left:720px;top:160px">
+      <div class="muted" style="font-size:22px;margin-bottom:18px">③ 把每个问题发给各家 AI（官方接口 + 联网搜索），逐条判断</div>
+      <div class="flex" style="gap:14px;margin-left:470px;margin-bottom:12px" id="s4heads">
+        <div class="ghead">通义千问</div><div class="ghead">DeepSeek</div><div class="ghead">豆包</div><div class="ghead">元宝</div>
+      </div>
+      <div id="s4rows"></div>
+      <div class="flex" style="gap:26px;margin-top:22px;font-size:22px" id="s4legend">
+        <span><span class="chk" style="background:#123d27;color:var(--green)">推荐</span> 排在前面主动推荐</span>
+        <span><span class="chk" style="background:#3a2e12;color:var(--amber)">提到</span> 顺带一提</span>
+        <span><span class="chk" style="background:#3a1717;color:var(--red)">未提到</span> 只推荐了同行</span>
+      </div>
+    </div>
+    <div class="abs card" id="s4score" style="left:720px;top:618px;width:1120px;padding:26px 36px">
+      <div class="muted" style="font-size:22px;margin-bottom:16px">④ 按规则算分（不让大模型凭感觉打分）</div>
+      <div id="s4bars"></div>
+      <div class="abs" style="right:40px;top:40px;text-align:right">
+        <div style="font-size:84px;font-weight:900" id="s4num">0</div>
+        <div class="chk" style="background:#3a1717;color:var(--red);font-size:26px;display:inline-block">危急级</div>
+      </div>
+    </div>
+    <div class="shot" id="s4shot" style="left:360px;top:130px;width:1200px"><div class="bar"><i></i><i></i><i></i><em>体检报告 · 系统真实界面（演示数据）</em></div><img src="../ui/report-top.png"></div>
+    <div class="shot" id="s4shot2" style="left:420px;top:160px;width:1200px"><div class="bar"><i></i><i></i><i></i><em>报告里的打分说明</em></div><img src="../ui/report-funnel.png"></div>
+  </div>
+
+  <!-- S5 quote -->
+  <div class="scene" id="s5">
+    <div class="abs flex" id="s5f" style="left:80px;top:230px;gap:18px;align-items:center"></div>
+    <div class="abs flex" id="s5tiers" style="left:200px;top:560px;gap:40px"></div>
+    <div class="abs flex" id="s5flow" style="left:80px;top:820px;gap:14px;align-items:center"></div>
+    <div class="shot" id="s5shot" style="left:360px;top:130px;width:1200px"><div class="bar"><i></i><i></i><i></i><em>报价方案 · 系统真实界面（演示数据）</em></div><img src="../ui/quote-priced.png"></div>
+  </div>
+
+  <!-- S6 writing -->
+  <div class="scene" id="s6">
+    <div class="abs" id="s6pipe" style="left:0;top:0;width:1920px;height:1080px"></div>
+    <div class="card abs" id="s6demo" style="left:300px;top:620px;width:1320px;padding:34px 40px">
+      <div class="muted" style="font-size:22px">审稿示例</div>
+      <div style="font-size:34px;margin-top:16px;position:relative;display:inline-block" id="s6bad">“我们是<span id="s6hl">深圳行业第一的商务用车公司</span>，服务过上万家企业。”</div>
+      <div class="red" style="font-size:24px;margin-top:12px" id="s6why">✗ 「第一」是绝对化说法，「上万家」没有来源 —— AI 和读者都不信</div>
+      <div style="font-size:34px;margin-top:22px" id="s6good">→ “2019 年起为深圳企业提供商务用车服务，<span class="green">车型与资质可在官网核验</span>。”</div>
+    </div>
+  </div>
+
+  <!-- S7 publish -->
+  <div class="scene" id="s7">
+    <div class="abs" id="s7modes" style="left:80px;top:170px;width:620px"></div>
+    <div class="abs card" id="s7media" style="left:760px;top:170px;width:1080px;padding:28px 34px"></div>
+    <div class="abs flex" id="s7states" style="left:760px;top:640px;gap:14px;align-items:center"></div>
+    <div class="abs" id="s7refund" style="left:760px;top:760px;font-size:30px"></div>
+    <div class="shot" id="s7shot" style="left:360px;top:130px;width:1200px"><div class="bar"><i></i><i></i><i></i><em>发布中心 · 系统真实界面（演示媒体）</em></div><img src="../ui/publish.png"></div>
+  </div>
+
+  <!-- S8 monitoring -->
+  <div class="scene" id="s8">
+    <div class="abs card" id="s8chart" style="left:80px;top:170px;width:1060px;height:560px;padding:30px 36px">
+      <div class="muted" style="font-size:22px">每天替你重新问一遍 AI · 出现率</div>
+      <svg width="990" height="440" style="margin-top:10px" id="s8svg">
+        <g stroke="#2a313c" stroke-width="1"><line x1="40" y1="60" x2="980" y2="60"/><line x1="40" y1="180" x2="980" y2="180"/><line x1="40" y1="300" x2="980" y2="300"/><line x1="40" y1="410" x2="980" y2="410"/></g>
+        <g fill="#8b95a3" font-size="18"><text x="0" y="66">75%</text><text x="0" y="186">50%</text><text x="0" y="306">25%</text><text x="8" y="416">0</text></g>
+        <line x1="40" y1="96" x2="980" y2="96" stroke="#f5b041" stroke-dasharray="8 8" stroke-width="2"/>
+        <text x="830" y="86" fill="#f5b041" font-size="20">标准版目标 65%</text>
+        <path id="s8line" d="" fill="none" stroke="#2fd47a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle id="s8dot" r="9" fill="#2fd47a" cx="40" cy="380"/>
+      </svg>
+      <div class="abs" style="right:40px;top:30px;font-size:64px;font-weight:900" class="green"><span id="s8pct" class="green">11%</span></div>
+    </div>
+    <div class="abs" id="s8cats" style="left:1190px;top:170px;width:650px"></div>
+    <div class="abs card" id="s8attr" style="left:80px;top:770px;width:1760px;height:150px;padding:0 40px;display:flex;align-items:center;gap:30px;font-size:28px"></div>
+    <div class="shot" id="s8shot" style="left:360px;top:130px;width:1200px"><div class="bar"><i></i><i></i><i></i><em>监测中心 · 系统真实界面（演示数据）</em></div><img src="../ui/monitoring.png"></div>
+  </div>
+
+  <!-- S9 flywheel -->
+  <div class="scene" id="s9">
+    <div id="s9ring" class="abs" style="left:0;top:0;width:1920px;height:1080px"></div>
+    <div class="abs card" id="s9w" style="left:1250px;top:220px;width:590px;padding:30px 34px">
+      <div class="muted" style="font-size:22px;margin-bottom:16px">AI 对来源的「重视程度」</div>
+      <div id="s9bars"></div>
+    </div>
+    <div class="abs card" id="s9rule" style="left:1250px;top:640px;width:590px;padding:26px 34px;font-size:26px;line-height:1.8">
+      <div>🧑‍⚖️ 学到的只是<b class="amber">建议</b>，管理员确认才生效</div>
+      <div>🧪 新写法先做对照实验，样本够了才下结论</div>
+      <div>🟡 效果变差会提示「建议回滚」</div>
+    </div>
+  </div>
+
+  <!-- S10 distribution + billing -->
+  <div class="scene" id="s10">
+    <div class="abs" id="s10l" style="left:80px;top:230px;width:860px"></div>
+    <div class="abs" id="s10r" style="left:1000px;top:230px;width:840px"></div>
+  </div>
+
+  <!-- S11 outro -->
+  <div class="scene" id="s11">
+    <div class="abs center" style="left:0;right:0;top:220px;flex-direction:column;gap:26px">
+      <div id="s11a" style="font-size:44px;font-weight:700" class="muted">诊断 → 报价 → 创作 → 发布 → 监测 → 飞轮</div>
+      <div id="s11b" style="font-size:120px;font-weight:900;letter-spacing:6px">OmniRank <span class="green">全域上榜</span></div>
+      <div id="s11c" class="flex" style="gap:22px"><span class="pill">Apache-2.0 + 署名条件</span><span class="pill">Docker Compose 部署</span><span class="pill">可白标、可商用</span></div>
+      <div id="s11d" style="font-size:40px;margin-top:40px;font-weight:700">github.com/OmnirankGEO/Omnirank-GEO</div>
+      <div id="s11e" class="muted" style="font-size:28px">让 AI 推荐你 —— 从看清你在 AI 里的样子开始</div>
+    </div>
+  </div>
+
+  <div id="cap"><span id="capt"></span></div>
+  <div id="progress"></div>
+</div>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+<script>window.SUBS_OVERRIDE_INIT = new URLSearchParams(location.search).has("dub");</script>
+<script src="film.js"></script>
+</body>
+</html>

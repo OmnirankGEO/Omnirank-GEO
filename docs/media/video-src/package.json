@@ -1,0 +1,15 @@
+{
+  "name": "omnirank-videos",
+  "private": true,
+  "description": "OmniRank 介绍视频源码:explainer(MG 讲解版)与 pixel(像素小剧场版)",
+  "scripts": {
+    "dub:explainer": "python3 tools/dub.py explainer",
+    "dub:pixel": "python3 tools/dub.py pixel"
+  },
+  "dependencies": {
+    "@fontsource/noto-sans-sc": "^5.2.0",
+    "@vp-tw/cjk-web-fonts-fusion-pixel-font": "0.0.1",
+    "gsap": "^3.15.0",
+    "playwright": "^1.58.1"
+  }
+}

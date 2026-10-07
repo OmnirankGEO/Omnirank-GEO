@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://github.com/OmnirankGEO/Omnirank-GEO/raw/main/docs/media/omnirank-intro.mp4">
-    <img src="docs/media/omnirank-intro-poster.png" alt="3 分钟看懂 OmniRank:点击播放介绍视频" width="720">
+    <img src="docs/media/omnirank-intro-poster.jpg" alt="4 分钟看懂 OmniRank:点击播放介绍视频(有声版)" width="720">
   </a>
   <br>
-  <sub>▲ 点击观看 3 分钟像素小剧场《王老板的 AI 上榜之旅》:每一关讲清一个功能为什么存在(界面截图为演示数据)</sub>
+  <sub>▲ 点击观看 4 分钟介绍视频(有配音):诊断、报价、创作、发布、监测、飞轮、分销、计价分别做什么、怎么运作(界面截图为演示数据)<br>想看轻松版?还有一部 3 分钟像素小剧场 <a href="https://github.com/OmnirankGEO/Omnirank-GEO/raw/main/docs/media/omnirank-pixel.mp4">《王老板的 AI 上榜之旅》</a></sub>
 </p>
 
 **许可证:Apache-2.0 + 署名附加条件(非 OSI 认证的纯开源,附加条件只要求保留署名)。** 详见 [LICENSE](LICENSE)。

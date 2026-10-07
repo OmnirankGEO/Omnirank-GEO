@@ -4,7 +4,11 @@ import numpy as np
 
 SR = 44100
 HERE = os.path.dirname(os.path.abspath(__file__))
-meta = json.load(open(os.path.join(HERE, 'out/meta.json')))
+# META / OUT 可由配音脚本指定;STEMS=1 时另外输出 bgm.wav 与 sfx.wav 两轨
+META = os.environ.get('META', os.path.join(HERE, 'out/meta.json'))
+OUT = os.environ.get('OUT', os.path.join(HERE, 'out'))
+os.makedirs(OUT, exist_ok=True)
+meta = json.load(open(META))
 DUR = meta['dur'] + 1.0
 N = int(DUR * SR)
 rng = np.random.default_rng(3)
@@ -114,9 +118,10 @@ def section(kind):
 
 plan = [(0, 'hook'), (8, 'hook')]
 t = 16
-while t < 176:
+END_AT = int((DUR - 18) // 8 * 8)  # 结尾段起点,片长变了也跟着走
+while t < END_AT:
     plan.append((t, 'story2' if (t // 8) % 4 == 3 else 'story')); t += 8
-plan += [(176, 'end'), (184, 'end'), (192, 'end')]
+plan += [(END_AT + i * 8, 'end') for i in range(int((DUR - END_AT) // 8) + 1)]
 bgm = np.zeros(N)
 cache = {}
 for st, kind in plan:
@@ -127,12 +132,12 @@ fade = np.ones(N); fo = int(3 * SR); fade[-fo:] = np.linspace(1, 0, fo)
 bgm *= fade
 # 旁白段落时 BGM 压低一点,给配音留空间
 duck = np.ones(N)
-for nline in meta['narr']:
+for nline in ([] if os.environ.get('STEMS') else meta['narr']):
     a, b = int(nline['t0'] * SR), int(nline['t1'] * SR); duck[a:b] = 0.7
 k = int(0.15 * SR); duck = np.convolve(duck, np.ones(k) / k, mode='same')
 bgm *= duck
 # 讲故事段(12–172 秒)整体再压低,给配音留空间;开场和结尾保持
-g = np.ones(N); a0, a1 = int(12 * SR), int(172 * SR); g[a0:a1] = 0.6
+g = np.ones(N); a0, a1 = int(12 * SR), int((END_AT - 4) * SR); g[a0:a1] = 0.6
 k = int(0.8 * SR); g = np.convolve(g, np.ones(k) / k, mode='same'); g[:k] = 1; g[-k:] = g[-k - 1]
 bgm *= g
 
@@ -143,14 +148,20 @@ d = int(0.012 * SR)
 L = mix; R = np.concatenate([np.zeros(d), bgm[:-d] * 0.55 / peak * 0.89]) + sfx_track * 0.6 / peak * 0.89
 st = np.stack([L, R], axis=1)
 pcm = (np.clip(st, -1, 1) * 32767).astype('<i2')
-with wave.open(os.path.join(HERE, 'out/audio.wav'), 'wb') as w:
+def save(path, arr):
+    p16 = (np.clip(arr, -1, 1) * 32767).astype('<i2')
+    with wave.open(path, 'wb') as ww:
+        ww.setnchannels(2 if arr.ndim == 2 else 1); ww.setsampwidth(2); ww.setframerate(SR); ww.writeframes(p16.tobytes())
+if os.environ.get('STEMS'):
+    save(os.path.join(OUT, 'bgm.wav'), bgm * 0.55); save(os.path.join(OUT, 'sfx.wav'), sfx_track * 0.6)
+with wave.open(os.path.join(OUT, 'audio.wav'), 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
 
 # 同时输出纯 BGM+音效 与 SRT
 def ts(x):
     h = int(x // 3600); m = int(x % 3600 // 60); s = x % 60
     return f'{h:02d}:{m:02d}:{int(s):02d},{int(round((s - int(s)) * 1000)):03d}'
-with open(os.path.join(HERE, 'out/narration.srt'), 'w', encoding='utf-8') as f:
+with open(os.path.join(OUT, 'narration.srt' if not os.environ.get('STEMS') else 'timeline.srt'), 'w', encoding='utf-8') as f:  # 配音版的 SRT 由 dub.py 按真实配音时间生成
     for i, n in enumerate(meta['narr'], 1):
         f.write(f"{i}\n{ts(n['t0'])} --> {ts(n['t1'])}\n{n['text']}\n\n")
 print('ok', len(meta['sfx']), 'sfx,', len(meta['narr']), 'lines, peak', round(float(peak), 3))
