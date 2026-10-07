@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 1 集 · GEO 系统开源了</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/400.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/zcool-qingke-huangyou/400.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+:root{--bg:#04060a}
+.k{font-weight:900;letter-spacing:4px}
+.hq{font-family:"ZCOOL QingKe HuangYou";font-weight:400}
+.glow{color:#eafff3;text-shadow:0 0 18px rgba(47,212,122,.9),0 0 60px rgba(47,212,122,.55),0 0 140px rgba(47,212,122,.35)}
+.g{color:#2fd47a}.r{color:#ff5d6c}.m{color:#8d97a6}
+/* 手机 */
+.phone{width:640px;height:1180px;border-radius:84px;background:#0c0f14;border:14px solid #1b2028;box-shadow:0 60px 160px rgba(0,0,0,.7),0 0 0 2px #2a313c,0 0 120px rgba(47,212,122,.18);overflow:hidden;position:relative}
+.phone .notch{position:absolute;left:50%;top:18px;width:200px;height:40px;margin-left:-100px;border-radius:30px;background:#000}
+.msg{position:absolute;left:36px;right:36px;font-size:34px;line-height:1.5;border-radius:30px;padding:24px 28px}
+.me{background:linear-gradient(135deg,#2fd47a,#1f9d58);color:#03140a;left:auto;font-weight:700}
+.ai{background:#171c24;border:1.5px solid #2a313c}
+.nm{display:inline-block;padding:4px 16px;margin:6px 8px 0 0;border-radius:14px;background:rgba(47,212,122,.16);border:1.5px solid rgba(47,212,122,.5);font-weight:700}
+.feat{width:900px;padding:44px 50px;display:flex;gap:40px;align-items:center}
+.feat .ic{width:150px;height:150px;border-radius:40px;flex:none;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(47,212,122,.45),rgba(47,212,122,.08));border:1.5px solid rgba(47,212,122,.5)}
+.feat h3{font-size:66px;font-weight:900;letter-spacing:3px}
+.feat p{font-size:36px;color:#b9c3cf;margin-top:10px;line-height:1.4}
+.term{width:900px;border-radius:32px;background:#0b0e13;border:1.5px solid #2a313c;box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden}
+.term .bar{height:64px;background:#141922;display:flex;align-items:center;gap:14px;padding-left:28px}
+.term .bar i{width:20px;height:20px;border-radius:50%;display:block}
+.term pre{font-family:"Noto Sans SC",monospace;font-size:36px;line-height:1.7;padding:34px 40px;color:#c9f7dc;white-space:pre-wrap}
+.pill{display:inline-flex;align-items:center;padding:16px 38px;border-radius:999px;font-size:44px;font-weight:900;background:rgba(47,212,122,.14);border:2px solid rgba(47,212,122,.6);color:#bdf8d6}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="bgs"></div>
+  <div id="aurora"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <!-- S0 钩子 -->
+  <div class="scene" id="s0">
+    <div class="a c" id="h0a" style="left:0;right:0;top:470px;font-size:64px;font-weight:700;color:#cfd6df">我们把一整套</div>
+    <div class="a c k glow hq" id="h0b" style="left:0;right:0;top:570px;font-size:250px;line-height:1.1">GEO 系统</div>
+    <div class="a c" id="h0c" style="left:0;right:0;top:880px"><span class="k" id="h0cs" style="font-size:190px;padding:0 40px;background:linear-gradient(90deg,#2fd47a,#a6ffd0);-webkit-background-clip:text;color:transparent">开源了</span></div>
+  </div>
+
+  <!-- S1 手机问 AI -->
+  <div class="scene" id="s1">
+    <div class="a c" style="left:0;right:0;top:200px"><div class="phone" id="ph">
+      <div class="notch"></div>
+      <div class="m" style="position:absolute;top:96px;left:0;right:0;text-align:center;font-size:28px">AI 助手</div>
+      <div class="msg me" id="q1" style="top:190px;right:36px;left:140px"><span id="q1t"></span></div>
+      <div class="msg ai" id="a1" style="top:360px">
+        <div class="m" style="font-size:26px">为你推荐深圳口碑较好的商务用车：</div>
+        <div style="margin-top:10px"><span class="nm" id="n1">① 星驰商务</span><span class="nm" id="n2">② 恒远专车</span><span class="nm" id="n3">③ 云途出行</span></div>
+      </div>
+      <div class="msg ai" id="miss" style="top:700px;border-color:#ff5d6c;background:rgba(255,93,108,.08)">
+        <div class="m" style="font-size:26px">你的品牌</div><div class="k r" style="font-size:52px;margin-top:6px">没被提到 ✕</div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- S2 GEO 定义 -->
+  <div class="scene" id="s2">
+    <div class="a c k hq glow" id="geo" style="left:0;right:0;top:420px;font-size:300px">GEO</div>
+    <div class="a c" style="left:0;right:0;top:1090px"><div class="glass" id="eq" style="padding:22px 50px;font-size:70px;font-weight:900;background:rgba(4,8,12,.72)">让 AI <span class="g" style="margin:0 14px">主动推荐</span>你</div></div>
+    <div class="a c m" id="eq2" style="left:0;right:0;top:1270px;font-size:36px">Generative Engine Optimization · 生成式引擎优化</div>
+  </div>
+
+  <!-- S3 功能卡 -->
+  <div class="scene" id="s3">
+    <div class="a c k" id="s3t" style="left:0;right:0;top:220px;font-size:60px">这套系统能帮你</div>
+    <div class="a c col" style="left:0;right:0;top:360px;gap:34px">
+      <div class="glass feat" id="f1"><div class="ic"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#9ff5c7" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></div><div><h3>看清</h3><p>AI 现在怎么说你、怎么说同行</p></div></div>
+      <div class="glass feat" id="f2"><div class="ic"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#9ff5c7" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/></svg></div><div><h3>写对</h3><p>写出 AI 愿意引用、查得到的内容</p></div></div>
+      <div class="glass feat" id="f3"><div class="ic"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#9ff5c7" stroke-width="2"><path d="M3 11l18-8-8 18-2-8z"/></svg></div><div><h3>发准</h3><p>发到 AI 常去、真引用过的地方</p></div></div>
+      <div class="glass feat" id="f4"><div class="ic"><svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#9ff5c7" stroke-width="2"><path d="M3 20h18"/><path d="M5 16l4-5 4 3 6-8"/></svg></div><div><h3>盯住</h3><p>每天问一遍 AI，推荐了没有一目了然</p></div></div>
+    </div>
+  </div>
+
+  <!-- S4 开源部署 -->
+  <div class="scene" id="s4">
+    <div class="a c" style="left:0;right:0;top:260px"><div class="term" id="term">
+      <div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <pre><span class="m">$</span> <span id="cmd1"></span>
+<span class="m">$</span> <span id="cmd2"></span>
+<span class="g" id="ok">✔ OmniRank 已在本机运行</span></pre>
+    </div></div>
+    <div class="a c" id="pills" style="left:0;right:0;top:820px;gap:24px"><span class="pill" id="p1">免费</span><span class="pill" id="p2">可商用</span><span class="pill" id="p3">开源</span></div>
+  </div>
+
+  <!-- S5 结尾 -->
+  <div class="scene" id="s5">
+    <div class="a c k hq glow" id="e1" style="left:0;right:0;top:330px;font-size:150px">OmniRank</div>
+    <div class="a c k" id="e2" style="left:0;right:0;top:520px;font-size:84px">全域上榜</div>
+    <div class="a c" id="e3" style="left:0;right:0;top:720px"><div class="glass" style="padding:34px 54px;font-size:52px;font-weight:900">GitHub 搜 <span class="g">OmniRank</span></div></div>
+    <div class="a c m" id="e4" style="left:0;right:0;top:930px;font-size:40px">第 2 集预告 · <span style="color:#fff">GEO 到底从哪来？</span></div>
+  </div>
+</div>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script>window.SUBS_OVERRIDE_INIT = new URLSearchParams(location.search).has("dub");</script>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

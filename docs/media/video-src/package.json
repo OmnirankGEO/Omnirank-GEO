@@ -7,7 +7,11 @@
     "dub:pixel": "python3 tools/dub.py pixel"
   },
   "dependencies": {
+    "@fontsource/long-cang": "^5.3.0",
+    "@fontsource/ma-shan-zheng": "^5.3.1",
     "@fontsource/noto-sans-sc": "^5.2.0",
+    "@fontsource/zcool-kuaile": "^5.3.0",
+    "@fontsource/zcool-qingke-huangyou": "^5.3.0",
     "@vp-tw/cjk-web-fonts-fusion-pixel-font": "0.0.1",
     "gsap": "^3.15.0",
     "playwright": "^1.58.1"

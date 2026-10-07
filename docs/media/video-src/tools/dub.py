@@ -152,7 +152,7 @@ def split_lines(x, sil, lines):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('page', choices=['explainer', 'pixel'])
+    ap.add_argument('page', help='页面目录(相对 video-src),如 explainer、pixel、douyin/ep01')
     ap.add_argument('--fake', action='store_true')
     ap.add_argument('--geo', default='GEO', help='配音输入里 GEO 的写法(试听后原文读得最好,需要时可改成 "G E O")')
     ap.add_argument('--out', default=None)
@@ -165,7 +165,8 @@ def main():
     a = ap.parse_args()
     page_dir = os.path.join(ROOT, a.page)
     cfg = json.load(open(os.path.join(page_dir, 'narration.json'), encoding='utf-8'))
-    out = a.out or os.path.join(ROOT, 'out', a.page + ('-fake' if a.fake else ''))
+    name = os.path.basename(a.page.rstrip('/'))
+    out = a.out or os.path.join(ROOT, 'out', name + ('-fake' if a.fake else ''))
     seg_dir = os.path.join(out, 'voice'); os.makedirs(seg_dir, exist_ok=True)
 
     # 1+2 合成并切句
@@ -264,7 +265,7 @@ def main():
         bgm_db, sfx_db = -25, -24
     else:
         import bgm_soft
-        bgm = bgm_soft.make(n / SR).mean(axis=1)[:n]
+        bgm = (bgm_soft.make_tech if cfg.get('bgm') == 'tech' else bgm_soft.make)(n / SR).mean(axis=1)[:n]
         sfx = bgm_soft.soft_sfx([{'t': to_video(e['t']), 'name': e['name']} for e in meta['sfx']], n)
         bgm_db, sfx_db = -25, -27
     # BGM 拉平:按 2 秒窗口的音量做慢速自动增益,整首一样响(原曲开头结尾更响,中段会被压没)
@@ -297,7 +298,7 @@ def main():
     # 5 统一响度并封装
     for v in mp['variants']:
         src = os.path.join(out, f'video_{v}.mp4')
-        dst = os.path.join(out, f'{a.page}-{v}.mp4' if v != 'main' else f'{a.page}.mp4')
+        dst = os.path.join(out, f'{name}-{v}.mp4' if v != 'main' else f'{name}.mp4')
         sh(['ffmpeg', '-v', 'error', '-y', '-i', src, '-i', os.path.join(out, 'mix_raw.wav'),
             '-af', 'loudnorm=I=-16:TP=-1.5:LRA=11', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000',
             '-shortest', '-movflags', '+faststart', dst])

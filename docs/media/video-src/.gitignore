@@ -1,3 +1,4 @@
 out/
 node_modules/
 *.request.json
+douyin/assets/*.png

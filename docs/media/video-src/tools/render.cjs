@@ -12,15 +12,19 @@ const path = require('path');
 const [pageDir, outDir, mapArg, ...rest] = process.argv.slice(2);
 const previewArg = rest.includes('--preview') ? rest[rest.indexOf('--preview') + 1] : (mapArg === '--preview' ? rest[0] : null);
 const mapFile = mapArg && mapArg !== '--preview' ? mapArg : null;
-const FPS = 30;
+let FPS = 30;
 
 (async () => {
   fs.mkdirSync(outDir, { recursive: true });
   const b = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
   const p = await b.newPage({ viewport: { width: 1920, height: 1080 } });
+  // 页面可声明 window.VIDEO = { w, h, fps }(竖屏/60 帧等)
   p.on('pageerror', (e) => console.log('PAGEERR', e.message));
   await p.goto('file://' + path.resolve(pageDir, 'index.html') + (mapFile ? '?dub=1' : ''));
   await p.evaluate(() => window.ready);
+  const vid = await p.evaluate(() => window.VIDEO || { w: 1920, h: 1080, fps: 30 });
+  FPS = Number(process.env.FPS || vid.fps || 30);
+  await p.setViewportSize({ width: vid.w, height: vid.h });
   await p.waitForTimeout(800);
   const meta = await p.evaluate(() => ({ narr: window.NARR || [], sfx: window.SFX || [], dur: window.DURATION }));
   fs.writeFileSync(path.join(outDir, 'meta.json'), JSON.stringify(meta, null, 1));

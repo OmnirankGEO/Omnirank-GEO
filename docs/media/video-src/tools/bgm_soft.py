@@ -98,6 +98,9 @@ def soft_sfx(events, n):
         'tick': tone(2200, 2200, 0.03, 120, 0.12),
         'stamp': tone(120, 60, 0.25, 18, 0.55) + np.pad(noise(0.12, 200, 2500, 0.4, attack=0.002), (0, int(0.25 * SR) - int(0.12 * SR))),
         'rise': tone(300, 900, 0.5, 3, 0.12),
+        'boom': tone(90, 38, 0.9, 5, 0.6) + np.pad(noise(0.35, 80, 1800, 0.5, attack=0.003), (0, int(0.9 * SR) - int(0.35 * SR))),
+        'sparkle': sum(np.pad(tone(f, f, 0.35, 14, 0.07), (int(k * 0.045 * SR), int((5 - k) * 0.045 * SR)))
+                       for k, f in enumerate((2093, 2637, 3136, 3951, 4186, 5274))),
     }
     for ev in events:
         s = lib.get(ev['name'])
@@ -107,3 +110,59 @@ def soft_sfx(events, n):
         e = max(i, min(n, i + len(s)))
         out[i:e] += s[:e - i]
     return out
+
+
+def make_tech(dur, seed=7):
+    """发布会风 BGM:118 BPM 四拍底鼓、侧链泵动的小调和弦垫、反拍镲、低音八分音符。"""
+    rng = np.random.default_rng(seed)
+    n = int(dur * SR)
+    L = np.zeros(n); R = np.zeros(n)
+    bpm = 118; beat = 60 / bpm; bar = beat * 4
+    prog = [[45, 52, 57, 60, 64], [41, 48, 53, 57, 60], [43, 50, 55, 59, 62], [40, 47, 52, 55, 59]]  # Am F G Em
+    nbars = int(np.ceil(dur / bar)) + 1
+    t = np.arange(n) / SR
+    # 侧链:每拍开头压下去再弹起
+    pump = 1 - 0.75 * np.exp(-((t % beat) / 0.09))
+    for b in range(nbars):
+        ch = prog[(b // 2) % 4] if b >= 2 else prog[0]
+        i0 = int(b * bar * SR); i1 = min(n, int((b + 1) * bar * SR))
+        if i0 >= n:
+            break
+        tt = np.arange(i1 - i0) / SR
+        pad = np.zeros(len(tt))
+        for note in ch[1:]:
+            f = _hz(note + 12)
+            for det in (-0.1, 0.0, 0.1):
+                ph = (tt * f * 2 ** (det / 12)) % 1.0
+                pad += 2 * ph - 1
+        pad = _lp(pad, 1600 + 600 * (b % 2)) * 0.016
+        L[i0:i1] += pad * pump[i0:i1]; R[i0:i1] += pad * pump[i0:i1]
+        for k in range(8):   # 低音八分
+            j = i0 + int(k * beat / 2 * SR); x_t = np.arange(int(beat / 2 * 0.85 * SR)) / SR
+            f = _hz(ch[0] - 12)
+            x = _lp(2 * ((x_t * f) % 1.0) - 1, 500) * np.exp(-x_t * 6) * (0.18 if k % 2 else 0.12)
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
+        for k in range(4):
+            j = i0 + int(k * beat * SR)
+            x_t = np.arange(int(0.3 * SR)) / SR
+            f = 45 + 110 * np.exp(-x_t * 35)
+            x = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-x_t * 9) * 0.42
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j]; R[j:e] += x[:e - j]
+            j2 = j + int(beat / 2 * SR); h_t = np.arange(int(0.08 * SR)) / SR
+            h = rng.uniform(-1, 1, len(h_t)); h = (h - _lp(h, 7000)) * np.exp(-h_t * 50) * 0.09
+            e = max(j2, min(n, j2 + len(h))); L[j2:e] += h[:e - j2] * 0.8; R[j2:e] += h[:e - j2] * 1.2
+            if k in (1, 3):
+                c_t = np.arange(int(0.2 * SR)) / SR
+                c = _lp(rng.uniform(-1, 1, len(c_t)), 4000) * np.exp(-c_t * 22) * 0.12
+                e = max(j, min(n, j + len(c))); L[j:e] += c[:e - j]; R[j:e] += c[:e - j]
+        for k in range(16):   # 高音琶音点缀
+            if (k * 7 + b) % 3:
+                continue
+            j = i0 + int(k * beat / 4 * SR); a_t = np.arange(int(0.25 * SR)) / SR
+            f = _hz(ch[1 + k % 4] + 24)
+            x = np.sin(2 * np.pi * f * a_t) * np.exp(-a_t * 14) * 0.035
+            pan = 0.4 if k % 2 else -0.4
+            e = max(j, min(n, j + len(x))); L[j:e] += x[:e - j] * (1 - pan); R[j:e] += x[:e - j] * (1 + pan)
+    fi, fo = int(0.05 * SR), int(3 * SR)
+    g = np.ones(n); g[:fi] = np.linspace(0, 1, fi); g[-fo:] = np.linspace(1, 0, fo)
+    return np.stack([L * g, R * g], axis=1)
