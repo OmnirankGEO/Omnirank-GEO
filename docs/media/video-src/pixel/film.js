@@ -114,7 +114,7 @@ const rows = [['客户付款', '+¥3,000', 'g'], ['品牌体检', '−650 算力
 put('#s7rows', rows.map(([a, b, c], i) => `<div id="row${i}" style="display:flex;justify-content:space-between;border-bottom:6px dotted #566c86;padding:12px 6px"><span class="t48">${a}</span><span class="t48 ${c}">${b}</span></div>`).join(''));
 
 // 初始隐藏(由时间轴逐个打开)
-hide(['#h1', '#h2', '#h3', '#h4', '#hchat', '#hq', '#htitle', '#hstart', '.cn', '#orbS', '#orbSay', '#sweatS', '#bossSay', '#custSay',
+hide(['#h1', '#h2', '#h3', '#h4', '#hchat', '#hq', '#hbrand', '#hbrand2', '#hstory', '#htitle', '#hstart', '.cn', '#orbS', '#orbSay', '#sweatS', '#bossSay', '#custSay',
   '#s1think', '#s1bag', '#s1miss', '#s1money', '#s1dlg', '#s1scan', '#s1res', '#s1tv', '#s1r1', '#s1r2',
   '#s2say', '#s2stamp', '#s2orb', '#s2orbL', '.fd', '#s2cmp', '#s2shop', '#s2tv', '#s2n2', '#s2n3',
   '#s3say', '#s3scroll', '#s3block', '#s3zero', '#s3q', '#s3orbSay', '#s3forge', '#s3shield', '#s3good', '#s3gold', '#s3txt',
@@ -143,8 +143,11 @@ typeText('#hans', '星驰、恒远、云途……', 3.9, 1.2);
 pop('#hq', 5.6, 'powerup');
 nar('它只做一件事：让 AI 在回答问题时，主动推荐你。', 3.3, 7.6);
 gone(['#hchat', '#hq'], 8.0);
-pop('#htitle', 8.1, 'stage');
-tl.fromTo('#hstart', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.3, repeat: 6, yoyo: true, ease: 'steps(1)', immediateRender: false }, 8.6);
+slam('#hbrand', 8.1);
+pop('#hbrand2', 8.8, 'blip');
+pop('#hstory', 9.8, 'blip');
+pop('#htitle', 10.1, 'stage');
+tl.fromTo('#hstart', { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.25, repeat: 3, yoyo: true, ease: 'steps(1)', immediateRender: false }, 10.6);
 sfx('select', 10.9);
 nar('不信？先看看王老板的遭遇。', 8.0, 11.4);
 cut('#hook', '#street', 12);
@@ -183,7 +186,7 @@ nar('而 AI 只报几个名字——没有他。', 24.9, 29.4);
 cut('#street', '#s1', 30);
 
 // ===================== 第 1 关 体检 30–58 =====================
-banner('第 1 关 · 为什么要先体检？', '→ 诊断报告', 30.1);
+banner('第 1 关 · 为什么要先体检？', 'OmniRank · 诊断报告', 30.1);
 pop('#s1think', 30.4, 'blip');
 nar('王老板第一反应：砸钱投广告。', 30.3, 33.8);
 tl.set('#s1bag', { autoAlpha: 1 }, 31.3);
@@ -198,7 +201,7 @@ gone(['#s1miss'], 36.0);
 // 小榜登场
 tl.to('#s1bot', { top: 816, duration: 0.5, ease: 'bounce.out', ...SNAP }, 38.9); sfx('land', 39.3);
 tl.set('#s1dlg', { autoAlpha: 1 }, 39.5);
-typeText('#s1dlgT', '先别砸钱！咱们去问问 AI，它到底怎么看你。', 39.6, 2.4);
+typeText('#s1dlgT', '先别砸钱！先给品牌做个 AI 体检，看看 AI 怎么说你。', 39.6, 2.4);
 nar('所以第一步，是给品牌做一次 AI 体检。', 38.9, 43.6);
 gone(['#s1dlg', '#s1money'], 43.8);
 show('#s1scan', 43.9);
@@ -219,7 +222,7 @@ pop('#s1tv', 54.4, 'select');
 cut('#s1', '#s2', 58);
 
 // ===================== 第 2 关 报价 58–80 =====================
-banner('第 2 关 · 价格凭什么？', '→ 报价', 58.1);
+banner('第 2 关 · 价格凭什么？', 'OmniRank · 报价', 58.1);
 tl.fromTo('#s2m', { x: -400 }, { x: 0, duration: 1, ease: 'none', ...SNAP, immediateRender: false }, 58.3); walk('#s2m', 58.3, 1);
 tl.set('#s2say', { autoAlpha: 1 }, 59.6); typeText('#s2say', '包月一万，保证第一！', 59.6, 1.0);
 nar('那要花多少钱？以前常听到：包月一万，保证第一。', 58.3, 62.8);
@@ -253,7 +256,7 @@ nar('所以报价按「要写多少篇 × 每篇成本」算出来，客户才�
 cut('#s2', '#s3', 80);
 
 // ===================== 第 3 关 创作 80–104 =====================
-banner('第 3 关 · AI 凭什么信你？', '→ 创作中心', 80.1);
+banner('第 3 关 · AI 凭什么信你？', 'OmniRank · 创作中心', 80.1);
 pop('#s3shield', 80.2, null);
 tl.set('#s3say', { autoAlpha: 1 }, 81.2); typeText('#s3say', '深圳第一！全网最低！', 81.2, 1.0);
 nar('内容写好了。王老板张口就是：深圳第一、全网最低。', 80.3, 84.8);
@@ -288,7 +291,7 @@ tl.to('#s3gold', { y: -18, duration: 0.2, repeat: 7, yoyo: true, ease: 'steps(1)
 cut('#s3', '#s4', 104);
 
 // ===================== 第 4 关 发布 104–120 =====================
-banner('第 4 关 · 发在哪？', '→ 发布', 104.1);
+banner('第 4 关 · 发在哪？', 'OmniRank · 发布', 104.1);
 tl.set('#s4sc0', { autoAlpha: 1 }, 104.6);
 throwArc('#s4sc0', 104.7, 300, 180, 180, 0.8);
 gone('#s4sc0', 105.5); sfx('plop', 105.5);
@@ -315,7 +318,7 @@ for (let i = 0; i < 4; i++) sfx('coin', 115.4 + i * 0.2);
 cut('#s4', '#s5', 120);
 
 // ===================== 第 5 关 监测 120–136 =====================
-banner('第 5 关 · 到底有没有用？', '→ 监测', 120.1);
+banner('第 5 关 · 到底有没有用？', 'OmniRank · 监测', 120.1);
 tl.set('#s5say', { autoAlpha: 1 }, 120.5); typeText('#s5say', '感觉……好像有用？', 120.5, 0.9);
 nar('做了到底有没有用？不能凭感觉。', 120.3, 123.6);
 gone('#s5say', 123.7);
@@ -339,7 +342,7 @@ nar('哪篇文章被 AI 引用了，还能追到是哪一篇、哪家媒体。',
 cut('#s5', '#s6', 136);
 
 // ===================== 第 6 关 飞轮 136–154 =====================
-banner('第 6 关 · 越打越强', '→ 飞轮系统', 136.1);
+banner('第 6 关 · 越打越强', 'OmniRank · 飞轮系统', 136.1);
 $$('.rc').forEach((el, i) => { tl.to(el, { y: 560 + (i % 3) * 90, duration: 1.2, ease: 'steps(8)', ...SNAP }, 136.4 + i * 0.18); if (i % 3 === 0) sfx('blip', 137.4 + i * 0.18); });
 nar('每一次 AI 的回答，其实都在告诉我们：它喜欢什么。', 136.3, 141.0);
 show(['#s6ring', '#s6core', '#s6xp'], 141.3);
@@ -357,7 +360,7 @@ nar('再反过来指导下一篇写什么、发在哪——越用越准。', 146
 cut('#s6', '#s7', 154);
 
 // ===================== 第 7 关 分销 & 计价 154–172 =====================
-banner('第 7 关 · 一个人干不完', '→ 分销 & 计价', 154.1);
+banner('第 7 关 · 一个人干不完', 'OmniRank · 分销 & 计价', 154.1);
 $$('.sb').forEach((el, i) => { tl.fromTo(el, { y: 0 }, { keyframes: [{ y: -30, duration: 0.15 }, { y: 0, duration: 0.15 }], ease: 'steps(2)', immediateRender: false }, 154.4 + i * 0.2); });
 sfx('blip', 154.4);
 nar('可大多数老板不会自己做，他们会找服务商。', 154.3, 158.6);

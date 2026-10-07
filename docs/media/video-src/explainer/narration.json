@@ -219,5 +219,6 @@
  ],
  "variants": [
   "main"
- ]
+ ],
+ "max_speed": 2.5
 }

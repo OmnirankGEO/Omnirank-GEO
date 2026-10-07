@@ -130,6 +130,10 @@ def main():
     ap.add_argument('--fake', action='store_true')
     ap.add_argument('--geo', default='GEO', help='配音输入里 GEO 的写法(试听后原文读得最好,需要时可改成 "G E O")')
     ap.add_argument('--out', default=None)
+    ap.add_argument('--gap', type=float, default=0.35, help='句与句之间的停顿(秒)')
+    ap.add_argument('--gap-scene', type=float, default=0.6, help='换场景前的停顿(秒)')
+    ap.add_argument('--max-speed', type=float, default=None, help='画面停留段最多加速几倍(默认取 narration.json 的 max_speed)')
+    ap.add_argument('--end-hold', type=float, default=4.5, help='最后一句之后结尾卡至少停留几秒')
     ap.add_argument('--skip-render', action='store_true', help='画面已渲染过时只重做音频和封装')
     ap.add_argument('--preview', default=None, help='只渲染这些视频秒数的截图,逗号分隔')
     a = ap.parse_args()
@@ -146,29 +150,36 @@ def main():
         wav = mp3[:-4] + '.48k.wav'
         sh(['ffmpeg', '-v', 'error', '-y', '-i', mp3, '-ar', str(SR), '-ac', '1', '-c:a', 'pcm_s16le', wav])
         x = read_wav(wav)
-        for ln, (chunk, speech) in zip(seg['lines'], split_lines(x, silences(wav), seg['lines'])):
-            lines_all.append({**ln, 'audio': chunk, 'speech': speech})
+        for k, (ln, (chunk, speech)) in enumerate(zip(seg['lines'], split_lines(x, silences(wav), seg['lines']))):
+            lines_all.append({**ln, 'audio': chunk, 'speech': speech, 'seg': seg['id'], 'last_in_seg': k == len(seg['lines']) - 1})
     lines_all.sort(key=lambda l: l['t'])
 
     # 3 时间映射:knots = [(视频秒, 时间轴秒)]
     D = cfg['duration']
+    max_speed = a.max_speed or cfg.get('max_speed', 2.5)
     knots = [(0.0, 0.0)]
     tv = lines_all[0]['t']; knots.append((tv, lines_all[0]['t']))
     place = []
     for i, ln in enumerate(lines_all):
         t0 = ln['t']; t1 = lines_all[i + 1]['t'] if i + 1 < len(lines_all) else D
         tlen = t1 - t0
-        need = len(ln['audio']) / SR + 0.3
-        vlen = max(tlen, need)
+        # 画面跟着配音走:句间只留短停顿,换场景时多留一点
+        gap = a.gap_scene if ln['last_in_seg'] else a.gap
+        need = ln['speech'] + gap
+        if i + 1 == len(lines_all):
+            need = max(need, ln['speech'] + a.end_hold)   # 结尾卡(GitHub 地址)留足时间
+        h = min(1.6, tlen * 0.4)          # 这一拍开头的入场动画保持原速
+        r = min(0.6, (tlen - h) * 0.5)    # 结尾(转场)保持原速
+        mid_t = max(0.0, tlen - h - r)
+        mid_v = max(need - h - r, mid_t / max_speed, 0.0)   # 中间的停留段可压缩/拉长
+        vlen = h + mid_v + r
         place.append((tv, ln))
-        if vlen > tlen + 1e-3:
-            h = min(1.6, tlen * 0.4); r = min(1.0, (tlen - h) * 0.5)
-            knots += [(tv + h, t0 + h), (tv + vlen - r, t1 - r)]
+        knots += [(tv + h, t0 + h), (tv + h + mid_v, t1 - r)]
         knots.append((tv + vlen, t1))
         tv += vlen
     total = tv
     stretch = total / D
-    print(f'画面 {D:.1f}s → 配音后 {total:.1f}s(整体放慢 {stretch:.2f} 倍)')
+    print(f'画面 {D:.1f}s → 配音后 {total:.1f}s(整体 {stretch:.2f} 倍)')
 
     def to_video(tt):
         for (v0, t0), (v1, t1) in zip(knots, knots[1:]):
