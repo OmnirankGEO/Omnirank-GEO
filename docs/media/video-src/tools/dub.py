@@ -93,6 +93,22 @@ def spoken_len(text):
     return len(re.sub(r'[A-Za-z]+', 'xx', text.replace(' ', '')))
 
 
+def sub_pieces(text, max_len):
+    """长句字幕按标点拆成几段,每段尽量不超过 max_len 字,避免折行。"""
+    if spoken_len(text) <= max_len:
+        return [text]
+    parts = re.findall(r'[^，。；：？！、—]+[，。；：？！、—]*', text)
+    out, cur = [], ''
+    for p in parts:
+        if cur and spoken_len(cur + p) > max_len:
+            out.append(cur); cur = p
+        else:
+            cur += p
+    if cur:
+        out.append(cur)
+    return [o.rstrip('，、；：') for o in out]
+
+
 def split_lines(x, sil, lines):
     """在句间停顿处切开:按字数估出每个句界的位置,取离它最近的停顿。"""
     total = len(x) / SR
@@ -187,15 +203,25 @@ def main():
                 return v0 if t1 == t0 else v0 + (tt - t0) * (v1 - v0) / (t1 - t0)
         return knots[-1][0]
 
-    subs = [{'v0': round(v, 3), 'v1': round(v + ln['speech'] + 0.15, 3), 'text': ln['text']} for v, ln in place] if cfg['subtitles'] else None
+    subs = None
+    if cfg['subtitles']:
+        subs = []
+        for v, ln in place:
+            pieces = sub_pieces(ln['text'], cfg.get('sub_max', 24))
+            w = [spoken_len(p) for p in pieces]; tot = sum(w); t = v
+            for p, wi in zip(pieces, w):
+                d = ln['speech'] * wi / tot
+                subs.append({'v0': round(t, 3), 'v1': round(t + d + (0.15 if p is pieces[-1] else 0), 3), 'text': p})
+                t += d
     mp = {'duration': round(total, 3), 'knots': knots, 'subs': subs, 'variants': cfg.get('variants') or (['subs', 'nosubs'] if cfg['subtitles'] else ['main'])}
     json.dump(mp, open(os.path.join(out, 'map.json'), 'w'), ensure_ascii=False)
     # SRT(按真实配音时间)
     def ts(x):
         return f'{int(x // 3600):02d}:{int(x % 3600 // 60):02d}:{int(x % 60):02d},{int(round((x % 1) * 1000)) % 1000:03d}'
     with open(os.path.join(out, 'narration.srt'), 'w', encoding='utf-8') as f:
-        for i, (v, ln) in enumerate(place, 1):
-            f.write(f"{i}\n{ts(v)} --> {ts(v + ln['speech'] + 0.15)}\n{ln['text']}\n\n")
+        rows = subs or [{'v0': v, 'v1': v + ln['speech'] + 0.15, 'text': ln['text']} for v, ln in place]
+        for i, r in enumerate(rows, 1):
+            f.write(f"{i}\n{ts(r['v0'])} --> {ts(r['v1'])}\n{r['text']}\n\n")
 
     render = ['node', os.path.join(HERE, 'render.cjs'), page_dir, out, os.path.join(out, 'map.json')]
     if a.preview:

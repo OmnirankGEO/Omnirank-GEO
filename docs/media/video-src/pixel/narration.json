@@ -211,5 +211,6 @@
    ]
   }
  ],
- "max_speed": 2.0
+ "max_speed": 2.0,
+ "sub_max": 26
 }
