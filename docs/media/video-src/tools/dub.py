@@ -52,6 +52,7 @@ def tts_text(text, geo):
     # 「GEO」容易被读成「GE～O」,只改配音输入,字幕保持原样
     t = re.sub(r'GEO', geo, text)
     t = re.sub(r'SEO', 'S E O', t)
+    t = t.replace('Omnirank-GEO', 'Omnirank GEO')   # 连字符不念出来
     return t
 
 
