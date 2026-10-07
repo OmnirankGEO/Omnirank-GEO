@@ -76,8 +76,18 @@ def synth(seg_dir, sid, text, fake, lines):
         return mp3
     txt = os.path.join(seg_dir, f'{sid}.txt')
     open(txt, 'w', encoding='utf-8').write(text)
-    sh([sys.executable, os.path.join(HERE, 'cloud_tts.py'), txt, mp3])
-    return mp3
+    # 网络中途断开(URLError,结果不明)时:记录改名留档后退避重试;接口明确报错则不重试
+    import time
+    for attempt in range(4):
+        r = subprocess.run([sys.executable, os.path.join(HERE, 'cloud_tts.py'), txt, mp3])
+        if r.returncode == 0 and os.path.exists(mp3):
+            return mp3
+        st = json.load(open(rec)) if os.path.exists(rec) else {}
+        if st.get('status') != 'result_unknown' or st.get('error_type') != 'URLError' or attempt == 3:
+            raise SystemExit(f'{sid} 配音失败:{st.get("status")} {st.get("error_type")};请检查 {rec}')
+        os.rename(rec, rec.replace('.request.json', f'.request.failed-{attempt + 1}.json'))
+        print(f'{sid} 网络中断,{2 ** (attempt + 1)} 秒后重试')
+        time.sleep(2 ** (attempt + 1))
 
 
 def silences(wav):
