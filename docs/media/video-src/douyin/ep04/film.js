@@ -3,7 +3,7 @@ const D = 36;
 seriesBadge(4, 0.2, D);
 
 // S0 0–3:8 个图标极速闪过,然后大字
-scene('#s0', 0, 3.6, { cut: true, sfx: false });
+scene('#s0', 0, 3.6, { cut: true, sfx: false, zoomTo: 1 });
 for (let i = 1; i <= 8; i++) {
   const t = (i - 1) * 0.11;
   tl.set(`#fl${i}`, { autoAlpha: 1, scale: 1.15, rotation: i % 2 ? -6 : 6 }, t);
