@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 8 集 · 越用越准的飞轮</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 等距 2.5D 小岛:镜头在岛上移动 + 游戏 UI 卡片 */
+:root{--bg:#fbf1df;--acc:#ff7a45;--ink:#2d3142;--teal:#2ec4b6}
+body,#stage{color:var(--ink)}
+#badge b{color:var(--ink);background:#fff;padding:2px 14px;border-radius:10px}
+#grain{opacity:.12}
+#cam{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-origin:0 0}
+#cam img{width:1080px;height:1920px;display:block}
+.k{font-weight:900;letter-spacing:-1px;line-height:1.12}
+.ui{position:absolute;background:#fff;border-radius:34px;box-shadow:0 18px 0 rgba(45,49,66,.12),0 30px 60px rgba(45,49,66,.18);padding:26px 36px;font-weight:900}
+.ui.d{background:var(--ink);color:#fff}
+.pin{position:absolute;display:flex;align-items:center;gap:14px;background:var(--acc);color:#fff;font-weight:900;font-size:46px;padding:12px 30px;border-radius:999px;box-shadow:0 12px 24px rgba(0,0,0,.18)}
+.pin::after{content:"";position:absolute;left:46px;bottom:-22px;border:14px solid transparent;border-top:16px solid var(--acc)}
+.stk{position:absolute;filter:drop-shadow(0 20px 20px rgba(45,49,66,.25))}
+.tag{display:inline-block;background:var(--teal);color:#fff;border-radius:16px;padding:6px 22px;margin:8px 8px 0 0;font-size:44px}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="cam"><img src="../assets/ep08_town.jpg"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <div class="scene" id="s0">
+    <div class="ui" id="h0" style="left:70px;top:230px;font-size:76px;line-height:1.2">越用越准的<br><span style="color:var(--acc)">GEO 系统</span>？</div>
+  </div>
+
+  <div class="scene" id="s1">
+    <div class="pin" id="pn1" style="left:120px;top:250px">① 每天问 AI</div>
+    <div class="ui d" id="u1" style="left:100px;top:1240px;font-size:48px">收集 AI 引用的文章 →</div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="pin" id="pn2" style="left:120px;top:250px">② 从里面学规律</div>
+    <div class="ui" id="u2" style="left:90px;top:900px;width:820px;font-size:50px">AI 爱引用的…<br><span class="tag" id="g1">网站</span><span class="tag" id="g2">文章类型</span><span class="tag" id="g3">写法结构</span></div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="pin" id="pn3" style="left:120px;top:250px">③ 用回写作和选媒体</div>
+    <div class="ui d" id="u3" style="left:90px;top:1150px;font-size:52px">飞轮转起来 <span style="color:var(--acc)">⟳</span></div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="pin" id="pn4" style="left:120px;top:250px;background:var(--teal)">④ 人确认才生效</div>
+    <img class="stk" id="dk" src="../assets/ep08_desk.webp" style="left:200px;top:520px;width:680px">
+    <div class="ui" id="u4" style="left:120px;top:1160px;font-size:52px">学到的只是<span style="color:var(--acc)">建议</span>，你来拍板</div>
+  </div>
+
+  <div class="scene" id="s5">
+    <div class="ui" id="e1" style="left:70px;top:240px;font-size:84px;line-height:1.2">转得越久<br><span style="color:var(--acc)">越懂 AI</span></div>
+    <div class="ui d" id="e2" style="left:70px;top:1180px;font-size:56px">GitHub 搜 <span style="color:#ffb38a">Omnirank-GEO</span></div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>

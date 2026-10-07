@@ -1,0 +1,29 @@
+{
+ "page": "douyin/ep07",
+ "duration": 24,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "tech",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "写了「行业第一」，AI 反而不推荐你？"}
+  ]},
+  {"id": "vs", "lines": [
+   {"t": 2.6, "text": "来做个对比。左边写：行业领先，口碑第一；"},
+   {"t": 5.6, "text": "右边写：服务三千二百家企业，平均十五分钟响应。"},
+   {"t": 8.6, "text": "AI 更愿意引用哪个？"},
+   {"t": 10.3, "text": "右边。数字查得到，「第一」没人能证明。"}
+  ]},
+  {"id": "fix", "lines": [
+   {"t": 14.1, "text": "OmniRank 的创作中心，会把这种说不清的话挑出来，"},
+   {"t": 17.2, "text": "提醒你换成有出处的事实。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 19.7, "text": "让 AI 敢引用你。GitHub 搜 Omnirank-GEO。"}
+  ]}
+ ]
+}

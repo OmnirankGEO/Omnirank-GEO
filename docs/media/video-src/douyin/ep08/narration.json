@@ -1,0 +1,25 @@
+{
+ "page": "douyin/ep08",
+ "duration": 23,
+ "subtitles": true,
+ "variants": ["main"],
+ "bgm": "soft",
+ "max_speed": 2.5,
+ "sub_max": 16,
+ "end_hold": 1.0,
+ "upload_mb": 28.5,
+ "segments": [
+  {"id": "hook", "lines": [
+   {"t": 0.2, "text": "用得越久越准的 GEO 系统，是怎么做到的？"}
+  ]},
+  {"id": "loop", "lines": [
+   {"t": 2.8, "text": "OmniRank 有个飞轮：每天去问 AI，把它引用的文章收集起来，"},
+   {"t": 7.0, "text": "从里面学规律：AI 爱引用哪些网站、哪类写法。"},
+   {"t": 10.8, "text": "学到的规律，再用回写作、选题和选媒体。"},
+   {"t": 14.4, "text": "但它学到的只是建议，要人确认，才会生效。"}
+  ]},
+  {"id": "end", "lines": [
+   {"t": 18.0, "text": "转得越久，越懂 AI。GitHub 搜 Omnirank-GEO。"}
+  ]}
+ ]
+}

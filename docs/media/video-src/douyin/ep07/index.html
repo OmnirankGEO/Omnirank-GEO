@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第 7 集 · 为什么 AI 不信「行业第一」</title>
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/700.css">
+<link rel="stylesheet" href="../../node_modules/@fontsource/noto-sans-sc/900.css">
+<link rel="stylesheet" href="../base.css">
+<style>
+/* 综艺分屏风:粉/青撞色 + 花字 + 评委举牌 */
+:root{--bg:#2b0f4a;--acc:#ff3d8b;--pink:#ff3d8b;--cyan:#16d6e8;--yel:#ffe14d}
+#bg0{position:absolute;inset:0;background:linear-gradient(160deg,#ff3d8b 0 47%,#16d6e8 53% 100%)}
+#bg0::before{content:"";position:absolute;inset:0;background:radial-gradient(rgba(255,255,255,.22) 3px,transparent 3.5px) 0 0/30px 30px}
+#bg0::after{content:"";position:absolute;left:-10%;right:-10%;top:47%;height:6%;background:#fff;transform:rotate(-8deg)}
+#badge span{background:#2b0f4a}
+.hz{font-weight:900;color:var(--yel);-webkit-text-stroke:14px #2b0f4a;paint-order:stroke fill;letter-spacing:-2px;line-height:1.1;text-shadow:0 12px 0 #2b0f4a}
+.hz.w{color:#fff}
+.card{position:absolute;left:80px;width:800px;padding:36px 44px;border-radius:40px;background:#fff;border:10px solid #2b0f4a;box-shadow:16px 16px 0 #2b0f4a;color:#2b0f4a}
+.card .lb{position:absolute;left:-30px;top:-46px;width:110px;height:110px;border-radius:50%;border:8px solid #2b0f4a;display:flex;align-items:center;justify-content:center;font-size:66px;font-weight:900;color:#fff}
+.card .tx{font-size:66px;font-weight:900;line-height:1.25;margin-left:60px}
+.card .sm{font-size:30px;font-weight:700;color:#888;margin:10px 0 0 60px}
+.vs{position:absolute;left:400px;top:735px;width:200px;height:200px;border-radius:50%;background:var(--yel);border:10px solid #2b0f4a;display:flex;align-items:center;justify-content:center;font-size:96px;font-weight:900;color:#2b0f4a;font-style:italic;z-index:5}
+.stk{position:absolute;filter:drop-shadow(0 16px 16px rgba(0,0,0,.3))}
+.mark{position:absolute;font-size:76px;font-weight:900}
+.doc{position:absolute;left:80px;width:800px;padding:46px;background:#fff;border-radius:30px;border:10px solid #2b0f4a;color:#2b0f4a;font-size:56px;font-weight:900;line-height:1.6;box-shadow:16px 16px 0 #2b0f4a}
+.hl{position:relative;display:inline-block}
+.hl i{position:absolute;left:-6px;right:-6px;top:10%;bottom:10%;background:rgba(255,61,139,.35);transform-origin:0 50%;border-radius:8px}
+.hl s{text-decoration:none;position:relative}
+.hl s::after{content:"";position:absolute;left:-4px;right:-4px;top:52%;height:8px;background:#e00;transform:scaleX(var(--k,0));transform-origin:0 50%}
+.chip{display:inline-block;background:var(--cyan);color:#2b0f4a;padding:2px 20px;border-radius:14px;border:6px solid #2b0f4a}
+</style>
+</head>
+<body>
+<div id="stage"><div id="stage-inner">
+  <div id="bg0"></div>
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <div class="scene" id="s0">
+    <img class="stk" id="md" src="../assets/ep07_trophy.webp" style="left:240px;top:700px;width:600px">
+    <div class="a hz" id="h0a" style="left:70px;top:280px;font-size:120px">写了「行业第一」</div>
+    <div class="a hz w" id="h0b" style="left:70px;top:470px;font-size:100px">AI 反而<span style="color:var(--yel)">不推荐</span>？</div>
+  </div>
+
+  <div class="scene" id="s1">
+    <div class="card" id="cA" style="top:300px"><div class="lb" style="background:var(--pink)">A</div><div class="tx">行业领先<br>口碑第一</div></div>
+    <div class="vs" id="vs">VS</div>
+    <div class="card" id="cB" style="top:990px"><div class="lb" style="background:var(--cyan)">B</div><div class="tx">服务 3200 家企业<br>平均 15 分钟响应</div><div class="sm">*演示文案</div></div>
+    <img class="stk" id="jd" src="../assets/ep07_judge.webp" style="left:30px;top:600px;width:380px;z-index:6">
+    <div class="a hz" id="qm" style="left:330px;top:560px;font-size:150px;z-index:7">?</div>
+    <div class="mark" id="xA" style="left:700px;top:330px;font-size:200px;color:#e00;z-index:6">✕</div>
+    <div class="a hz" id="okB" style="left:420px;top:1260px;font-size:64px;z-index:6">✓ 更愿意引用</div>
+    <div class="a hz w" id="why1" style="left:70px;top:770px;font-size:58px;z-index:6">「第一」没人能证明</div>
+    <div class="a hz w" id="why2" style="left:70px;top:660px;font-size:58px;z-index:6">数字<span style="color:var(--yel)">查得到</span></div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="a hz w" id="s2t" style="left:70px;top:260px;font-size:96px">创作中心<br><span style="color:var(--yel)">自动挑刺</span></div>
+    <div class="doc" id="doc" style="top:560px">我们是<span class="hl"><i id="dm"></i><s id="ds">行业第一</s></span>的服务商<br><span id="fix" class="chip">已服务 3200 家企业</span><br><span style="font-size:32px;color:#888">↑ 换成有出处的事实（演示）</span></div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="a hz" id="e1" style="left:70px;top:360px;font-size:130px">让 AI</div>
+    <div class="a hz w" id="e2" style="left:70px;top:530px;font-size:150px">敢引用你</div>
+    <img class="stk" id="bz" src="../assets/ep07_buzzer.webp" style="left:560px;top:700px;width:380px">
+    <div class="a hz w" id="e3" style="left:70px;top:1130px;font-size:62px">GitHub 搜 <span style="color:var(--yel)">Omnirank-GEO</span></div>
+  </div>
+</div>
+  <canvas id="grain" width="1080" height="1920"></canvas>
+  <div id="badge"></div>
+  <div id="cap"><span id="capt"></span></div>
+  <div id="flash"></div>
+  <div id="progress"></div>
+</div>
+<script src="../../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../lib.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
