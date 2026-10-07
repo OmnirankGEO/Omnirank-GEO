@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>王老板的 AI 上榜之旅</title>
+<link rel="stylesheet" href="node_modules/@vp-tw/cjk-web-fonts-fusion-pixel-font/dist/12px/proportional/zh_hans/Fusion-Pixel-12px-Proportional-Simplified-Chinese.css">
+<style>
+:root{--k:#1a1c2c;--w:#f4f4f4;--g:#38b764;--G:#257179;--y:#ffcd75;--r:#e43b44;--o:#ef7d57;--c:#41a6f6;--v:#7b3fbf;--l:#94b0c2;--d:#566c86;--sky1:#29366f;--sky2:#3b5dc9;--sky3:#41a6f6}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--k);color:var(--w);
+  font-family:"Fusion Pixel 12px Proportional Simplified Chinese",monospace;-webkit-font-smoothing:none;font-smooth:never}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--k)}
+.px{image-rendering:pixelated;display:block}
+.a{position:absolute}
+.scene{position:absolute;inset:0;visibility:hidden}
+.t24{font-size:24px}.t36{font-size:36px}.t48{font-size:48px}.t60{font-size:60px}.t72{font-size:72px}.t96{font-size:96px}.t144{font-size:144px}.t192{font-size:192px}
+.sh{text-shadow:6px 6px 0 var(--k)}
+.y{color:var(--y)}.g{color:var(--g)}.r{color:var(--r)}.c{color:var(--c)}.l{color:var(--l)}.o{color:var(--o)}
+/* 像素框:两层硬边 */
+.box{background:var(--k);border:6px solid var(--w);box-shadow:0 0 0 6px var(--k),12px 12px 0 6px rgba(0,0,0,.35);padding:18px 24px}
+.box.y{border-color:var(--y)}.box.g{border-color:var(--g)}.box.r{border-color:var(--r)}.box.c{border-color:var(--c)}
+.name{position:absolute;top:-30px;left:18px;background:var(--y);color:var(--k);padding:0 12px;font-size:36px;line-height:48px}
+.bub{background:var(--w);color:var(--k);padding:12px 18px;font-size:36px;line-height:1.3;box-shadow:0 0 0 6px var(--k);white-space:nowrap}
+.bub:after{content:"";position:absolute;left:30px;bottom:-24px;border:12px solid transparent;border-top-color:var(--w)}
+.tag{display:inline-block;padding:4px 14px;font-size:36px;color:var(--k)}
+/* 天空 / 地面 */
+.sky{position:absolute;inset:0;background:linear-gradient(var(--sky1) 0 30%,var(--sky2) 30% 62%,var(--sky3) 62% 100%)}
+.night{position:absolute;inset:0;background:var(--k)}
+.ground{position:absolute;left:0;right:0;bottom:0;height:180px;background:
+  repeating-linear-gradient(90deg,#257179 0 48px,#2a8486 48px 96px);border-top:12px solid #38b764}
+.city{position:absolute;bottom:180px;width:120px;background:#29366f}
+.city:after{content:"";position:absolute;inset:18px 18px 0 18px;background:repeating-linear-gradient(transparent 0 12px,#ffcd7533 12px 24px),repeating-linear-gradient(90deg,transparent 0 12px,#29366f 12px 24px)}
+.shop{position:absolute;bottom:180px;width:360px;height:312px;background:#f4f4f4;box-shadow:0 0 0 6px var(--k)}
+.shop .roof{position:absolute;left:-24px;right:-24px;top:-48px;height:60px;box-shadow:0 0 0 6px var(--k)}
+.shop .sign{position:absolute;left:0;right:0;top:30px;text-align:center;font-size:36px;color:var(--k)}
+.shop .door{position:absolute;left:138px;bottom:0;width:84px;height:132px;background:#5d3a1a;box-shadow:0 0 0 6px var(--k)}
+.shop .win{position:absolute;bottom:60px;width:84px;height:72px;background:#73eff7;box-shadow:0 0 0 6px var(--k)}
+/* HUD */
+#hud{position:absolute;left:0;right:0;top:0;height:96px;z-index:20;visibility:hidden}
+#banner{position:absolute;left:36px;top:24px;background:var(--k);box-shadow:0 0 0 6px var(--w);padding:6px 18px;font-size:36px}
+#banner b{color:var(--y);font-weight:normal}
+#banner i{font-style:normal;color:var(--g);margin-left:18px}
+#cust{position:absolute;right:36px;top:24px;background:var(--k);box-shadow:0 0 0 6px var(--w);padding:6px 18px;font-size:36px}
+/* 旁白字幕(只在字幕版显示) */
+#subs{position:absolute;left:0;right:0;bottom:36px;display:flex;justify-content:center;z-index:30;visibility:hidden}
+#subs span{background:rgba(26,28,44,.88);padding:8px 24px;font-size:48px;line-height:1.25;box-shadow:0 0 0 6px var(--k)}
+body.subs #subs{visibility:visible}
+/* 像素转场 */
+#wipe{position:absolute;inset:0;z-index:40;pointer-events:none}
+#wipe i{position:absolute;width:120px;height:120px;background:var(--k);transform:scale(0)}
+.tv{position:absolute;background:#566c86;padding:24px 24px 48px;box-shadow:0 0 0 6px var(--k)}
+.tv img{display:block;width:100%;box-shadow:0 0 0 6px var(--k)}
+.tv .lab{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-size:36px;color:var(--k)}
+.chk{display:inline-block;width:72px;height:72px;line-height:72px;text-align:center;font-size:48px}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- HOOK -->
+  <div class="scene" id="hook">
+    <div class="night"></div>
+    <div id="stars"></div>
+    <div class="a t60 l" id="h1" style="left:0;right:0;top:120px;text-align:center">我们把一整套</div>
+    <div class="a t192 g sh" id="h2" style="left:0;right:0;top:200px;text-align:center">GEO 系统</div>
+    <div class="a t192 y sh" id="h3" style="left:0;right:0;top:400px;text-align:center">开源了！</div>
+    <div class="a t48" id="h4" style="left:0;right:0;top:640px;text-align:center">免费 · 可商用 · Docker 一键部署</div>
+    <div id="coins" class="a" style="left:0;top:0"></div>
+    <div class="a box c" id="hchat" style="left:420px;top:330px;width:1080px">
+      <div class="t36 l">你问 AI：</div>
+      <div class="t60" style="margin:6px 0 18px">「深圳租埃尔法，哪家好？」</div>
+      <div class="t36 l">AI 推荐：</div>
+      <div class="t72 y" id="hans">&nbsp;</div>
+    </div>
+    <div class="a t60" id="hq" style="left:0;right:0;top:760px;text-align:center">AI 推荐谁，是可以被<span class="y">「做」</span>出来的。</div>
+    <div class="a t96 y sh" id="htitle" style="left:0;right:0;top:330px;text-align:center">王老板的 AI 上榜之旅</div>
+    <div class="a t48" id="hstart" style="left:0;right:0;top:520px;text-align:center">▶ PRESS START</div>
+  </div>
+
+  <!-- STREET (第 0 关 + 结局) -->
+  <div class="scene" id="street">
+    <div class="sky"></div>
+    <div class="a" id="cl1" style="left:240px;top:150px"></div>
+    <div class="a" id="cl2" style="left:1380px;top:220px"></div>
+    <div class="city" style="left:600px;height:420px"></div><div class="city" style="left:756px;height:300px"></div>
+    <div class="city" style="left:1500px;height:360px"></div><div class="city" style="left:1680px;height:480px"></div>
+    <div class="shop" style="left:96px"><div class="roof" style="background:repeating-linear-gradient(90deg,#e43b44 0 48px,#f4f4f4 48px 96px)"></div><div class="sign">一路顺风出行</div><div class="win" style="left:30px"></div><div class="door"></div><div class="win" style="right:30px"></div></div>
+    <div class="shop" style="left:960px;width:288px;height:264px"><div class="roof" style="background:#3b5dc9"></div><div class="sign">星驰商务</div><div class="door" style="left:102px;height:120px"></div></div>
+    <div class="shop" style="left:1284px;width:288px;height:288px"><div class="roof" style="background:#38b764"></div><div class="sign">恒远专车</div><div class="door" style="left:102px;height:120px"></div></div>
+    <div class="shop" style="left:1608px;width:288px;height:252px"><div class="roof" style="background:#ef7d57"></div><div class="sign">云途出行</div><div class="door" style="left:102px;height:120px"></div></div>
+    <div class="ground"></div>
+    <div class="a" id="orbS" style="left:834px;top:84px"></div>
+    <div class="a bub" id="orbSay" style="left:1080px;top:132px"></div>
+    <div class="a" id="bossS" style="left:504px;bottom:180px"></div>
+    <div class="a" id="sweatS" style="left:660px;bottom:380px"></div>
+    <div class="a bub" id="bossSay" style="left:420px;top:560px"></div>
+    <div id="crowd"></div>
+    <div class="a bub" id="custSay" style="left:540px;top:630px"></div>
+  </div>
+
+  <!-- 第 1 关 体检 -->
+  <div class="scene" id="s1">
+    <div class="night" style="background:#29366f"></div>
+    <div class="ground" style="height:120px"></div>
+    <div class="a" id="s1boss" style="left:180px;bottom:120px"></div>
+    <div class="a bub" id="s1think" style="left:120px;top:620px">多投点广告？</div>
+    <div class="a" id="s1bag" style="left:336px;top:700px"></div>
+    <div class="a t96 r sh" id="s1miss" style="left:1320px;top:420px">MISS!</div>
+    <div class="a t60 r sh" id="s1money" style="left:120px;top:150px">-¥10,000</div>
+    <div class="a" id="s1bot" style="left:480px;top:-200px"></div>
+    <div class="a box" id="s1dlg" style="left:600px;top:150px;width:1200px"><div class="name">小榜</div><div class="t48" id="s1dlgT" style="line-height:1.4"></div></div>
+    <!-- 扫描 -->
+    <div class="a" id="s1scan" style="left:600px;top:150px;width:1200px">
+      <div class="t36 l" style="margin-bottom:18px">把客户会问的问题，挨个去问 AI：</div>
+      <div id="s1ai" style="display:flex;gap:30px"></div>
+      <div class="box r" id="s1hp" style="margin-top:36px;width:1140px">
+        <div class="t36">AI 可见度</div>
+        <div style="display:flex;align-items:center;gap:24px;margin-top:12px">
+          <div style="width:780px;height:48px;background:#333c57;box-shadow:0 0 0 6px var(--k)"><div id="s1hpbar" style="height:100%;width:0;background:var(--r)"></div></div>
+          <div class="t60" id="s1hpn">0/100</div><div class="tag t36" style="background:var(--r)">危急</div>
+        </div>
+      </div>
+    </div>
+    <div class="a" id="s1res" style="left:600px;top:150px;width:1200px">
+      <div class="box g" id="s1r1" style="margin-bottom:36px"><span class="t48">搜「一路顺风」</span><span class="t48 l"> → </span><span class="t48 g">✔ 找得到（老客户）</span></div>
+      <div class="box r" id="s1r2"><span class="t48">问「深圳哪家好」</span><span class="t48 l"> → </span><span class="t48 r">✘ 被同行截走（新客户）</span></div>
+    </div>
+    <div class="tv" id="s1tv" style="left:1020px;top:430px;width:780px"><img src="ui/report-top.png"><div class="lab">系统里的体检报告</div></div>
+  </div>
+
+  <!-- 第 2 关 报价 -->
+  <div class="scene" id="s2">
+    <div class="night" style="background:#333c57"></div>
+    <div class="ground" style="height:120px;background:repeating-linear-gradient(90deg,#5d3a1a 0 48px,#6e4520 48px 96px);border-top-color:#8b5a2b"></div>
+    <div class="a" id="s2m" style="left:240px;bottom:120px"></div>
+    <div class="a bub" id="s2say" style="left:420px;top:640px">包月一万，保证第一！</div>
+    <div class="a t96 r" id="s2stamp" style="left:240px;top:150px;border:12px solid var(--r);padding:0 24px;transform:rotate(-8deg)">拍脑袋?</div>
+    <div class="a" id="s2orb" style="left:1380px;top:180px"></div>
+    <div class="a t36 l" id="s2orbL" style="left:1290px;top:390px;width:360px;text-align:center">AI 只看它读到了什么</div>
+    <div class="a" id="s2feed" style="left:0;top:0"></div>
+    <div class="a" id="s2cmp" style="left:840px;top:450px;width:960px;height:420px">
+      <div class="a t36" style="left:0;bottom:-60px;width:300px;text-align:center">同行</div>
+      <div class="a t36" style="left:330px;bottom:-60px;width:300px;text-align:center">你（现在）</div>
+      <div class="a t36 y" style="left:660px;bottom:-60px;width:300px;text-align:center">要挤进去</div>
+      <div class="a" id="s2st1" style="left:90px;bottom:0;width:120px"></div>
+      <div class="a" id="s2st2" style="left:420px;bottom:0;width:120px"></div>
+      <div class="a" id="s2st3" style="left:750px;bottom:0;width:120px"></div>
+      <div class="a t48" id="s2n1" style="left:60px;top:-30px;width:180px;text-align:center">40 篇</div>
+      <div class="a t48 r" id="s2n2" style="left:390px;top:330px;width:180px;text-align:center">0 篇</div>
+      <div class="a t48 y" id="s2n3" style="left:720px;top:150px;width:180px;text-align:center">≥12 篇</div>
+    </div>
+    <div class="a box y" id="s2shop" style="left:180px;top:180px;width:840px">
+      <div class="name">报价商店</div>
+      <div class="t36 l" style="margin:12px 0 18px">价格 = 要写的篇数 × 单篇成本 × 系数</div>
+      <div class="t48" id="s2i1" style="padding:6px 12px">&nbsp; 入门版　　¥3,000</div>
+      <div class="t48" id="s2i2" style="padding:6px 12px">&nbsp; 标准版　　¥5,000</div>
+      <div class="t48" id="s2i3" style="padding:6px 12px">&nbsp; 旗舰版　　¥8,000</div>
+    </div>
+    <div class="tv" id="s2tv" style="left:1080px;top:400px;width:720px"><img src="ui/quote-priced.png"><div class="lab">系统里的报价单</div></div>
+  </div>
+
+  <!-- 第 3 关 创作 -->
+  <div class="scene" id="s3">
+    <div class="night" style="background:#29366f"></div>
+    <div class="ground" style="height:120px"></div>
+    <div class="a" id="s3boss" style="left:180px;bottom:120px"></div>
+    <div class="a bub" id="s3say" style="left:120px;top:620px">深圳第一！全网最低！</div>
+    <div class="a" id="s3scroll" style="left:330px;top:760px"></div>
+    <div class="a" id="s3orb" style="left:1440px;top:300px"></div>
+    <div class="a" id="s3shield" style="left:1320px;top:420px"></div>
+    <div class="a t96 c sh" id="s3block" style="left:1110px;top:240px">BLOCK!</div>
+    <div class="a t48 r sh" id="s3zero" style="left:1380px;top:720px">引用 0 次</div>
+    <div class="a t96 y sh" id="s3q" style="left:1500px;top:150px">？？</div>
+    <div class="a bub" id="s3orbSay" style="left:1080px;top:150px">出处呢？证据呢？</div>
+    <!-- 铁匠铺 -->
+    <div class="a" id="s3forge" style="left:0;top:0;width:1920px;height:1080px">
+      <div class="a t48 y" style="left:180px;top:150px">创作铁匠铺</div>
+      <div class="a box" id="s3in1" style="left:180px;top:270px"><span class="t36">证据（网上查到的）</span></div>
+      <div class="a box" id="s3in2" style="left:180px;top:390px"><span class="t36">品牌资料</span></div>
+      <div class="a box" id="s3in3" style="left:180px;top:510px"><span class="t36">知识库</span></div>
+      <div class="a" id="s3anvil" style="left:780px;top:630px;width:300px;height:96px;background:#566c86;box-shadow:0 0 0 6px var(--k)"></div>
+      <div class="a" id="s3ham" style="left:960px;top:420px"></div>
+      <div class="a box" id="s3txt" style="left:600px;top:240px;width:1200px"><div class="t48" id="s3bad">“我们是<span class="r" id="s3hl">深圳第一</span>的商务用车公司”</div><div class="t48 g" id="s3good" style="margin-top:18px">→ “2019 年起服务深圳企业，资质可在官网查到”</div></div>
+      <div class="a" id="s3gold" style="left:870px;top:540px"></div>
+    </div>
+  </div>
+
+  <!-- 第 4 关 发布 -->
+  <div class="scene" id="s4">
+    <div class="sky"></div>
+    <div class="ground"></div>
+    <div class="a" id="s4boss" style="left:120px;bottom:180px"></div>
+    <div class="a" style="left:420px;bottom:180px;width:240px;height:180px;background:#8b5a2b;box-shadow:0 0 0 6px var(--k)"><div class="t36 w" style="text-align:center;margin-top:18px">小论坛</div><div class="t24" style="text-align:center;margin-top:12px;color:#ffcd75">访问量：0</div></div>
+    <div class="a" id="s4sc0" style="left:240px;top:600px"></div>
+    <div class="a" id="s4weed" style="left:1900px;bottom:186px"></div>
+    <div class="a" id="s4orb" style="left:1500px;top:96px"></div>
+    <div id="s4towers"></div>
+    <div id="s4beams"></div>
+    <div class="a box y" id="s4wallet" style="left:120px;top:150px"><span class="t36">钱包 </span><span class="t48 y" id="s4w">¥0</span></div>
+  </div>
+
+  <!-- 第 5 关 监测 -->
+  <div class="scene" id="s5">
+    <div class="night" style="background:#29366f"></div>
+    <div class="ground" style="height:120px"></div>
+    <div class="a" id="s5boss" style="left:150px;bottom:120px"></div>
+    <div class="a bub" id="s5say" style="left:90px;top:620px">感觉……好像有用？</div>
+    <div class="a" id="s5cal" style="left:540px;top:150px;display:flex;gap:18px"></div>
+    <div class="a" id="s5bot" style="left:540px;bottom:120px"></div>
+    <div class="a" id="s5orb" style="left:1620px;top:330px"></div>
+    <div class="a box" id="s5chart" style="left:540px;top:300px;width:1020px;height:480px">
+      <div class="t36 l">每天问一遍 AI：被提到的比例</div>
+      <div class="a" style="left:24px;right:24px;top:132px;border-top:6px dashed var(--y)"></div>
+      <div class="a t24 y" style="right:24px;top:96px">目标 65%</div>
+      <div id="s5bars" class="a" style="left:24px;bottom:24px;display:flex;gap:12px;align-items:flex-end;height:300px"></div>
+      <div class="a t72 g sh" id="s5pct" style="right:36px;top:150px">11%</div>
+    </div>
+    <div class="a box y" id="s5news" style="left:420px;top:240px;width:1380px">
+      <div class="name">战报</div>
+      <div class="t48" style="line-height:1.5;margin-top:12px">DeepSeek 在回答里引用了你的文章<br><span class="y">《深圳企业用车怎么选》</span> · 来自 搜狐号</div>
+    </div>
+    <div class="tv" id="s5tv" style="left:1140px;top:500px;width:660px"><img src="ui/monitoring.png"><div class="lab">系统里的监测中心</div></div>
+  </div>
+
+  <!-- 第 6 关 飞轮 -->
+  <div class="scene" id="s6">
+    <div class="night"></div>
+    <div id="s6rain"></div>
+    <div class="a" id="s6ring" style="left:660px;top:240px;width:600px;height:600px"></div>
+    <div class="a t60 y" id="s6core" style="left:810px;top:500px;width:300px;text-align:center">规律</div>
+    <div class="a box g" id="s6xp" style="left:480px;top:900px;width:960px;padding:12px 18px"><div style="display:flex;align-items:center;gap:18px"><span class="t36">EXP</span><div style="flex:1;height:36px;background:#333c57;box-shadow:0 0 0 6px var(--k)"><div id="s6xpbar" style="height:100%;width:0;background:var(--g)"></div></div></div></div>
+    <div class="a t144 y sh" id="s6lv" style="left:0;right:0;top:150px;text-align:center">LEVEL UP!</div>
+    <div class="a" id="s6ups" style="left:0;right:0;top:420px;display:flex;justify-content:center;gap:48px"></div>
+    <div class="a t36 l" id="s6note" style="left:0;right:0;top:720px;text-align:center">学到的只是建议，人确认了才生效</div>
+  </div>
+
+  <!-- 第 7 关 分销 & 计价 -->
+  <div class="scene" id="s7">
+    <div class="sky"></div>
+    <div class="ground"></div>
+    <div id="s7bosses"></div>
+    <div class="a" id="s7agent" style="left:900px;bottom:180px"></div>
+    <div class="a tag" id="s7badge" style="left:900px;bottom:340px;background:var(--y)">服务商</div>
+    <div class="a" id="s7tools" style="left:0;right:0;top:150px;display:flex;justify-content:center;gap:60px"></div>
+    <div class="a box" id="s7sign" style="left:1320px;top:450px;width:420px;text-align:center"><span class="t48" id="s7signT">OmniRank</span></div>
+    <div class="a box y" id="s7book" style="left:420px;top:150px;width:1080px"><div class="name">账本</div><div id="s7rows" style="margin-top:12px"></div></div>
+  </div>
+
+  <!-- 结尾卡 -->
+  <div class="scene" id="end">
+    <div class="night"></div>
+    <div id="stars2"></div>
+    <div class="a t60 l" id="e0" style="left:0;right:0;top:150px;text-align:center">让 AI 推荐你的</div>
+    <div class="a t192 g sh" id="e1" style="left:0;right:0;top:230px;text-align:center">GEO 系统</div>
+    <div class="a t144 y sh" id="e2" style="left:0;right:0;top:450px;text-align:center">已开源</div>
+    <div class="a t48" id="e3" style="left:0;right:0;top:660px;text-align:center">免费 · 可商用 · Docker 一键部署</div>
+    <div class="a t48 c" id="e4" style="left:0;right:0;top:760px;text-align:center">github.com/OmnirankGEO/Omnirank-GEO</div>
+    <div class="a t48 y" id="e5" style="left:0;right:0;top:850px;text-align:center">★ 点个 Star，部署一套试试</div>
+    <div class="a t24 l" id="e6" style="left:0;right:0;top:1000px;text-align:center">* 故事情节为演示，实际效果因行业与投入而异</div>
+  </div>
+
+  <div id="hud"><div id="banner"></div><div id="cust">今日新客 <span class="y" id="custN">12</span></div></div>
+  <div id="subs"><span id="subsT"></span></div>
+  <div id="wipe"></div>
+</div>
+<script src="node_modules/gsap/dist/gsap.min.js"></script>
+<script src="sprites.js"></script>
+<script src="film.js"></script>
+</body>
+</html>
