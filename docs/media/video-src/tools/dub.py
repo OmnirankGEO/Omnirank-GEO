@@ -88,16 +88,22 @@ def silences(wav):
     return list(zip(st, en))
 
 
+def spoken_len(text):
+    """估算念出来的长度:一个英文单词约等于 2 个汉字,空格不算。"""
+    return len(re.sub(r'[A-Za-z]+', 'xx', text.replace(' ', '')))
+
+
 def split_lines(x, sil, lines):
     """在句间停顿处切开:按字数估出每个句界的位置,取离它最近的停顿。"""
     total = len(x) / SR
     nz = np.nonzero(np.abs(x) > 0.01)[0]
     v0 = nz[0] / SR if len(nz) else 0; v1 = nz[-1] / SR if len(nz) else total
-    chars = np.cumsum([len(l['text']) for l in lines]); chars = chars / chars[-1]
+    chars = np.cumsum([spoken_len(l['text']) for l in lines]); chars = chars / chars[-1]
     cuts, used = [], set()
     for k in range(len(lines) - 1):
         exp = v0 + chars[k] * (v1 - v0)
-        cands = [(abs((s + e) / 2 - exp), i) for i, (s, e) in enumerate(sil)
+        # 句末停顿通常比逗号长:离预估位置近、停顿又长的优先
+        cands = [(abs((s + e) / 2 - exp) - 3.0 * (e - s), i) for i, (s, e) in enumerate(sil)
                  if i not in used and (s + e) / 2 > (cuts[-1] if cuts else 0) and abs((s + e) / 2 - exp) < 0.25 * (v1 - v0)]
         if cands:
             _, i = min(cands); used.add(i); s, e = sil[i]; cuts.append((s + e) / 2)
@@ -122,7 +128,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('page', choices=['explainer', 'pixel'])
     ap.add_argument('--fake', action='store_true')
-    ap.add_argument('--geo', default='G E O', help='配音输入里 GEO 的写法')
+    ap.add_argument('--geo', default='GEO', help='配音输入里 GEO 的写法(试听后原文读得最好,需要时可改成 "G E O")')
     ap.add_argument('--out', default=None)
     ap.add_argument('--preview', default=None, help='只渲染这些视频秒数的截图,逗号分隔')
     a = ap.parse_args()
