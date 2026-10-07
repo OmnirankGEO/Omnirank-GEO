@@ -90,6 +90,14 @@ def synth(seg_dir, sid, text, fake, lines):
         time.sleep(2 ** (attempt + 1))
 
 
+def box(x, w):
+    """滑动平均(与 np.convolve(x, ones(w)/w, 'same') 相同),用前缀和做到 O(n)。"""
+    c = np.concatenate([[0.0], np.cumsum(x, dtype=np.float64)])
+    n = len(x); h = w // 2
+    i = np.arange(n); lo = np.clip(i - h, 0, n); hi = np.clip(i - h + w, 0, n)
+    return (c[hi] - c[lo]) / w
+
+
 def silences(wav):
     p = subprocess.run(['ffmpeg', '-v', 'info', '-i', wav, '-af', 'silencedetect=noise=-38dB:d=0.16', '-f', 'null', '-'],
                        capture_output=True, text=True)
@@ -270,10 +278,10 @@ def main():
         bgm_db, sfx_db = -25, -27
     # BGM 拉平:按 2 秒窗口的音量做慢速自动增益,整首一样响(原曲开头结尾更响,中段会被压没)
     w = int(2 * SR)
-    loud = np.sqrt(np.convolve(bgm ** 2, np.ones(w) / w, mode='same')) + 1e-6
+    loud = np.sqrt(np.maximum(box(bgm ** 2, w), 0)) + 1e-6
     target = 10 ** (bgm_db / 20)
     agc = np.clip(target / loud, 0.2, 6.0)
-    agc = np.convolve(agc, np.ones(w) / w, mode='same')
+    agc = box(agc, w)
     bgm = bgm * agc
     # 音效:按统一电平归一,再软限幅,峰值不超过人声
     if sfx_db is not None and np.any(sfx):
@@ -285,10 +293,10 @@ def main():
 
     # 人声出现时把 BGM 压低约 8 dB(平滑的侧链)
     env = np.abs(voice); k = int(0.25 * SR)
-    env = np.convolve(env, np.ones(k) / k, mode='same')
+    env = box(env, k)
     depth = cfg.get('duck', 0.45)            # 0.45 ≈ 人声时音乐压低约 5 dB
     duck = 1 - depth * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)
-    k2 = int(0.3 * SR); duck = np.convolve(duck, np.ones(k2) / k2, mode='same')
+    k2 = int(0.3 * SR); duck = box(duck, k2)
     sduck = 1 - 0.35 * np.clip(env / (env.max() * 0.15 + 1e-9), 0, 1)   # 人声时音效也让一点
     mix = voice + bgm * duck + sfx * sduck
     write_wav(os.path.join(out, 'mix_raw.wav'), mix / max(1.0, np.max(np.abs(mix)) / 0.95))
