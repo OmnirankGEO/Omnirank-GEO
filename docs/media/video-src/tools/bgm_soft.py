@@ -71,3 +71,39 @@ def make(dur, seed=5):
     fi, fo = int(1.5 * SR), int(4 * SR)
     g = np.ones(n); g[:fi] = np.linspace(0, 1, fi); g[-fo:] = np.linspace(1, 0, fo)
     return np.stack([L * g, R * g], axis=1)
+
+
+def soft_sfx(events, n):
+    """讲解版的轻音效:whoosh 转场、pop 弹出、ding 强调、tick 打字、stamp 盖章、rise 上扬。"""
+    rng = np.random.default_rng(11)
+    out = np.zeros(n)
+
+    def tone(f0, f1, d, decay, amp, harm=0.0):
+        t = np.arange(int(d * SR)) / SR
+        f = np.geomspace(f0, f1, len(t))
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        return (np.sin(ph) + harm * np.sin(2 * ph)) * np.exp(-t * decay) * amp
+
+    def noise(d, fc_from, fc_to, amp, attack=0.04):
+        t = np.arange(int(d * SR)) / SR
+        x = rng.uniform(-1, 1, len(t))
+        x = _lp(x, fc_to) - _lp(x, fc_from)
+        env = np.minimum(1, t / attack) * np.exp(-t * 4)
+        return x * env * amp
+
+    lib = {
+        'whoosh': noise(0.45, 300, 4000, 0.35, attack=0.12),
+        'pop': tone(500, 900, 0.09, 40, 0.30),
+        'ding': tone(1320, 1320, 0.6, 7, 0.22, harm=0.3) + np.pad(tone(1980, 1980, 0.5, 9, 0.08), (0, int(0.1 * SR))),
+        'tick': tone(2200, 2200, 0.03, 120, 0.12),
+        'stamp': tone(120, 60, 0.25, 18, 0.55) + np.pad(noise(0.12, 200, 2500, 0.4, attack=0.002), (0, int(0.25 * SR) - int(0.12 * SR))),
+        'rise': tone(300, 900, 0.5, 3, 0.12),
+    }
+    for ev in events:
+        s = lib.get(ev['name'])
+        if s is None:
+            continue
+        i = int(ev['t'] * SR)
+        e = max(i, min(n, i + len(s)))
+        out[i:e] += s[:e - i]
+    return out

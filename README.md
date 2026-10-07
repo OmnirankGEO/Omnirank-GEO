@@ -6,10 +6,10 @@
 
 <p align="center">
   <a href="https://github.com/OmnirankGEO/Omnirank-GEO/raw/main/docs/media/omnirank-intro.mp4">
-    <img src="docs/media/omnirank-intro-poster.jpg" alt="3 分半看懂 OmniRank:点击播放介绍视频(有声版)" width="720">
+    <img src="docs/media/omnirank-intro-poster.jpg" alt="1 分半看懂:GEO 是什么,OmniRank 为什么这样做(点击播放)" width="720">
   </a>
   <br>
-  <sub>▲ 点击观看 3 分半介绍视频(有配音):诊断、报价、创作、发布、监测、飞轮、分销、计价分别做什么、怎么运作(界面截图为演示数据)<br>想看轻松版?还有一部 2 分半像素小剧场 <a href="https://github.com/OmnirankGEO/Omnirank-GEO/raw/main/docs/media/omnirank-pixel.mp4">《王老板的 AI 上榜之旅》</a></sub>
+  <sub>▲ 点击观看 1 分半介绍视频(有配音):GEO 是什么、从哪来,以及 OmniRank 为什么这样设计(界面截图为演示数据)<br>想看轻松版?还有一部 2 分半像素小剧场 <a href="https://github.com/OmnirankGEO/Omnirank-GEO/raw/main/docs/media/omnirank-pixel.mp4">《王老板的 AI 上榜之旅》</a></sub>
 </p>
 
 **许可证:Apache-2.0 + 署名附加条件(非 OSI 认证的纯开源,附加条件只要求保留署名)。** 详见 [LICENSE](LICENSE)。
@@ -24,7 +24,7 @@
 
 越来越多的人不再搜索,而是直接问 DeepSeek、豆包、Kimi、元宝这样的 AI:「北京哪家装修公司靠谱?」「入门级咖啡机推荐哪款?」AI 不会给十条链接让人自己挑,它会直接说出几个名字。
 
-**没被 AI 说出名字的品牌,在这次提问里就等于不存在。** 让 AI 在回答中准确提到你,这件事叫 **GEO**(Generative Engine Optimization,生成式引擎优化),可以理解成「AI 时代的 SEO」。
+**没被 AI 说出名字的品牌,在这次提问里就等于不存在。** 让 AI 在回答中准确提到你,这件事叫 **GEO**(Generative Engine Optimization,生成式引擎优化),可以理解成「AI 时代的 SEO」。这个说法出自 2023 年普林斯顿大学等机构的论文 [GEO: Generative Engine Optimization](https://arxiv.org/abs/2311.09735)(KDD 2024),论文发现:给内容加上可查的来源、统计数据和权威引述,在 AI 回答里的可见度最多能提升约 40%。
 
 OmniRank 是做 GEO 的一整套工具,装在你自己的服务器上,用浏览器打开就能用。
 
