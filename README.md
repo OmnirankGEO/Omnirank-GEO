@@ -18,6 +18,8 @@
 
 项目主页:https://omnirank.cn/opensource/
 
+**我们的发布渠道 API：[Citeway（引路）](https://cngeo.top/)** · [注册 / 控制台](https://cngeo.top/console/) · [API 文档](https://cngeo.top/reference/) · [价格说明](https://cngeo.top/pricing/)。需要真实软文投放时，按下方[接入步骤](#接入我们的-citeway引路api)配置即可。
+
 ---
 
 ## 这是什么
@@ -64,7 +66,7 @@ OmniRank 是做 GEO 的一整套工具,装在你自己的服务器上,用浏览�
 
 - 一台装了 Docker 的 x86_64 机器(内存 4 GB 以上,磁盘留 20 GB),按下面的[快速开始](#快速开始)操作,首次构建约十几分钟。
 - 不填任何 API Key 也能启动和登录、看界面;要真正诊断、写作、监测,需要填大模型的 API Key(默认用阿里云百炼和 DeepSeek),调用费用由各服务商按量收取。
-- 真实投放需要接一个发布渠道;没有渠道时可以用「模拟发布」完整演示流程。
+- 真实投放需要接一个发布渠道，可直接接入我们提供的 [Citeway（引路）API](https://cngeo.top/)，在[控制台](https://cngeo.top/console/)注册并创建自己的 API Key；没有渠道时可以用「模拟发布」完整演示流程。
 
 技术栈:后端 Python(FastAPI)+ PostgreSQL + Redis,前端 React + Vite,用 Docker Compose 一键编排。界面为中文,目前主要面向中文 AI 平台。
 
@@ -156,7 +158,7 @@ OmniRank 是做 GEO 的一整套工具,装在你自己的服务器上,用浏览�
 | 火山引擎语音识别 | `VOLCENGINE_ASR_APP_KEY`、`VOLCENGINE_ASR_ACCESS_KEY` | 音频转录 / 流式语音识别 | 可选;使用此 ASR 时两项都需要,不配时返回未配置凭证状态或错误,没有该路的转录文本 |
 | 图片生成 API | `APIMART_API_KEY`、`MARKETING_APIMART_KEY` | 推广素材中的 AI 生图 | 可选;优先取前者,后者为兼容别名,不配时不提交生图任务,任务接口返回缺 Key 拒绝 |
 | 图片生成接口覆盖 | `MARKETING_IMAGE_GENERATION_URL`、`MARKETING_IMAGE_TASK_URL` | 生图任务提交和状态查询 | 可选;不配时使用代码内置接口。覆盖地址需兼容现有请求 / 响应格式,任务地址模板保留 `{task_id}` |
-| 发布渠道 API | `PUBLISH_CHANNEL`、`PUBLISH_CHANNEL_API_BASE`、`PUBLISH_CHANNEL_API_KEY` | 真实软文发布或模拟发布 | 可选;不设渠道则拒绝发布。`dry_run` 无需地址和 Key;`api` 必须同时配置地址和 Key,缺一项按未接入处理,细节见下节 |
+| [Citeway 发布渠道 API](https://cngeo.top/) | `PUBLISH_CHANNEL`、`PUBLISH_CHANNEL_API_BASE`、`PUBLISH_CHANNEL_API_KEY` | 真实软文发布或模拟发布 | 可选;不设渠道则拒绝发布。`dry_run` 无需地址和 Key;接入 Citeway 时地址填 `https://cngeo.top/v1`，Key 在其控制台创建；也可接入其他兼容渠道，细节见下节 |
 | 发布渠道回调 | `PUBLISH_CHANNEL_CALLBACK_SECRET` | 兼容发布结果回调入口的共享密钥校验 | 可选;只在使用该回调入口时配置。环境变量未配时读取管理设置,两处都没有或校验失败时入口返回 404 |
 | 阿里云短信 | `ALIBABA_CLOUD_ACCESS_KEY_ID`、`ALIBABA_CLOUD_ACCESS_KEY_SECRET`、`SMS_SIGN_NAME` | 手机验证码与组织邀请短信 | **启用短信时需要有效 AccessKey 和自己的短信签名**;缺 AccessKey 时客户端初始化报错,签名未配时请求传入空签名;账号密码登录不依赖短信 |
 | 手机验证码模板 | `SMS_TEMPLATE_CODE`、`SMS_TEMPLATE_FALLBACK` | 注册 / 登录验证码短信的主模板与备用模板 | 可选覆盖项;不配时使用代码预设模板。自建需换成自己账号可用的模板,两个模板都发送失败时返回短信不可用 |
@@ -178,6 +180,26 @@ OmniRank 是做 GEO 的一整套工具,装在你自己的服务器上,用浏览�
 其余为可选的调优项,见 `.env.example` 注释。
 
 ## 发布渠道
+
+### 接入我们的 Citeway（引路）API
+
+[Citeway（引路）](https://cngeo.top/)是我们提供的发布渠道 API。开源版已包含接入客户端，配置后可获取媒体、报价、提交软文订单并同步发布结果。
+
+1. 打开 [Citeway 控制台](https://cngeo.top/console/)，注册并登录账号，在「API Key」中创建 Key。Key 只展示一次，请妥善保存。
+2. 在服务器的 `.env` 中填写以下三项，将示例占位文字替换为你自己的 Key：
+
+   ```dotenv
+   PUBLISH_CHANNEL=api
+   PUBLISH_CHANNEL_API_BASE=https://cngeo.top/v1
+   PUBLISH_CHANNEL_API_KEY=替换为你在Citeway控制台创建的Key
+   ```
+
+3. 在 Citeway 控制台充值渠道余额后再进行真实投放，费用见[价格说明](https://cngeo.top/pricing/)及下单时的报价。渠道余额与自建 OmniRank 的用户算力余额分别管理；在本地增加算力不会给渠道账户充值。
+4. 应用配置并启动状态同步任务：`docker compose up -d omnirank-blue omnirank-cron-blue`。先试发一篇软文，确认发布状态和结果链接。
+
+接口细节见 [API 文档](https://cngeo.top/reference/)。这里只接软文，Key 只放在服务器 `.env` 中，不要放进前端或提交到仓库。只演示流程时使用下面的 `dry_run` 模式。
+
+### 渠道模式与配置
 
 发布用哪条渠道,只看 `.env` 里的 `PUBLISH_CHANNEL`,有三种状态:
 

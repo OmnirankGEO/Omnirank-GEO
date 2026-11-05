@@ -81,6 +81,18 @@ curl -s -X POST http://<后端地址>/api/auth/login \
 
 发布渠道只由 `.env` 决定,没有页面开关。
 
+**接入我们自己的 [Citeway（引路）API](https://cngeo.top/)**：到[控制台](https://cngeo.top/console/)注册 / 登录，在「API Key」创建并保存自己的 Key（只展示一次），然后在服务器 `.env` 中设置：
+
+```dotenv
+PUBLISH_CHANNEL=api
+PUBLISH_CHANNEL_API_BASE=https://cngeo.top/v1
+PUBLISH_CHANNEL_API_KEY=替换为你在Citeway控制台创建的Key
+```
+
+真实投放前需在 Citeway 控制台充值渠道余额；它与自建 OmniRank 的用户算力分别管理，本地校正算力不会给渠道账户充值。见[价格说明](https://cngeo.top/pricing/)和 [API 文档](https://cngeo.top/reference/)。Key 只放服务器 `.env`，不要提交进仓库。
+
+改完后执行 `docker compose up -d omnirank-blue omnirank-cron-blue`，应用配置并运行发布结果同步任务。开源版当前只接软文。
+
 | 键 | 取值 | 说明 |
 |---|---|---|
 | `PUBLISH_CHANNEL` | 不设 / `dry_run` / `api` | 不设 = 未接入;填了认不出的值,或 `api` 没配齐地址与 Key,都会在日志里记一条告警,并按未接入处理 |
