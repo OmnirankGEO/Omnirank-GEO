@@ -1700,6 +1700,7 @@ export interface SystemSettings {
     tikhub_api_key: string;
     diagnosis_model: string;
     diagnosis_provider: string;
+    diagnosis_visibility_model: string;
     diagnosis_tasks: Record<string, TaskLLMConfig>;
     writing_model: string;
     writing_provider: string;

@@ -177,6 +177,8 @@ interface Settings {
     // 调研报告板块 - 默认配置
     diagnosis_provider: string;
     diagnosis_model: string;
+    // 千问被测引擎模型覆盖（留空 = qwen3.7-plus）；只影响诊断的 AI 可见度检索
+    diagnosis_visibility_model: string;
     // 调研报告板块 - 子任务LLM（可选覆盖）
     diagnosis_tasks: Record<string, TaskLLMConfig>;
     // 写作板块 - 默认配置
@@ -251,6 +253,7 @@ const DEFAULT_SETTINGS: Settings = {
     jina_api_key: "",
     diagnosis_provider: "dashscope",
     diagnosis_model: "qwen3.7-plus",
+    diagnosis_visibility_model: "",
     diagnosis_tasks: {
         geo_scoring: { provider: "deepseek", model: "deepseek-reasoner" },
         diagnostic_report: { provider: "dashscope", model: "qwen3.7-plus" },
@@ -1576,6 +1579,17 @@ export function SettingsPage() {
                                             onChange={(e) => updateSetting("diagnosis_model", e.target.value)}
                                             placeholder={PROVIDERS.find(p => p.id === settings.diagnosis_provider)?.placeholder}
                                         />
+                                    </div>
+                                    <div className="space-y-2 sm:col-span-2">
+                                        <Label>AI 可见度测试-千问引擎模型（高级）</Label>
+                                        <Input
+                                            value={settings.diagnosis_visibility_model}
+                                            onChange={(e) => updateSetting("diagnosis_visibility_model", e.target.value)}
+                                            placeholder="留空 = qwen3.7-plus（默认被测引擎）"
+                                        />
+                                        <p className="text-xs text-muted-foreground">
+                                            只影响诊断中“通义千问”的检索模型，不影响报告生成模型；填 qwen3.8-flash 等新模型前请确认其支持联网搜索。
+                                        </p>
                                     </div>
                                 </div>
                             </div>

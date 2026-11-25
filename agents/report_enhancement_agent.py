@@ -33,6 +33,29 @@ AI_ENGINE_KEYS = [e["key"] for e in AI_ENGINES]
 AI_ENGINE_DISPLAY_NAMES = [e["display_name"] for e in AI_ENGINES]
 AI_ENGINE_COUNT = len(AI_ENGINES)
 
+# 报告表格只展示本次实际跑过的引擎；元宝等新增引擎没有历史表头常量，
+# 固定四列会把"未测"误写成 ❌，也会漏掉真实测过的引擎。
+AI_ENGINE_TABLE_LABELS = {e["key"]: e["short_name"] for e in AI_ENGINES}
+AI_ENGINE_TABLE_LABELS.update({"yuanbao": "元宝", "qwen": "Qwen"})
+
+
+def _report_engine_keys(ai_visibility_data, detail_table):
+    """按本次测试顺序返回表格列；缺省时再从明细结果兜底。"""
+    keys = []
+    for key in ai_visibility_data.get("engines_tested") or []:
+        if isinstance(key, str) and key and key not in keys:
+            keys.append(key)
+    if not keys:
+        for item in detail_table:
+            for key in (item.get("results") or {}):
+                if isinstance(key, str) and key and key not in keys:
+                    keys.append(key)
+    return keys or AI_ENGINE_KEYS
+
+
+def _report_engine_label(key):
+    return AI_ENGINE_TABLE_LABELS.get(key, key)
+
 
 # ============================================================================
 # v3.6 白标 · branding 归一化(SSOT resolve_branding_context 的 brand dict)
@@ -186,6 +209,84 @@ class TokenTracker:
             print(f"  ⚠️ Token保存失败: {e}")
 
 
+def _usable_llm_key(value: str) -> bool:
+    key = str(value or "").strip()
+    if len(key) < 20:
+        return False
+    lowered = key.lower()
+    return not lowered.startswith(("your_", "your-", "changeme", "sk-xxx"))
+
+
+async def _call_dashscope_report_llm(
+    system_prompt: str,
+    user_message: str,
+    *,
+    temperature: float,
+    max_tokens: int,
+) -> str:
+    """Report chapter fallback on the configured Qwen model.
+
+    The report enhancer used to hard-code DeepSeek.  On an installation where
+    only the Qwen key is configured that turned every chapter into a literal
+    "DeepSeek LLM调用失败 401" line inside the customer report.  Returning an
+    empty string on failure is deliberate: a missing chapter is better than
+    leaking a provider error into the deliverable.
+    """
+    import os
+
+    import httpx
+
+    try:
+        from config.settings_manager import load_settings
+
+        settings = load_settings()
+        key = (
+            os.getenv("DASHSCOPE_API_KEY")
+            or getattr(settings, "dashscope_api_key", "")
+            or ""
+        ).strip()
+        model = (getattr(settings, "diagnosis_model", "") or "").strip()
+        if not model.lower().startswith("qwen"):
+            model = "qwen3.8-flash"
+    except Exception:
+        key = os.getenv("DASHSCOPE_API_KEY", "").strip()
+        model = "qwen3.8-flash"
+
+    if not _usable_llm_key(key):
+        return ""
+
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message},
+        ],
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "enable_thinking": False,
+    }
+    try:
+        async with httpx.AsyncClient(timeout=120.0) as client:
+            response = await client.post(
+                "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+            if response.status_code != 200:
+                print(
+                    f"  ⚠️ 报告章节 Qwen 调用失败: HTTP {response.status_code}"
+                )
+                return ""
+            result = response.json()
+            return result["choices"][0]["message"]["content"] or ""
+    except Exception as exc:
+        print(f"  ⚠️ 报告章节 Qwen 调用异常: {type(exc).__name__}")
+        return ""
+
+
 async def call_llm(
     system_prompt: str,
     user_message: str,
@@ -257,8 +358,13 @@ async def call_llm(
                 api_key = get_current_settings().deepseek_api_key or ""
             except Exception:
                 pass
-        if not api_key:
-            return "[LLM未配置] 请在设置页面配置 DeepSeek API Key"
+        if not _usable_llm_key(api_key):
+            return await _call_dashscope_report_llm(
+                system_prompt,
+                user_message,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
 
         headers = {
             "Authorization": f"Bearer {api_key}",
@@ -294,7 +400,13 @@ async def call_llm(
 
                 return result["choices"][0]["message"]["content"]
         except Exception as e:
-            return f"[DeepSeek LLM调用失败] {str(e)}"
+            print(f"  ⚠️ 报告章节 DeepSeek 调用失败({type(e).__name__})，尝试 Qwen 兜底")
+            return await _call_dashscope_report_llm(
+                system_prompt,
+                user_message,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
 
 
 # ========================================
@@ -1715,7 +1827,7 @@ EXECUTIVE_SUMMARY_SYSTEM_PROMPT = """# 角色定义
 
 ### 📊 诊断概览
 
-在本次AI引擎测试中，我们向4大主流AI平台（千问、DeepSeek、Kimi、豆包）提出了真实用户场景问题。
+在本次AI引擎测试中，我们向本次配置的主流AI平台提出了真实用户场景问题。
 
 （⚠️ 以下表格中的数据必须从输入中的"关键数字"部分精确复制，不可自行计算）
 
@@ -3006,33 +3118,41 @@ async def generate_technical_report(
         from config.ai_engines import DIAGNOSIS_ENGINES
 
         engines = ai_visibility_data.get("engines_tested", list(DIAGNOSIS_ENGINES))
+        _engine_keys = _report_engine_keys(ai_visibility_data, detail_table)
+        _engine_headers = " | ".join(_report_engine_label(k) for k in _engine_keys)
+        _engine_separator = ":-----|" + "".join(":-----|" for _ in _engine_keys) + ":-----------|"
 
-        ai_test_detail_section = """
+        ai_test_detail_section = f"""
 ### 🔬 AI引擎实测详情
 
 > 📊 向各主流 AI 引擎提问真实用户问题，观察品牌被提及情况
 
-| 测试问题 | Qwen | DeepSeek | Kimi | 豆包 | 提及品牌 |
-|:---------|:-----|:---------|:-----|:-----|:---------|
+| 测试问题 | {_engine_headers} | 提及品牌 |
+|:---------|{_engine_separator}
 """
         # 显示所有测试问题（不再限制为5个）
         for item in detail_table:
             q = item.get("question", "")[:30]
             results_dict = item.get("results", {})
 
-            # 检测品牌状态 - 4个引擎（区分API失败和未推荐）
+            # 检测品牌状态 - 按本次实际引擎逐列展示（区分API失败和未推荐）
             def _engine_status(eng_data):
                 if not eng_data or not isinstance(eng_data, dict):
-                    return "❌"
+                    return "—"  # 本次未跑到该引擎，不等于"未推荐"
+                if eng_data.get("status") == "identity_unresolved" or eng_data.get(
+                    "identity_unresolved"
+                ):
+                    return "❓"  # 有回答，但品牌身份待确认（不是未推荐，也不是 API 失败）
+                if eng_data.get("status") == "error":
+                    return "⚠️"
                 answer = eng_data.get("answer_summary", "")
                 if "查询失败" in answer or answer.startswith("Error"):
                     return "⚠️"  # API失败，非"未推荐"
                 return "✅" if eng_data.get("brand_detected") else "❌"
 
-            ds_detected = _engine_status(results_dict.get("dashscope", {}))
-            deepseek_detected = _engine_status(results_dict.get("deepseek", {}))
-            kimi_detected = _engine_status(results_dict.get("kimi", {}))
-            doubao_detected = _engine_status(results_dict.get("doubao", {}))
+            statuses = " | ".join(
+                _engine_status(results_dict.get(key, {})) for key in _engine_keys
+            )
 
             # 合并提及品牌
             all_brands = set()
@@ -3040,7 +3160,7 @@ async def generate_technical_report(
                 all_brands.update(eng_result.get("mentioned_brands", []))
             brands = ", ".join(list(all_brands)[:4]) if all_brands else "-"
 
-            ai_test_detail_section += f"| {q}... | {ds_detected} | {deepseek_detected} | {kimi_detected} | {doubao_detected} | {brands} |\n"
+            ai_test_detail_section += f"| {q}... | {statuses} | {brands} |\n"
 
         # 添加统计
         summary = ai_visibility_data.get("brand_detection_summary", {})
@@ -3058,6 +3178,18 @@ async def generate_technical_report(
         if _total_failed_count > 0:
             _total_planned = summary.get("total_planned", ai_visibility_data.get("total_planned", 0))
             _total_failed_note = f"\n\n> ⚠️ 注：本次测试中有{_total_failed_count}次API调用失败（已排除），统计基于{summary.get('total_tests', 20)}次有效测试。"
+        _identity_unresolved_count = summary.get(
+            "identity_unresolved_count",
+            ai_visibility_data.get("brand_detection_summary", {}).get(
+                "identity_unresolved_count", 0
+            ),
+        )
+        if _identity_unresolved_count:
+            _total_failed_note += (
+                f"\n\n> ❓ 注：另有{_identity_unresolved_count}次回答已成功返回，"
+                "但品牌名称存在近似写法、身份未能自动确认，未计入“未推荐”结论，"
+                "建议在报告“待确认身份”中人工核验。"
+            )
 
         ai_test_detail_section += f"""
 **统计结果**：在{summary.get("total_tests", 20)}次测试中，品牌被提及{summary.get("detected_count", 0)}次，提及率{summary.get("detection_rate", 0)}%{_total_failed_note}
@@ -3114,7 +3246,7 @@ async def generate_technical_report(
 |:---------|:---------|:---------|:---------|
 | **社媒热门内容** | 抖音、小红书 | 按{keyword_count}个关键词搜索热门内容 | 按综合互动量排序取TOP20 |
 | **网页搜索** | 秘塔AI搜索 | 品牌词+行业词组合搜索 | 分析网页、学术、文档三类结果 |
-| **AI引擎测试** | 千问、DeepSeek、Kimi、豆包 | 真实用户问题模拟提问 | 检测品牌被直接推荐情况 |
+| **AI引擎测试** | 本次配置的AI引擎 | 真实用户问题模拟提问 | 检测品牌被直接推荐情况 |
 | **竞品识别** | 社媒高曝光+AI推荐 | 自动识别行业相关账号 | 排除客户自有账号 |
 
 ### 📈 社媒内容排序维度
@@ -3602,7 +3734,7 @@ async def generate_sales_report(
 
 ## 02 · 这一幕每天都在发生
 
-我们用4个主流AI引擎（千问、DeepSeek、Kimi、豆包），模拟真实用户提问。
+我们用本次配置的主流AI引擎，模拟真实用户提问。
 
 ### AI引擎实测结果
 
@@ -3764,13 +3896,16 @@ async def generate_geo_scope_report(
     ai_test_detail = ""
     if ai_visibility_data and ai_visibility_data.get("detail_table"):
         detail_table = ai_visibility_data.get("detail_table", [])
-        ai_test_detail = """
+        _engine_keys = _report_engine_keys(ai_visibility_data, detail_table)
+        _engine_headers = " | ".join(_report_engine_label(k) for k in _engine_keys)
+        _engine_separator = ":-----|" + "".join(":-----|" for _ in _engine_keys) + ":-----------|"
+        ai_test_detail = f"""
 ### 🔬 AI引擎实测详情
 
 > 📊 向各主流 AI 引擎提问真实用户问题，观察品牌被提及情况
 
-| 测试问题 | Qwen | DeepSeek | Kimi | 豆包 | 提及品牌 |
-|:---------|:-----|:---------|:-----|:-----|:---------|
+| 测试问题 | {_engine_headers} | 提及品牌 |
+|:---------|{_engine_separator}
 """
         for item in detail_table:
             q = item.get("question", "")[:30]
@@ -3778,23 +3913,28 @@ async def generate_geo_scope_report(
 
             def _es(eng_data):
                 if not eng_data or not isinstance(eng_data, dict):
-                    return "❌"
+                    return "—"
+                if eng_data.get("status") == "identity_unresolved" or eng_data.get(
+                    "identity_unresolved"
+                ):
+                    return "❓"
+                if eng_data.get("status") == "error":
+                    return "⚠️"
                 answer = eng_data.get("answer_summary", "")
                 if "查询失败" in answer or answer.startswith("Error"):
                     return "⚠️"
                 return "✅" if eng_data.get("brand_detected") else "❌"
 
-            ds = _es(results_dict.get("dashscope", {}))
-            deepseek = _es(results_dict.get("deepseek", {}))
-            kimi = _es(results_dict.get("kimi", {}))
-            doubao = _es(results_dict.get("doubao", {}))
+            statuses = " | ".join(
+                _es(results_dict.get(key, {})) for key in _engine_keys
+            )
 
             all_brands = set()
             for eng_result in results_dict.values():
                 if isinstance(eng_result, dict):
                     all_brands.update(eng_result.get("mentioned_brands", []))
             brands = ", ".join(list(all_brands)[:4]) if all_brands else "-"
-            ai_test_detail += f"| {q}... | {ds} | {deepseek} | {kimi} | {doubao} | {brands} |\n"
+            ai_test_detail += f"| {q}... | {statuses} | {brands} |\n"
 
         summary = ai_visibility_data.get("brand_detection_summary", {})
         if not summary:
@@ -3804,6 +3944,19 @@ async def generate_geo_scope_report(
                 "total_tests": ai_visibility_data.get("total_tests", 20),
             }
         ai_test_detail += f"\n**统计结果**：在{summary.get('total_tests', 20)}次测试中，品牌被提及{summary.get('detected_count', 0)}次，提及率{summary.get('detection_rate', 0)}%\n"
+        _identity_unresolved_count = summary.get("identity_unresolved_count", 0)
+        _failed_count = summary.get("total_failed", 0)
+        if _identity_unresolved_count:
+            ai_test_detail += (
+                f"\n> ❓ 注：另有{_identity_unresolved_count}次回答已成功返回，"
+                "但品牌名称存在近似写法、身份未能自动确认，未计入“未推荐”结论，"
+                "建议在报告“待确认身份”中人工核验。\n"
+            )
+        if _failed_count:
+            ai_test_detail += (
+                f"\n> ⚠️ 注：本次有{_failed_count}次引擎访问失败（已排除），"
+                f"统计基于{summary.get('total_tests', 20)}次有效测试。\n"
+            )
 
     # 机会成本估算（GEO核心内容）
     opportunity_section = ""
