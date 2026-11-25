@@ -228,15 +228,23 @@ async def query_dashscope_search(
     query: str, check_brand: str = "", max_tokens: int = 2000,
     brand_id: int | None = None,
     brand_display_names: list[str] | None = None,
+    model: str | None = None,
 ) -> ToolResponse:
     """
     查询被测千问引擎并检测品牌可见度（联网搜索版）
 
-    模型/端点/联网参数逐值取 ``services.monitoring_lineage.QWEN_ENGINE``
+    模型默认逐值取 ``services.monitoring_lineage.QWEN_ENGINE``
     （包F ⑥ · 2026-08-24 Owner 终裁换代为 qwen3.7-plus + 原生多模态端点）。
+    ``model`` 仅供诊断侧按 ``diagnosis_visibility_model`` 做本机覆盖；
+    留空时仍走 SSOT，监测链路不受影响。
     """
     api_key = os.environ.get("DASHSCOPE_API_KEY", "")
     max_retries = 3
+    resolved_model = (model or "").strip() or _QWEN["model"]
+    # 本调用内的千问引擎副本：只覆盖 model，端点/联网参数仍逐值取 SSOT。
+    # 用副本而不是改全局 _QWEN，避免并发诊断/监测互相污染。
+    active_qwen = dict(_QWEN)
+    active_qwen["model"] = resolved_model
 
     for attempt in range(max_retries):
         try:
@@ -246,7 +254,7 @@ async def query_dashscope_search(
                     client,
                     _QWEN["endpoint"],
                     platform="dashscope",
-                    model=_QWEN["model"],
+                    model=active_qwen["model"],
                     metadata={"engine": "dashscope_search", "attempt": attempt + 1},
                     headers={
                         "Authorization": f"Bearer {api_key}",
@@ -308,7 +316,7 @@ async def query_dashscope_search(
                         #    那一行是**我们自己干活的工具**。统一会让"换干活工具
                         #    降本"顺手动到检索保真基准 —— 两者的判据完全不同
                         #    (被测对象只为保真换,干活工具按成本/质量换)。
-                        "model": _QWEN["model"],
+                        "model": active_qwen["model"],
                         "input": {"messages": [
                             {"role": "user", "content": [{"text": query}]},
                         ]},
@@ -385,6 +393,8 @@ async def query_dashscope_search(
 
                 # [work order V3-C C-3] provider-echoed model name.
                 visibility_result["echoed_model"] = _echoed_model(data)
+                # 请求侧实际模型（诊断覆盖时可能不是 qwen3.7-plus；供应商不回显时仍可追溯）
+                visibility_result["requested_model"] = active_qwen["model"]
                 return ToolResponse(
                     content=[
                         {
@@ -3891,6 +3901,16 @@ async def detailed_ai_visibility_test(
         # 引擎清单单源 config.ai_engines(统一五引擎)。
         engines = default_diagnosis_engines()
 
+    # 诊断侧可选的千问被测引擎覆盖（系统设置 diagnosis_visibility_model）。
+    # 留空 => qwen3.7-plus SSOT；监测链路调用本函数时不传 model，保持原引擎。
+    try:
+        from config.settings_manager import load_settings as _load_settings
+        _visibility_model = (
+            getattr(_load_settings(), "diagnosis_visibility_model", "") or ""
+        ).strip()
+    except Exception:
+        _visibility_model = ""
+
     observation_source_ref = (
         (observation_source_ref or "").strip()
         or f"diagnosis-adhoc:{uuid.uuid4().hex}"
@@ -3898,7 +3918,10 @@ async def detailed_ai_visibility_test(
     observation_round_id = f"paid-diagnosis:{observation_source_ref}"
 
     detail_table = []
-    brand_stats = {engine: {"detected": 0, "total": 0} for engine in engines}
+    brand_stats = {
+        engine: {"detected": 0, "total": 0, "identity_unresolved": 0}
+        for engine in engines
+    }
 
     # [性能优化] 并行执行所有AI查询
     async def query_single(question: str, engine: str):
@@ -3908,6 +3931,7 @@ async def detailed_ai_visibility_test(
                 result = await query_dashscope_search(
                     question, check_brand, max_tokens=1500, brand_id=brand_id,
                     brand_display_names=custom_brand_variants,
+                    model=_visibility_model or None,
                 )
             elif engine == "kimi":
                 result = await query_kimi_search(
@@ -3975,7 +3999,14 @@ async def detailed_ai_visibility_test(
             mentioned_brands = inline if isinstance(inline, list) else []
             brand_detected = result_data.get("brand_detected", False)
             brand_verdict = result_data.get("brand_verdict") or ("YES" if brand_detected else "NO")
-            engine_error = bool(result_data.get("engine_error") or brand_verdict == "UNKNOWN")
+            # Identity-unresolved is not an engine-access failure: the platform
+            # answered, but the optional identity verifier could not confirm the
+            # name.  Keep it as a collected sample so a missing verifier key can
+            # never turn a valid answer into "all AI engines failed".
+            identity_unresolved = bool(result_data.get("brand_detection_unknown")) or (
+                brand_verdict == "UNKNOWN" and bool(full_response.strip())
+            )
+            engine_error = bool(result_data.get("engine_error")) and not identity_unresolved
             web_search_enabled = result_data.get("web_search_enabled", False)
             # [Phase1-A 2026-06-07] 透传单引擎已采的搜索来源(qwen/doubao 在各自 query_*_search 里 set 过)
             #   此前聚合层丢弃 → 诊断 detail_table 无来源 → 权威背书空。补带不影响 brand_detected/mentioned_brands/full_response。
@@ -3989,6 +4020,7 @@ async def detailed_ai_visibility_test(
                 "brand_detected": brand_detected,
                 "brand_verdict": brand_verdict,
                 "engine_error": engine_error,
+                "identity_unresolved": identity_unresolved,
                 "web_search_enabled": web_search_enabled,
                 "full_response": full_response,
                 "search_citations": search_citations,
@@ -4112,7 +4144,12 @@ async def detailed_ai_visibility_test(
             "mentioned_brands": r["mentioned_brands"],
             "brand_detected": r["brand_detected"],
             "brand_verdict": r.get("brand_verdict", "NO"),
-            "status": "error" if r.get("engine_error") else "success",
+            "status": (
+                "identity_unresolved"
+                if r.get("identity_unresolved")
+                else ("error" if r.get("engine_error") else "success")
+            ),
+            "identity_unresolved": bool(r.get("identity_unresolved")),
             "web_search_enabled": r.get("web_search_enabled", False),
             "full_response": r.get("full_response", ""),
             "search_citations": r.get("search_citations") or [],  # [Phase1-A] 透传搜索来源(供权威背书聚合读)
@@ -4131,16 +4168,18 @@ async def detailed_ai_visibility_test(
             "near_miss_candidates": r.get("near_miss_candidates") or [],
         }
 
-        # 统计（跳过API失败的测试）
+        # 统计（只跳过真正的引擎访问失败；身份待确认的格有真实回答，计入样本）
         answer_text = r.get("answer_summary", "")
         is_api_failure = (
             bool(r.get("engine_error"))
-            or r.get("brand_verdict") == "UNKNOWN"
+            or not str(r.get("full_response") or "").strip()
             or "查询失败" in answer_text
             or answer_text.startswith("Error")
         )
         if not is_api_failure:
             brand_stats[e]["total"] += 1
+            if r.get("identity_unresolved"):
+                brand_stats[e]["identity_unresolved"] += 1
             if r["brand_detected"]:
                 brand_stats[e]["detected"] += 1
 
@@ -4183,6 +4222,10 @@ async def detailed_ai_visibility_test(
     # [NEW] 清除品牌别名覆盖
     _custom_brand_ctx.set(None)
 
+    total_identity_unresolved = sum(
+        stats["identity_unresolved"] for stats in brand_stats.values()
+    )
+
     return {
         "questions": questions,
         "engines": engines,
@@ -4195,6 +4238,7 @@ async def detailed_ai_visibility_test(
             "total_planned": total_planned,  # 计划测试数
             "total_failed": total_failed,  # API失败数
             "detected_count": total_detected,
+            "identity_unresolved_count": total_identity_unresolved,
             "detection_rate": round(total_detected / total_tests * 100, 1)
             if total_tests > 0
             else 0,
@@ -4202,6 +4246,7 @@ async def detailed_ai_visibility_test(
                 engine: {
                     "detected": stats["detected"],
                     "total": stats["total"],
+                    "identity_unresolved": stats["identity_unresolved"],
                     "rate": round(stats["detected"] / stats["total"] * 100, 1)
                     if stats["total"] > 0
                     else 0,

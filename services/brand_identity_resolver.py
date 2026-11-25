@@ -246,6 +246,9 @@ _GENERIC_SUFFIX_TOKENS = {
 _GENERIC_INDUSTRY_TERMS = {
     "制造业", "服务业", "酒店业", "零售业", "科技", "生物", "制造",
     "教育", "医疗", "金融", "地产", "电梯", "酒店", "门店", "品牌",
+    # Product/category nouns: a brand such as "聚安精密走心机" must not be
+    # treated as a near-miss merely because the answer discusses 走心机.
+    "走心机", "数控", "机床", "机加工", "加工", "五金", "零件", "精密",
 }
 # A derived legal abbreviation must retain a proprietary token.  These tokens
 # are deliberately broad industry descriptors: if a candidate can be composed
@@ -268,6 +271,12 @@ _GENERIC_DERIVED_NAME_TOKENS = {
     "公司", "有限", "股份", "控股", "中心", "企业", "品牌", "酒店", "电梯",
     "地产", "门店",
 }
+# Any candidate fragment contained in one of these generic terms is itself
+# generic (走心/心机 ⊂ 走心机).  Otherwise an ordinary industry answer would be
+# sliced into "identity-like" tokens and routed to the verifier as a near miss.
+_GENERIC_TOKEN_FRAGMENTS = frozenset(
+    _GENERIC_SUFFIX_TOKENS | _GENERIC_INDUSTRY_TERMS | _GENERIC_DERIVED_NAME_TOKENS
+)
 _SHORT_PREFIX_CONTEXT = ("推荐", "选择", "入住", "体验", "关注", "品牌", "来自")
 _SHORT_SUFFIX_CONTEXT = ("酒店", "品牌", "门店", "公司", "集团", "科技", "生物")
 
@@ -1271,6 +1280,23 @@ def detect_registry_name_correction(answer: str, identity: BrandIdentity) -> boo
     return any(marker in text for marker in REGISTRY_CORRECTION_MARKERS)
 
 
+def _distinctive_name_core(
+    normalized: str, administrative_tokens: set[str]
+) -> str:
+    """Strip generic industry/legal/administrative words before n-gramming.
+
+    "聚安精密走心机" must yield "聚安", not 精密走 / 密走心: those fragments
+    straddle the generic phrase "精密走心机" and make ordinary industry prose
+    look like a near-miss brand mention.
+    """
+    core = normalized
+    generic_terms = set(_GENERIC_TOKEN_FRAGMENTS) | set(administrative_tokens)
+    for term in sorted(generic_terms, key=len, reverse=True):
+        if len(term) >= 2:
+            core = core.replace(term, "")
+    return core
+
+
 def _candidate_tokens(identity: BrandIdentity) -> tuple[str, ...]:
     tokens: list[str] = []
     administrative_tokens = {
@@ -1280,13 +1306,18 @@ def _candidate_tokens(identity: BrandIdentity) -> tuple[str, ...]:
         normalized = normalize_brand_name(alias)
         if len(normalized) < 2:
             continue
+        core = _distinctive_name_core(normalized, administrative_tokens)
+        if len(core) < 2:
+            continue
         # Prefer distinctive adjacent pairs/triples.  Generic suffixes alone are
         # discarded, but proprietary prefixes such as 雅栖 / 观光 still survive.
-        width = 3 if len(normalized) >= 5 else 2
+        width = 3 if len(core) >= 5 else 2
         for size in (width, 2):
-            for index in range(0, len(normalized) - size + 1):
-                token = normalized[index:index + size]
-                if token in _GENERIC_SUFFIX_TOKENS or token in administrative_tokens:
+            for index in range(0, len(core) - size + 1):
+                token = core[index:index + size]
+                if token in administrative_tokens:
+                    continue
+                if any(token in generic for generic in _GENERIC_TOKEN_FRAGMENTS):
                     continue
                 tokens.append(token)
     return _dedupe_nonempty(tokens)
@@ -1437,6 +1468,29 @@ async def _default_structured_verifier(
         # Diagnosis does not pass a lease guard, but fail closed if a future
         # caller supplies one through the shared verifier contract.
         return VerificationResult(BrandVerdict.UNKNOWN, "lease_lost")
+
+
+_VERIFIER_PROVIDER_FAILURE_REASONS: frozenset[str] = frozenset({
+    "provider_not_sent",
+    "provider_result_unknown",
+    "timeout",
+    "verifier_exception",
+    "lease_lost",
+    "parse_or_transport_error",
+})
+
+
+def _is_verifier_provider_failure(reason: str) -> bool:
+    """True when the verifier itself failed, not when it judged the identity ambiguous.
+
+    The deterministic local layer still has an evidence window in this case; the
+    cell must stay a human-reviewable pending identity instead of being dropped as
+    a provider failure just because the optional verifier has no usable key.
+    """
+    text = str(reason or "").strip().lower()
+    if text.startswith(("http_", "dashscope_http_")):
+        return True
+    return text in _VERIFIER_PROVIDER_FAILURE_REASONS
 
 
 def _validated_source_span(
@@ -1665,6 +1719,16 @@ class BrandIdentityResolver:
                 type(exc).__name__,
             )
             verification = VerificationResult(BrandVerdict.UNKNOWN, "verifier_exception")
+
+        if (
+            verification.verdict is BrandVerdict.UNKNOWN
+            and _is_verifier_provider_failure(verification.reason)
+        ):
+            # The answer did come back; only the optional verifier is unavailable.
+            # Returning the local evidence decision keeps the near-miss candidate
+            # visible for human review and prevents a missing DeepSeek key from
+            # turning a successful engine answer into "all engines failed".
+            return local
 
         if verification.verdict is BrandVerdict.YES:
             matched_text = (verification.matched_text or "").strip()

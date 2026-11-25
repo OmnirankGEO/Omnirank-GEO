@@ -59,6 +59,8 @@ PRICING_TABLE: Dict[tuple, Dict[str, float]] = {
     ("dashscope", "qwen3.7-max"): {"input": 0.0013, "output": 0.0026, "cache_hit": 0.00026},
     ("dashscope", "qwen3.8-max"): {"input": 0.0013, "output": 0.0026, "cache_hit": 0.00026},
     ("dashscope", "qwen3.7-plus"): {"input": 0.0013, "output": 0.0026},
+# Qwen3.8 Flash：价目表暂按同代 Plus 档登记（官方价目表确认后按实际单价替换）。
+("dashscope", "qwen3.8-flash"): {"input": 0.0013, "output": 0.0026},
     ("dashscope", "qwen3.6-max-preview"): {"input": 0.0013, "output": 0.0026},
     ("dashscope", "qwen3.6-plus"): {"input": 0.0013, "output": 0.0026},
     ("dashscope", "qwen-plus-latest"): {"input": 0.0013, "output": 0.0026},

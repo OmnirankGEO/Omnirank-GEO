@@ -4341,6 +4341,19 @@ async def autofill_diagnosis_form(request: AutofillRequest, http_request: Reques
     if not brand_name:
         raise HTTPException(status_code=400, detail="品牌名称不能为空")
 
+    # AI 帮填的 DashScope 模型跟随系统设置的诊断模型（仅 dashscope + qwen 系时生效）。
+    # 原来这里写死 qwen3.6-plus：管理员把诊断模型改成 3.8-flash 后，帮填仍打旧模型并 403。
+    _autofill_dashscope_model = "qwen3.6-plus"
+    try:
+        if load_settings is not None:
+            _settings = load_settings()
+            if (_settings.diagnosis_provider or "").strip() == "dashscope":
+                _m = (_settings.diagnosis_model or "").strip()
+                if _m.startswith("qwen"):
+                    _autofill_dashscope_model = _m
+    except Exception:
+        pass
+
     # 2026-04-18 L2 改造：预检不扣 → LLM 成功 → 再真扣（"工具真实成功才收费"）
     # 老行为是入口直接扣，中途挂了靠 _refund_on_fail 退。新行为：根本不扣就不需要退。
     _user = getattr(http_request.state, "user", None) if http_request else None
@@ -4398,7 +4411,12 @@ async def autofill_diagnosis_form(request: AutofillRequest, http_request: Reques
 - 资料里多次出现的公司名是否包含「{brand_name}」的关键词?
 - 资料里的业务方向是否和「{brand_name}」暗示的业务一致?
   (如搜"上海骁马豪车租赁",资料应有"豪车"/"租赁"/"专车"等关键词)
-- 若搜索资料讲的是**另一家公司**(名字完全不同 or 业务不匹配):
+- 若检索到多个「品牌简称」主体(如“聚安精密”同时对应多家公司):
+  优先选**存续/开业**、城市与用户填写一致、经营范围与品牌产品词一致的主体;
+  **已注销、已吊销的主体不要采用**。即使无法 100% 确认,也按最匹配主体填写
+  industry/clientLocation/additionalInfo/keywords,但 name_matched 设 null、
+  matched_name 填该主体全称、reason 写“待核实:...”,不要把所有字段留空。
+- 若搜索资料讲的是**另一家公司**(名字完全不同 or 业务完全不匹配):
   **必须返回 `{{"name_matched": false, "matched_name": "资料里实际的公司名", "reason": "为什么不匹配",
                "suggestion": "请用户核实品牌全名或提供更多关键词(地域/行业)", ...(其他字段留空或null)}}`**
 - 若搜不到任何相关信息,返回 `name_matched: null`(无法验证) + suggestion 提示用户提供更多上下文
@@ -4407,7 +4425,7 @@ async def autofill_diagnosis_form(request: AutofillRequest, http_request: Reques
 【第二步 · 判断客户类型】
 先判断该企业的客户是企业(B2B)还是个人消费者(B2C),这决定了关键词的生成逻辑。
 
-【第三步 · 分字段提取(匹配成功才填)】
+【第三步 · 分字段提取(按最匹配主体填写)】
 
 1. name_matched — 布尔值:true(匹配)/false(不匹配,必须填 reason+suggestion)/null(无法判断)
 2. matched_name — 资料里实际的公司全名(核对用)
@@ -4672,15 +4690,102 @@ competitors(2-5 个):
         return _parse_json(raw)
 
     # =============================================
-    # Provider 2: DashScope qwen3.6-plus 联网搜索
+    # Provider 2: DashScope 千问 · 原生联网检索 + 兼容模式结构化
     # =============================================
+    async def _native_autofill_research() -> tuple[str, list[dict]]:
+        """真正联网：DashScope 原生 multimodal 端点 + forced_search。
+
+        兼容模式 `/compatible-mode/v1/chat/completions` 虽然接受
+        `enable_search`，但 qwen3.8-flash 实测不返回 search_info、模型还会
+        直接回答“无法实时联网”。原生端点才返回真实来源，因此先用它检索，
+        再让兼容模式只做 JSON 结构化。
+        """
+        if not ds_key:
+            return "", []
+        try:
+            from services.engine_contract import QWEN_ENGINE as _QWEN
+
+            _query = (
+                f"请联网检索企业「{brand_name}」的真实公开资料，按以下顺序找："
+                "1) 公司全称/工商主体（天眼查、企查查、爱企查）；"
+                "2) 官网、1688/阿里店铺、招聘页或行业媒体；"
+                "3) 所在城市、主营产品/服务、客户案例、同行竞品。"
+                "品牌名可能包含产品词（如走心机、加工、精密、设备），"
+                "请同时检索去掉产品词后的品牌简称。"
+                "只列检索到的事实与来源；搜不到就明确说搜不到，不要编造。"
+            )
+            async with httpx.AsyncClient(timeout=120.0) as _client:
+                _resp = await _client.post(
+                    _QWEN["endpoint"],
+                    headers={
+                        "Authorization": f"Bearer {ds_key}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "model": _autofill_dashscope_model,
+                        "input": {
+                            "messages": [
+                                {"role": "user", "content": [{"text": _query}]}
+                            ]
+                        },
+                        "parameters": {
+                            **dict(_QWEN["base_parameters"]),
+                            "max_tokens": 2000,
+                            "search_options": dict(_QWEN["search_options"]),
+                        },
+                    },
+                )
+            if _resp.status_code != 200:
+                logger.warning(
+                    f"[Autofill] native search HTTP {_resp.status_code}: {_resp.text[:160]}"
+                )
+                return "", []
+            _body = _resp.json()
+            _output = _body.get("output", {}) or {}
+            from tools.ai_visibility.ai_tester import (
+                _dashscope_message_text,
+                _extract_dashscope_native_citations,
+            )
+
+            _text = _dashscope_message_text(_output).strip()
+            _cites = _extract_dashscope_native_citations(_output)
+            logger.info(
+                f"[Autofill] native search chars={len(_text)} citations={len(_cites)}"
+            )
+            return _text, _cites
+        except Exception as _e:
+            logger.warning(f"[Autofill] native search failed: {type(_e).__name__}: {_e}")
+            return "", []
+
     async def _call_dashscope() -> dict:
         if not ds_key:
             raise ValueError("DASHSCOPE key not configured")
         # [CTO-15.5 2026-04-20] 实测对比后回滚: qwen3.6-max-preview 性价比不够(思维链膨胀 token 30x · 成本 10-40x)
         # Q3 prompt 升级(name_matched 验证)已让 qwen3.6-plus 不硬编造,边际价值小,退回原模型
         # qwen3.6-max-preview 定义保留在 config/model_config.py 作为未来 opt-in
-        logger.info(f"[Autofill] Provider 2: DashScope qwen3.6-plus for '{brand_name}'")
+        # [2026-11-23] 默认仍 qwen3.6-plus；管理员在系统设置改诊断模型后跟随该模型。
+        logger.info(f"[Autofill] Provider 2: DashScope {_autofill_dashscope_model} for '{brand_name}'")
+
+        _research_text, _research_cites = await _native_autofill_research()
+        _effective_prompt = json_prompt
+        if _research_text:
+            _source_lines = []
+            for _i, _c in enumerate(_research_cites[:10], 1):
+                _title = (_c.get("title") or "").strip()
+                _url = (_c.get("url") or "").strip()
+                if _title or _url:
+                    _source_lines.append(f"{_i}. {_title} {_url}".strip())
+            _effective_prompt += (
+                "\n\n【真实联网检索结果（优先依据，来自 DashScope 原生搜索）】\n"
+                + _research_text[:3500]
+                + ("\n\n【检索来源】\n" + "\n".join(_source_lines) if _source_lines else "")
+                + "\n\n【使用要求】以上检索结果是本次真实联网所得，不是模型记忆。"
+                "请只基于这些资料和用户强约束填字段；资料出现多个同名主体时，"
+                "只在业务方向与品牌名明显匹配时才采用，否则 name_matched=false，"
+                "并在 suggestion 里列出候选公司全称，不要硬填。"
+            )
+        else:
+            logger.info("[Autofill] native search empty, fallback to compatible-mode single call")
 
         async with httpx.AsyncClient(timeout=90.0) as client:
             resp = await client.post(
@@ -4690,17 +4795,17 @@ competitors(2-5 个):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": "qwen3.6-plus",
+                    "model": _autofill_dashscope_model,
                     "messages": [
                         {
                             "role": "system",
-                            "content": "你是一位专业的企业信息研究员和营销诊断专家。请联网搜索真实企业信息，只基于搜索结果回答。特别重要：你必须验证搜索到的公司是否真的和用户给的品牌名匹配，如果搜到的是另一家公司，必须返回 name_matched=false + suggestion。先判断企业是B2B还是B2C：B2C的keywords写消费者搜索词；B2B的keywords写采购决策者/技术负责人会搜的专业词（可含行业术语如SaaS、解决方案等）。直接返回纯JSON，不要markdown代码块或解释文字。",
+                            "content": "你是一位专业的企业信息研究员和营销诊断专家。请只基于提供的联网检索结果和用户强约束回答。特别重要：你必须验证检索到的公司是否真的和用户给的品牌名匹配，如果搜到的是另一家公司，必须返回 name_matched=false + suggestion。先判断企业是B2B还是B2C：B2C的keywords写消费者搜索词；B2B的keywords写采购决策者/技术负责人会搜的专业词（可含行业术语如SaaS、解决方案等）。直接返回纯JSON，不要markdown代码块或解释文字。",
                         },
-                        {"role": "user", "content": json_prompt},
+                        {"role": "user", "content": _effective_prompt},
                     ],
                     "temperature": 0.1,
                     "max_tokens": 4000,
-                    "enable_search": True,
+                    "enable_search": not bool(_research_text),
                 },
             )
             resp.raise_for_status()
@@ -4888,7 +4993,7 @@ competitors(2-5 个):
     if doubao_key:
         all_providers["doubao"] = ("豆包", _call_doubao)
     if ds_key:
-        all_providers["dashscope"] = ("qwen3.6-plus", _call_dashscope)
+        all_providers["dashscope"] = (f"通义千问 {_autofill_dashscope_model}", _call_dashscope)
     if kimi_key:
         all_providers["kimi"] = ("Kimi K2.5", _call_kimi)
 
@@ -4896,7 +5001,7 @@ competitors(2-5 个):
     # 老板报"控制台成本不准"主因之一:autofill 4 callsite 没埋点 · 现在补
     _PROVIDER_MODEL = {
         "doubao": ("doubao", "doubao-seed-1-6-251015"),
-        "dashscope": ("dashscope", "qwen3.6-plus"),
+        "dashscope": ("dashscope", _autofill_dashscope_model),
         "kimi": ("kimi", "kimi-k2.6"),
     }
     async def _tracked_call(provider_key, fn):
@@ -14915,6 +15020,9 @@ class SettingsUpdateRequest(BaseModel):
     metaso_api_key: str = ""
     diagnosis_model: str = "qwen3.7-plus"
     diagnosis_provider: str = "dashscope"
+    # 千问被测引擎模型覆盖（留空 = 默认 qwen3.7-plus）；只影响诊断的 AI 可见度检索。
+    # None = 请求未携带该字段（保留当前值）；"" = 显式清空回默认。
+    diagnosis_visibility_model: Optional[str] = None
     diagnosis_tasks: dict = {}
     writing_model: str = "qwen3.6-plus"
     writing_provider: str = "dashscope"
@@ -15092,6 +15200,11 @@ def update_settings(request: SettingsUpdateRequest):
             "metaso_api_key": new_metaso,
             "diagnosis_model": request.diagnosis_model,
             "diagnosis_provider": request.diagnosis_provider,
+            "diagnosis_visibility_model": (
+                request.diagnosis_visibility_model
+                if request.diagnosis_visibility_model is not None
+                else current.diagnosis_visibility_model
+            ),
             "diagnosis_tasks": request.diagnosis_tasks or current.diagnosis_tasks,
             "writing_model": request.writing_model,
             "writing_provider": request.writing_provider,

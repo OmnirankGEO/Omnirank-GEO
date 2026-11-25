@@ -45,6 +45,9 @@ class SystemSettings(BaseModel):
     # 改 qwen3-max:文本模型·原生端点支持全套联网(forced_search/enable_source/角标)·监测可稳定带来源(同代·读结果判品牌差距极小)。
     diagnosis_model: str = "qwen3-max"
     diagnosis_provider: str = "dashscope"
+    # 千问「被测引擎」模型覆盖（高级）。留空 = services.engine_contract.QWEN_ENGINE
+    # 的 SSOT qwen3.7-plus；仅影响诊断的 AI 可见度测试，不影响报告生成模型，也不改监测链路。
+    diagnosis_visibility_model: str = ""
     # 调研报告LLM - 子任务配置
     diagnosis_tasks: dict = {
         # 🔴 [WO_206 c1b② · Owner 2026-09-14 拍板「全部改成 deepseek-flash」]
